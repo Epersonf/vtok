@@ -192,12 +192,41 @@ pub fn map(root: &Path, budget: usize) -> Report {
         }
         out
     };
+    if ntok(&render(0, 0)) > budget {
+        // too many files for one line each: summarise by directory, as deep as the budget allows
+        let key = |rel: &str, d: usize| -> String {
+            let parts: Vec<&str> = rel.split('/').collect();
+            let dirs = &parts[..parts.len() - 1];
+            if dirs.is_empty() { ".".to_string() } else { format!("{}/", dirs[..d.min(dirs.len())].join("/")) }
+        };
+        let max_depth = ranked.iter().map(|(_, fi, _)| fi.rel.split('/').count().saturating_sub(1)).max().unwrap_or(1).max(1);
+        let mut best_dirs: Option<String> = None;
+        let head = format!("# map {}: {} files, {nsyms} symbols; summarised by directory (budget); xN = uses in files that do not define it\n", root.display(), infos.len());
+        for d in 1..=max_depth {
+            let mut groups: std::collections::BTreeMap<String, (usize, usize, Vec<(usize, String)>)> = std::collections::BTreeMap::new();
+            for (_, fi, ss) in &ranked {
+                let g = groups.entry(key(&fi.rel, d)).or_default();
+                g.0 += 1; g.1 += fi.lines;
+                for (u, s) in ss { g.2.push((*u, s.0.clone())); }
+            }
+            let mut out = head.clone();
+            for (k, (nf, nl, mut syms)) in groups {
+                syms.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
+                let mut seen = std::collections::HashSet::new();
+                syms.retain(|(_, n)| seen.insert(n.clone()));
+                let top: Vec<String> = syms.iter().take(3).map(|(u, n)| format!("{n} x{u}")).collect();
+                out.push_str(&format!("{k} ({nf} files, {nl}L){}{}\n", if top.is_empty() { "" } else { ": " }, top.join(", ")));
+            }
+            if ntok(&out) > budget { if best_dirs.is_none() { let mut cut = String::new(); for l in out.lines() { if ntok(&(cut.clone() + l)) > budget { break; } cut.push_str(l); cut.push('\n'); } cut.push_str("# more directories not shown: pass a subdirectory\n"); best_dirs = Some(cut); } break; }
+            best_dirs = Some(out);
+        }
+        return Report { text: best_dirs.unwrap_or(head), raw_tokens };
+    }
     let maxk = cand.iter().map(|c| c.len()).max().unwrap_or(0);
     let mut best = render(0, 0);
     let mut kbest = 0;
     for k in 1..=maxk { let t = render(k, 0); if ntok(&t) > budget { break; } best = t; kbest = k; }
     for sigs in [4usize, 8, 16, 32] { let t = render(kbest, sigs); if ntok(&t) > budget { break; } best = t; }
-    if ntok(&best) > budget { best.push_str("# files alone exceed max_tokens: narrow with a subdirectory\n"); }
     Report { text: best, raw_tokens }
 }
 
@@ -233,8 +262,8 @@ fn name_tokens(s: &str) -> Vec<String> {
 
 /// How well query word `w` matches name token `t`: exact 3, one is a prefix of the other (redirect/redirects, auth/authentication) 2.
 fn word_match(w: &str, t: &str) -> f64 {
-    if w == t { 3.0 } else if w.len() >= 4 && t.len() >= 3 && (t.starts_with(w) || w.starts_with(t)) { 2.0 }
-    else if w.len() >= 5 && t.len() >= 5 && w[..5] == t[..5] { 1.5 } else { 0.0 }
+    if w == t { 3.0 } else if w.chars().count() >= 4 && t.chars().count() >= 3 && (t.starts_with(w) || w.starts_with(t)) { 2.0 }
+    else if w.chars().count() >= 5 && t.chars().count() >= 5 && w.chars().take(5).eq(t.chars().take(5)) { 1.5 } else { 0.0 }
 }
 
 /// Question-driven symbol search: the words of the question are matched against symbol names (split into words), their parents
@@ -372,6 +401,18 @@ mod tests {
         assert!(a.lines().nth(1).unwrap().contains("basic_auth_str"), "{a}");
         assert!(find_symbols("zzzz", &d, 300).text.contains("nothing matches"));
         assert_eq!(name_tokens("fooBar_baz2"), vec!["foo", "bar", "baz2"]);
+        std::fs::remove_dir_all(&d).ok();
+    }
+
+    #[test]
+    fn non_ascii_names_do_not_panic_and_big_trees_stay_in_budget() {
+        let d = std::env::temp_dir().join(format!("vtok-big-{}", std::process::id()));
+        for i in 0..40 { std::fs::create_dir_all(d.join(format!("pkg{}/sub", i % 8))).unwrap(); std::fs::write(d.join(format!("pkg{}/sub/m{i}.py", i % 8)), format!("def f{i}():\n    return {i}\n\ndef ع_func{i}():\n    return f{i}()\n")).unwrap(); }
+        assert!(find_symbols("عرض الحجم func", &d, 300).text.starts_with("# find"));
+        assert_eq!(word_match("abcdéx", "abcdéyz"), 1.5);
+        let m = map(&d, 200).text;
+        assert!(ntok(&m) <= 260, "{} tokens: {m}", ntok(&m));
+        assert!(m.contains("pkg"), "{m}");
         std::fs::remove_dir_all(&d).ok();
     }
 }

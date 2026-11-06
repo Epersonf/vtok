@@ -224,7 +224,15 @@ fn tool_stats(a: &Value) -> std::result::Result<String, String> {
     Ok(rows.join("\n"))
 }
 
+/// A panic inside one tool must not take the whole server (and the agent's connection) down.
 fn call(name: &str, args: &Value) -> std::result::Result<String, String> {
+    match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| call_inner(name, args))) {
+        Ok(r) => r,
+        Err(_) => Err(format!("internal error in {name} (please report it); the server is still running")),
+    }
+}
+
+fn call_inner(name: &str, args: &Value) -> std::result::Result<String, String> {
     match name {
         "vtok_read" => tool_read(args),
         "vtok_chunk" => tool_chunk(args),

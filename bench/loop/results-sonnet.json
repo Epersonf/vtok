@@ -1,0 +1,750 @@
+[
+ {
+  "task": "find proxy fn",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.041234,
+  "turns": 2,
+  "answer": "`utils.py:select_proxy`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 43917,
+  "tokens_out": 145,
+  "fresh_in": 9077
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0473055,
+  "turns": 2,
+  "answer": "utils.py:select_proxy",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47147,
+  "tokens_out": 90,
+  "fresh_in": 10692
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.040684,
+  "turns": 2,
+  "answer": "utils.py:select_proxy",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 43917,
+  "tokens_out": 90,
+  "fresh_in": 9077
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.04966570000000001,
+  "turns": 3,
+  "answer": "`utils.py:select_proxy`",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70030,
+  "tokens_out": 144,
+  "fresh_in": 10573
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.049792,
+  "turns": 2,
+  "answer": "sessions.py:resolve_redirects",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47214,
+  "tokens_out": 189,
+  "fresh_in": 11074
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0460963,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 66339,
+  "tokens_out": 244,
+  "fresh_in": 9496
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046034000000000005,
+  "turns": 2,
+  "answer": "`utils.py:select_proxy`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 46517,
+  "tokens_out": 92,
+  "fresh_in": 10377
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0504647,
+  "turns": 3,
+  "answer": "utils.py:select_proxy",
+  "tools": {
+   "Grep": 1,
+   "Glob": 1
+  },
+  "tokens_in": 70844,
+  "tokens_out": 144,
+  "fresh_in": 10757
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0552122,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 71660,
+  "tokens_out": 306,
+  "fresh_in": 11538
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0529009,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 70475,
+  "tokens_out": 302,
+  "fresh_in": 10986
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0472767,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 66641,
+  "tokens_out": 274,
+  "fresh_in": 9714
+ },
+ {
+  "task": "json method",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.045439600000000004,
+  "turns": 3,
+  "answer": "`Response.json`",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 66192,
+  "tokens_out": 250,
+  "fresh_in": 9316
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0462974,
+  "turns": 2,
+  "answer": "`Response.json`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 46522,
+  "tokens_out": 114,
+  "fresh_in": 10388
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0535653,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 71323,
+  "tokens_out": 257,
+  "fresh_in": 11250
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0512322,
+  "turns": 3,
+  "answer": "Response.json",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 70924,
+  "tokens_out": 179,
+  "fresh_in": 10862
+ },
+ {
+  "task": "json method",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0411634,
+  "turns": 2,
+  "answer": "`Response.json`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 43936,
+  "tokens_out": 128,
+  "fresh_in": 9102
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.050955799999999996,
+  "turns": 3,
+  "answer": "`Response.json`",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 70098,
+  "tokens_out": 254,
+  "fresh_in": 10620
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0512322,
+  "turns": 3,
+  "answer": "Response.json",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 70924,
+  "tokens_out": 179,
+  "fresh_in": 10862
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0407474,
+  "turns": 2,
+  "answer": "`auth.py:_basic_auth_str`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 43907,
+  "tokens_out": 98,
+  "fresh_in": 9073
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0467694,
+  "turns": 2,
+  "answer": "auth.py:_basic_auth_str",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 46675,
+  "tokens_out": 100,
+  "fresh_in": 10541
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.04422070000000001,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 66114,
+  "tokens_out": 148,
+  "fresh_in": 9267
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0506877,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70865,
+  "tokens_out": 154,
+  "fresh_in": 10788
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0498039,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 69981,
+  "tokens_out": 186,
+  "fresh_in": 10502
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0493504,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 66982,
+  "tokens_out": 375,
+  "fresh_in": 9978
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.052391,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 71161,
+  "tokens_out": 250,
+  "fresh_in": 10971
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.053655,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70436,
+  "tokens_out": 448,
+  "fresh_in": 10806
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0462004,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 66402,
+  "tokens_out": 292,
+  "fresh_in": 9398
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0506877,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70865,
+  "tokens_out": 154,
+  "fresh_in": 10788
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.05327389999999999,
+  "turns": 3,
+  "answer": "Both are methods; there are no plain functions besides the definition itself (`get_netrc_auth` in utils.py).\n\n**None** \u2014 the only callers are methods: `rebuild_",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 71237,
+  "tokens_out": 327,
+  "fresh_in": 10998
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.052419999999999994,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70587,
+  "tokens_out": 307,
+  "fresh_in": 10847
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.051999000000000004,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70352,
+  "tokens_out": 316,
+  "fresh_in": 10722
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.052648,
+  "turns": 4,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tools": {
+   "Grep": 2,
+   "Bash": 1
+  },
+  "tokens_in": 89677,
+  "tokens_out": 385,
+  "fresh_in": 10217
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0557324,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 72047,
+  "tokens_out": 282,
+  "fresh_in": 11723
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0557324,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 72047,
+  "tokens_out": 282,
+  "fresh_in": 11723
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.052984199999999995,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 70625,
+  "tokens_out": 349,
+  "fresh_in": 10883
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0464816,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1
+  },
+  "tokens_in": 66629,
+  "tokens_out": 273,
+  "fresh_in": 9513
+ },
+ {
+  "task": "edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.0459839,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66418,
+  "tokens_out": 262,
+  "fresh_in": 9419
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.05343110000000001,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 71197,
+  "tokens_out": 340,
+  "fresh_in": 11006
+ },
+ {
+  "task": "edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.0499348,
+  "turns": 4,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Edit": 1
+  },
+  "tokens_in": 88719,
+  "tokens_out": 383,
+  "fresh_in": 9551
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.052039999999999996,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 70244,
+  "tokens_out": 336,
+  "fresh_in": 10684
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.0520118,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 70240,
+  "tokens_out": 334,
+  "fresh_in": 10682
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0613364,
+  "turns": 4,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 2
+  },
+  "tokens_in": 72999,
+  "tokens_out": 680,
+  "fresh_in": 12115
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.05343110000000001,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 71197,
+  "tokens_out": 340,
+  "fresh_in": 11006
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.059863099999999995,
+  "turns": 4,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 2
+  },
+  "tokens_in": 72036,
+  "tokens_out": 671,
+  "fresh_in": 11785
+ },
+ {
+  "task": "edit param",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0554635,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Edit": 2
+  },
+  "tokens_in": 68033,
+  "tokens_out": 773,
+  "fresh_in": 10498
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0587108,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 72547,
+  "tokens_out": 553,
+  "fresh_in": 11779
+ },
+ {
+  "task": "edit param",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.05372350000000001,
+  "turns": 4,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Edit": 1
+  },
+  "tokens_in": 67863,
+  "tokens_out": 667,
+  "fresh_in": 10328
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0625142,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 95134,
+  "tokens_out": 773,
+  "fresh_in": 11612
+ }
+]

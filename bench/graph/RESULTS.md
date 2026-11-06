@@ -4,20 +4,41 @@
 clone, graphs built with `graphify update` on copies of the two trees; ~10 s per tree). Tokens: tiktoken o200k_base (proxy). No model
 in the loop, author-chosen questions and names, two small trees. 2026-11-06, graphify v8 from the clone.
 
-## 1. Orientation: "where is X handled?" (18 questions)
+## 1. Orientation: "where is X handled?" (18 questions, graphify budget 300, vtok find / map budget 700)
 
-| | tokens | target file named | target symbol named |
-|---|---|---|---|
-| `graphify query "<question>" --budget 700` (vtok tree, 10 q) | median 849 | 9/10 | 8/9 |
-| same (requests, 8 q) | median 699 | 8/8 | 8/8 |
-| graphify `GRAPH_REPORT.md` (vtok / requests) | 1653 / 2347 | 5/10, 8/8 | 5/9, 8/8 |
-| `vtok map` @700 (bench/map) | ~650 | 10/10, 8/8 | 4/9, 4/8 |
-| `vtok map` @1500 | ~1500 | 10/10, 8/8 | 6/9, 8/8 |
+Marks: `F` = target file named, `S` = target symbol named, `-` = missed, `.` = the question has no target symbol (alias question).
+graphify does not honour its budget strictly (a 300 budget printed ~450 tokens; 700 printed ~700-880).
 
-graphify is **better at orientation** here: for roughly the same tokens its question-driven query names the target symbol far more often
-than the question-independent map. The comparison is not symmetrical: graphify uses the question's words (matched against node names), the
-map ignores the question. Vtok has no equivalent of a question-driven symbol search, and that is the gap this exposes. (Caveat: my
-questions share words with the target names, which favours any keyword matcher.)
+| tree | question | graphify query | vtok find | vtok map |
+|---|---|---|---|---|
+| vtok | outputs stored and garbage-collected | 46 -- | 263 F- | 665 F- |
+| vtok | split a big file into chunks | 454 FS | 242 FS | 665 F- |
+| vtok | MCP tool dispatch | 487 FS | 264 F- | 665 F- |
+| vtok | max-lines configuration order | 453 FS | 252 FS | 665 F- |
+| vtok | alias assignment for names | 479 F. | 262 F. | 665 F. |
+| vtok | token counting | 443 FS | 257 FS | 665 FS |
+| vtok | find uses of a symbol across files | 452 FS | 221 FS | 665 FS |
+| vtok | Python encoder | 475 FS | 286 -- | 665 F- |
+| vtok | usage log and gain report | 459 FS | 206 FS | 665 FS |
+| vtok | AGENTS.md block writer | 716 FS | 119 F- | 665 FS |
+| requests | redirect handling | 398 FS | 196 FS | 638 F- |
+| requests | cookie jar | 434 FS | 202 FS | 638 FS |
+| requests | basic auth | 375 FS | 197 FS | 638 F- |
+| requests | proxy selection | 405 FS | 94 FS | 638 FS |
+| requests | connection pooling adapter | 402 FS | 194 FS | 638 FS |
+| requests | decode a JSON response | 413 FS | 185 FS | 638 F- |
+| requests | exception hierarchy | 371 FS | 81 FS | 638 FS |
+| requests | encode the request body | 425 FS | 210 FS | 638 F- |
+| | **total (tokens, files named, symbols named)** | 7687, 17/18, 16/17 | 3731, 17/18, 13/17 | 11754, 18/18, 8/17 |
+
+Summary: vtok find names the target file as often as graphify (17/18) and the target symbol less often (13/17 vs 16/17), for **less than half the
+tokens** (3731 vs 7687; 13028 with graphify at budget 700, same hits). `vtok map` names every file but few symbols (8/17) and costs the most.
+Where `vtok find` misses, the question uses words that are not in the names (`garbage-collected` -> `gc`, `tool dispatch` -> `call`,
+`block writer` -> `merge`), or is ambiguous between files (`Python encoder`: it returns `plugin.rs`, the target was `lib.rs`).
+graphify's one total miss (`garbage-collected`, 46 tokens) is the same question: it matched the word `command` only.
+The comparison is still not symmetrical: questions share words with names, which favours both keyword matchers.
+
+graphify's `GRAPH_REPORT.md` (its orientation document): 1653 tokens for the vtok tree (names 5/10 target files, 5/9 symbols), 2347 for requests (8/8, 8/8).
 
 ## 2. Who uses NAME? (10 names in `requests`)
 

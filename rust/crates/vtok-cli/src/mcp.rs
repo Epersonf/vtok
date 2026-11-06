@@ -42,6 +42,9 @@ fn tools() -> Value {
       {"name": "vtok_refs",
        "description": "Where a symbol is defined and where its name is used, across a project (Python/TypeScript/JavaScript/Rust files): one line per defining symbol and per using symbol, with file and line ranges you can pass to vtok_chunk. Matches by name, not by type, and says so when several definitions share the name. Replaces grep + reading each hit.",
        "inputSchema": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string", "description": "directory to search (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 500"}}, "required": ["name"]}},
+      {"name": "vtok_find",
+       "description": "Find where something is implemented from the words of a question or topic (e.g. \"redirect handling\", \"cookie jar\"): ranks symbols by how well their names, parents, file path and signature words match, and returns file, symbol and line range ready for vtok_chunk. Matches names, not meaning or comments, so try a few word variants. Cheaper than grep for orientation.",
+       "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 400"}}, "required": ["query"]}},
       {"name": "vtok_map",
        "description": "Overview of a project directory within a token budget: every Python/TypeScript/JavaScript/Rust file with its size and its most used symbols (line range, x N = uses in other files, ~ = several definitions share the name), plus signatures for the top few. Use it to decide where to look; then vtok_outline / vtok_chunk. A plain file listing is cheaper when file names already tell you where to look.",
        "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 700"}}}},
@@ -137,6 +140,15 @@ fn tool_refs(a: &Value) -> std::result::Result<String, String> {
     Ok(r.text)
 }
 
+fn tool_find(a: &Value) -> std::result::Result<String, String> {
+    let q = arg_str(a, "query")?;
+    let dir = a.get("path").and_then(|v| v.as_str()).unwrap_or(".");
+    let budget = a.get("max_tokens").and_then(|v| v.as_u64()).map_or(400, |n| n.clamp(100, 8000) as usize);
+    let r = crate::refs::find_symbols(q, std::path::Path::new(dir), budget);
+    crate::usage::record("find", r.raw_tokens.max(ntok(&r.text)), ntok(&r.text), q);
+    Ok(r.text)
+}
+
 fn tool_map(a: &Value) -> std::result::Result<String, String> {
     let dir = a.get("path").and_then(|v| v.as_str()).unwrap_or(".");
     let budget = a.get("max_tokens").and_then(|v| v.as_u64()).map_or(700, |n| n.clamp(200, 8000) as usize);
@@ -221,6 +233,7 @@ fn call(name: &str, args: &Value) -> std::result::Result<String, String> {
         "vtok_outline" => tool_outline(args),
         "vtok_refs" => tool_refs(args),
         "vtok_map" => tool_map(args),
+        "vtok_find" => tool_find(args),
         "vtok_run" => tool_run(args),
         "vtok_gain" => crate::usage::gain_text(args.get("days").and_then(|v| v.as_u64()).unwrap_or(30), false),
         "vtok_output" => tool_output(args),

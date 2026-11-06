@@ -145,12 +145,13 @@ file and line ranges you can hand to `vtok chunk` (MCP: `vtok_refs`). It matches
 same name in different types are not told apart, and the output says so when several definitions share the name. Names in comments
 and strings are not uses. Files that do not contain the text are never parsed. Benchmark: `bench/refs/RESULTS.md`.
 
+    vtok find WORDS... [--dir DIR]    # which symbols match a question (names, parents, path, signature words)  (MCP: vtok_find)
     vtok map [DIR] [--max-tokens N]   # every file, with its most used symbols (MCP: vtok_map)
 
 The map lists each file with its size and its most used symbols (line range, `xN` uses in other files, `~` when several files define the
 name) and adds signatures for the top few, within a token budget. Honest note: it names the right file for every benchmark question but
 so does a plain file listing at a fraction of the cost; the map pays when file names are not informative (several `lib.rs`) or when you
-want the symbol too. See `bench/map/RESULTS.md`.
+want the symbol too. See `bench/map/RESULTS.md`. `vtok find` ranks symbols by how well their name words match the words of a question (it matches names, not meaning or comments). Head to head with graphify: `bench/graph/RESULTS.md`.
 
 ## Configuration
 

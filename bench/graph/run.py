@@ -42,6 +42,7 @@ def main():
     ap.add_argument("--graphify", required=True)
     ap.add_argument("--vtok-copy", required=True, help="dir that holds the copy of rust/ with graphify-out/")
     ap.add_argument("--requests-copy", required=True)
+    ap.add_argument("--gbudget", default="700")
     a = ap.parse_args()
     G = a.graphify
     res = {"orientation": [], "callers": []}
@@ -50,10 +51,17 @@ def main():
         cp = copies[tname]
         report = (cp / "graphify-out/GRAPH_REPORT.md").read_text()
         for q, f, sym in qs:
-            out = sh([G, "query", q, "--budget", "700"], cp)
+            out = sh([G, "query", q, "--budget", a.gbudget], cp)
+            vf = sh([a.vtok, "find", q, "--dir", str(root), "--max-tokens", "700"], REPO)
+            vm = sh([a.vtok, "map", str(root), "--max-tokens", "700"], REPO)
+            pm = mapbench.parse_map(vm)
+            vfile = f in vf
+            sname = sym.split(".")[-1] if sym else None
             res["orientation"].append({"tree": tname, "question": q, "file": f, "symbol": sym, "tokens": ntok(out), "file_hit": pathlib.Path(f).name in out,
-                                       "symbol_hit": (sym.split(".")[-1] in out) if sym else None, "report_has_file": pathlib.Path(f).name in report,
-                                       "report_has_symbol": (sym.split(".")[-1] in report) if sym else None})
+                                       "symbol_hit": (sname in out) if sym else None, "report_has_file": pathlib.Path(f).name in report,
+                                       "report_has_symbol": (sname in report) if sym else None,
+                                       "find_tokens": ntok(vf), "find_file_hit": vfile, "find_symbol_hit": (any(l.startswith(f + " ") and sname in l for l in vf.splitlines())) if sym else None,
+                                       "map_tokens": ntok(vm), "map_file_hit": f in pm, "map_symbol_hit": (sname in pm.get(f, "")) if sym else None})
         res["orientation"].append({"tree": tname, "question": "(report)", "report_tokens": ntok(report)})
     names = ["Session", "prepare_request", "merge_setting", "HTTPAdapter", "PreparedRequest", "urlparse", "get_adapter", "RequestException", "resolve_redirects", "select_proxy"]
     rcp = copies["requests"]
@@ -77,6 +85,17 @@ def main():
         syms = [r for r in rows if r["symbol"]]
         print(f"{tname}: {len(rows)} q; query output median {sorted(r['tokens'] for r in rows)[len(rows)//2]} tok; file named {sum(r['file_hit'] for r in rows)}/{len(rows)}, symbol named {sum(r['symbol_hit'] for r in syms)}/{len(syms)}; "
               f"GRAPH_REPORT.md {rep['report_tokens']} tok names file {sum(r['report_has_file'] for r in rows)}/{len(rows)}, symbol {sum(r['report_has_symbol'] for r in syms)}/{len(syms)}")
+    print("\n== per question: graphify query | vtok find | vtok map (budget 700; F = target file named, S = target symbol named) ==")
+    print("%-9s %-38s %-9s %-9s %-9s" % ("tree", "question", "graphify", "vtok find", "vtok map"))
+    mark = lambda tok, f, sy: "%4d %s%s" % (tok, "F" if f else "-", "S" if sy else ("-" if sy is False else "."))
+    for r in res["orientation"]:
+        if r["question"] == "(report)": continue
+        print("%-9s %-38s %-9s %-9s %-9s" % (r["tree"], r["question"][:38], mark(r["tokens"], r["file_hit"], r["symbol_hit"]), mark(r["find_tokens"], r["find_file_hit"], r["find_symbol_hit"]), mark(r["map_tokens"], r["map_file_hit"], r["map_symbol_hit"])))
+    allq = [r for r in res["orientation"] if r["question"] != "(report)"]
+    sq = [r for r in allq if r["symbol"]]
+    print("%-48s %-9s %-9s %-9s" % ("TOTAL: tokens | files named | symbols named", "%d|%d|%d" % (sum(r["tokens"] for r in allq), sum(r["file_hit"] for r in allq), sum(r["symbol_hit"] for r in sq)),
+          "%d|%d|%d" % (sum(r["find_tokens"] for r in allq), sum(r["find_file_hit"] for r in allq), sum(bool(r["find_symbol_hit"]) for r in sq)),
+          "%d|%d|%d" % (sum(r["map_tokens"] for r in allq), sum(r["map_file_hit"] for r in allq), sum(bool(r["map_symbol_hit"]) for r in sq))))
     print("== callers (requests) ==")
     print("%-18s %6s %9s %9s %9s %9s" % ("name", "truth", "gfy tok", "vtok tok", "gfy rec", "vtok rec"))
     for r in res["callers"]:

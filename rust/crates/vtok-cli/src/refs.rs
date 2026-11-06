@@ -213,6 +213,98 @@ pub fn run_map(args: &[String]) -> i32 {
     0
 }
 
+const STOP: &[&str] = &["where", "is", "are", "the", "a", "an", "of", "to", "in", "on", "for", "and", "or", "how", "what", "which", "who", "does", "do", "handled", "handle", "handling", "code", "that", "this", "with", "from", "by", "used", "use", "find", "implemented", "implementation", "logic"];
+
+/// `fooBar_baz2` -> ["foo", "bar", "baz", "2"], lowercased.
+fn name_tokens(s: &str) -> Vec<String> {
+    let mut out: Vec<String> = vec![];
+    let mut cur = String::new();
+    let mut prev_lower = false;
+    for c in s.chars() {
+        if c.is_alphanumeric() {
+            if c.is_uppercase() && prev_lower && !cur.is_empty() { out.push(std::mem::take(&mut cur)); }
+            prev_lower = c.is_lowercase() || c.is_ascii_digit();
+            cur.extend(c.to_lowercase());
+        } else if !cur.is_empty() { out.push(std::mem::take(&mut cur)); prev_lower = false; }
+    }
+    if !cur.is_empty() { out.push(cur); }
+    out
+}
+
+/// How well query word `w` matches name token `t`: exact 3, one is a prefix of the other (redirect/redirects, auth/authentication) 2.
+fn word_match(w: &str, t: &str) -> f64 {
+    if w == t { 3.0 } else if w.len() >= 4 && t.len() >= 3 && (t.starts_with(w) || w.starts_with(t)) { 2.0 }
+    else if w.len() >= 5 && t.len() >= 5 && w[..5] == t[..5] { 1.5 } else { 0.0 }
+}
+
+/// Question-driven symbol search: the words of the question are matched against symbol names (split into words), their parents
+/// and the file path. Returns ranked `file symbol L-range` lines ready for `vtok chunk`.
+pub fn find_symbols(query: &str, root: &Path, budget: usize) -> Report {
+    let words: Vec<String> = name_tokens(query).into_iter().filter(|w| !STOP.contains(&w.as_str()) && w.len() > 1).collect();
+    let mut files = vec![];
+    walk(root, &mut files);
+    struct Cand { rel: String, id: String, a: usize, b: usize, name_t: Vec<String>, path_t: Vec<String>, sig_t: Vec<String> }
+    let mut cands: Vec<Cand> = vec![];
+    let mut raw_tokens = 0;
+    for f in &files {
+        let Ok(src) = std::fs::read_to_string(f) else { continue };
+        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string();
+        let Ok(l) = language_for_path(&rel) else { continue };
+        let Ok(syms) = symbols(l.name(), &src) else { continue };
+        raw_tokens += ntok(&src);
+        let text: Vec<&str> = src.lines().collect();
+        let path_t = name_tokens(&rel);
+        for (id, a, b) in syms {
+            if id == "use" || id.starts_with("use#") || id.starts_with("import") || id.starts_with("tests.") || id == "code" || id.starts_with("code#") { continue; }
+            let sig = text.get(a - 1).map_or(String::new(), |t| t.trim().to_string());
+            let id = id.split('#').next().unwrap_or(&id).to_string();
+            cands.push(Cand { name_t: name_tokens(&id), sig_t: name_tokens(&sig), path_t: path_t.clone(), rel: rel.clone(), id, a, b });
+        }
+    }
+    // rarer words weigh more: df = symbols whose name matches the word
+    let n = cands.len().max(1) as f64;
+    let weights: Vec<f64> = words.iter().map(|w| {
+        let df = cands.iter().filter(|c| c.name_t.iter().any(|t| word_match(w, t) > 0.0)).count().max(1) as f64;
+        1.0 + (n / df).ln().min(5.0)
+    }).collect();
+    let mut scored: Vec<(f64, &Cand)> = cands.iter().filter_map(|c| {
+        let mut sc = 0.0;
+        let mut hit_words = 0;
+        for (w, wt) in words.iter().zip(&weights) {
+            let by_name = c.name_t.iter().map(|t| word_match(w, t)).fold(0.0, f64::max);
+            let by_path = c.path_t.iter().map(|t| word_match(w, t)).fold(0.0, f64::max) * 0.5;
+            let by_sig = c.sig_t.iter().map(|t| word_match(w, t)).fold(0.0, f64::max) * 0.25;
+            let m = by_name.max(by_path).max(by_sig);
+            if m > 0.0 { hit_words += 1; sc += m * wt; }
+        }
+        // matching several words is worth more than one strong word
+        (hit_words > 0).then(|| (sc * (1.0 + 0.5 * (hit_words as f64 - 1.0)), c))
+    }).collect();
+    scored.sort_by(|x, y| y.0.partial_cmp(&x.0).unwrap_or(std::cmp::Ordering::Equal).then_with(|| x.1.rel.cmp(&y.1.rel)).then(x.1.a.cmp(&y.1.a)));
+    let mut out = format!("# find \"{}\": words {:?}; {} symbols matched (by name words, not by meaning)\n", query, words, scored.len());
+    let mut shown = 0;
+    for (_, c) in scored.iter().take(15) {
+        let line = format!("{} {} {}\n", c.rel, c.id, if c.a == c.b { format!("L{}", c.a) } else { format!("L{}-{}", c.a, c.b) });
+        if ntok(&(out.clone() + &line)) > budget { break; }
+        out.push_str(&line);
+        shown += 1;
+    }
+    if shown == 0 { out.push_str("# nothing matches: try other words (names are matched, not comments or meaning)\n"); }
+    Report { text: out, raw_tokens }
+}
+
+pub fn run_find(args: &[String]) -> i32 {
+    let budget = args.iter().position(|a| a == "--max-tokens").and_then(|i| args.get(i + 1)).and_then(|v| v.parse().ok()).unwrap_or(400);
+    let dir_flag = args.iter().position(|a| a == "--dir").and_then(|i| args.get(i + 1)).map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
+    let q: Vec<&String> = { let mut skip = false; args.iter().filter(|a| { if skip { skip = false; return false; } if *a == "--max-tokens" || *a == "--dir" { skip = true; return false; } !a.starts_with("--") }).collect() };
+    if q.is_empty() { eprintln!("usage: vtok find WORDS... [--dir DIR] [--max-tokens N]"); return 2; }
+    let query = q.iter().map(|s| s.as_str()).collect::<Vec<_>>().join(" ");
+    let r = find_symbols(&query, &dir_flag, budget);
+    print!("{}", r.text);
+    crate::usage::record("find", r.raw_tokens.max(ntok(&r.text)), ntok(&r.text), &query);
+    0
+}
+
 pub fn run(args: &[String]) -> i32 {
     let mut pos = args.iter().filter(|a| !a.starts_with("--"));
     let Some(name) = pos.next() else { eprintln!("usage: vtok refs NAME [DIR] [--max-tokens N]"); return 2 };
@@ -263,6 +355,23 @@ mod tests {
         assert!(m.contains("pkg/") && m.contains("core.py") && m.contains("a.py") && m.contains("b.py"), "{m}");
         let core = m.lines().find(|l| l.contains("core.py")).unwrap();
         assert!(core.contains("shared") && core.contains("x3"), "shared is used 3 times elsewhere: {core}");
+        std::fs::remove_dir_all(&d).ok();
+    }
+
+    #[test]
+    fn find_ranks_by_name_words_and_path() {
+        let d = std::env::temp_dir().join(format!("vtok-find-{}", std::process::id()));
+        std::fs::create_dir_all(&d).unwrap();
+        std::fs::write(d.join("cookies.py"), "class CookieJar:\n    def get(self):\n        return 1\n\ndef cookiejar_from_dict(d):\n    return d\n").unwrap();
+        std::fs::write(d.join("auth.py"), "def basic_auth_str(u):\n    return u\n\ndef unrelated():\n    return 2\n").unwrap();
+        let r = find_symbols("where is the cookie jar built from a dict", &d, 300).text;
+        let first = r.lines().nth(1).unwrap();
+        assert!(first.contains("cookiejar_from_dict") || first.contains("CookieJar"), "{r}");
+        assert!(!r.contains("unrelated"), "{r}");
+        let a = find_symbols("basic auth", &d, 300).text;
+        assert!(a.lines().nth(1).unwrap().contains("basic_auth_str"), "{a}");
+        assert!(find_symbols("zzzz", &d, 300).text.contains("nothing matches"));
+        assert_eq!(name_tokens("fooBar_baz2"), vec!["foo", "bar", "baz2"]);
         std::fs::remove_dir_all(&d).ok();
     }
 }

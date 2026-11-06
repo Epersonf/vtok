@@ -1,0 +1,401 @@
+[
+ {
+  "task": "pip: bytes to text",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.043178299999999996,
+  "turns": 2,
+  "answer": "`_internal/utils/misc.py:format_size`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44431,
+  "tokens_out": 135,
+  "fresh_in": 9588
+ },
+ {
+  "task": "pip: bytes to text",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.044732299999999996,
+  "turns": 2,
+  "answer": "`_internal/utils/misc.py:format_size`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44712,
+  "tokens_out": 178,
+  "fresh_in": 9869
+ },
+ {
+  "task": "pip: bytes to text",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0590938,
+  "turns": 5,
+  "answer": "_internal/utils/misc.py:format_size",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 97672,
+  "tokens_out": 429,
+  "fresh_in": 11554
+ },
+ {
+  "task": "pip: bytes to text",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.058842900000000004,
+  "turns": 5,
+  "answer": "`_internal/utils/misc.py:format_size`",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 97609,
+  "tokens_out": 410,
+  "fresh_in": 11540
+ },
+ {
+  "task": "pip: download cmd",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0417072,
+  "turns": 2,
+  "answer": "_internal/commands/download.py:DownloadCommand",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 43895,
+  "tokens_out": 198,
+  "fresh_in": 9063
+ },
+ {
+  "task": "pip: download cmd",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.055200500000000007,
+  "turns": 4,
+  "answer": "`_internal/commands/download.py:DownloadCommand`",
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 77904,
+  "tokens_out": 313,
+  "fresh_in": 11359
+ },
+ {
+  "task": "pip: download cmd",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0413632,
+  "turns": 2,
+  "answer": "`_internal/commands/download.py:DownloadCommand`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 43939,
+  "tokens_out": 146,
+  "fresh_in": 9107
+ },
+ {
+  "task": "pip: parse req line",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.051163299999999995,
+  "turns": 4,
+  "answer": "`_internal/req/constructors.py:parse_req_from_line`",
+  "tools": {
+   "Grep": 2,
+   "Glob": 1
+  },
+  "tokens_in": 89119,
+  "tokens_out": 379,
+  "fresh_in": 9866
+ },
+ {
+  "task": "pip: download cmd",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0526262,
+  "turns": 4,
+  "answer": "_internal/commands/download.py:DownloadCommand",
+  "tools": {
+   "ToolSearch": 1,
+   "Bash": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 58713,
+  "tokens_out": 258,
+  "fresh_in": 11331
+ },
+ {
+  "task": "pip: parse req line",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.051157499999999995,
+  "turns": 4,
+  "answer": "_internal/req/constructors.py:parse_req_from_line",
+  "tools": {
+   "Grep": 2,
+   "Glob": 1
+  },
+  "tokens_in": 89122,
+  "tokens_out": 378,
+  "fresh_in": 9867
+ },
+ {
+  "task": "pip: parse req line",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.060023599999999996,
+  "turns": 5,
+  "answer": "`_internal/req/constructors.py:parse_req_from_line`",
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_outline": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 98421,
+  "tokens_out": 440,
+  "fresh_in": 11745
+ },
+ {
+  "task": "pip: callers errorhandler",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0476046,
+  "turns": 3,
+  "answer": "rmtree",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 66834,
+  "tokens_out": 237,
+  "fresh_in": 9888
+ },
+ {
+  "task": "pip: parse req line",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0603056,
+  "turns": 5,
+  "answer": "_internal/req/constructors.py:parse_req_from_line",
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_outline": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 98494,
+  "tokens_out": 439,
+  "fresh_in": 11818
+ },
+ {
+  "task": "pip: callers errorhandler",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0542763,
+  "turns": 4,
+  "answer": "rmtree",
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1
+  },
+  "tokens_in": 77669,
+  "tokens_out": 345,
+  "fresh_in": 11046
+ },
+ {
+  "task": "pip: callers errorhandler",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0482148,
+  "turns": 3,
+  "answer": "rmtree",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 66953,
+  "tokens_out": 259,
+  "fresh_in": 9985
+ },
+ {
+  "task": "pip: callers errorhandler",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0538863,
+  "turns": 4,
+  "answer": "rmtree",
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1
+  },
+  "tokens_in": 77669,
+  "tokens_out": 306,
+  "fresh_in": 11046
+ },
+ {
+  "task": "pip: where is is_url",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.047536300000000004,
+  "turns": 3,
+  "answer": "`_internal/vcs/versioncontrol.py`: `False`\n\nAn empty string has no \":\", so `get_url_scheme` returns `None`. `is_url` then returns `False`.",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 67039,
+  "tokens_out": 264,
+  "fresh_in": 9796
+ },
+ {
+  "task": "pip: where is is_url",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0475263,
+  "turns": 3,
+  "answer": "`_internal/vcs/versioncontrol.py`: `False`. An empty string has no \":\", so `get_url_scheme` returns `None` and `is_url` returns `False`.",
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 67039,
+  "tokens_out": 263,
+  "fresh_in": 9796
+ },
+ {
+  "task": "pip: where is is_url",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.059188000000000004,
+  "turns": 5,
+  "answer": "`pip/_internal/vcs/versioncontrol.py: False`\n\nI didn't open `get_url_scheme`. I'm relying on my memory of pip's code, where it returns `None` when the string ha",
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_refs": 1,
+   "mcp__vtok__vtok_chunk": 1
+  },
+  "tokens_in": 79290,
+  "tokens_out": 600,
+  "fresh_in": 11610
+ },
+ {
+  "task": "pip: edit format_size",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0482898,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66871,
+  "tokens_out": 389,
+  "fresh_in": 9673
+ },
+ {
+  "task": "pip: where is is_url",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0730766,
+  "turns": 8,
+  "answer": "`_internal/vcs/versioncontrol.py: False`\n\nAn empty string has no \":\", so `get_url_scheme` returns `None` and `is_url` returns `False`.",
+  "tools": {
+   "Grep": 1,
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 2,
+   "mcp__vtok__vtok_chunk": 2
+  },
+  "tokens_in": 160470,
+  "tokens_out": 869,
+  "fresh_in": 12404
+ },
+ {
+  "task": "pip: edit format_size",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0483431,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66897,
+  "tokens_out": 389,
+  "fresh_in": 9686
+ },
+ {
+  "task": "pip: edit format_size",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.06304209999999999,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 98986,
+  "tokens_out": 705,
+  "fresh_in": 11825
+ },
+ {
+  "task": "pip: edit format_size",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0597234,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 79522,
+  "tokens_out": 613,
+  "fresh_in": 11708
+ }
+]

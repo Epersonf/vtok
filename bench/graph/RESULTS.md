@@ -38,6 +38,8 @@ Where `vtok find` misses, the question uses words that are not in the names (`ga
 graphify's one total miss (`garbage-collected`, 46 tokens) is the same question: it matched the word `command` only.
 The comparison is still not symmetrical: questions share words with names, which favours both keyword matchers.
 
+Tried and dropped: appending the names of every symbol of the two best-matching files to `vtok find` (a fallback to the file outline). Tokens went from 3731 to 9551 and symbols named stayed 13/17: the misses are questions whose words are in no name, and the best-scored files were not the right ones. Keeping `find` as it is.
+
 graphify's `GRAPH_REPORT.md` (its orientation document): 1653 tokens for the vtok tree (names 5/10 target files, 5/9 symbols), 2347 for requests (8/8, 8/8).
 
 ## 2. Who uses NAME? (10 names in `requests`)

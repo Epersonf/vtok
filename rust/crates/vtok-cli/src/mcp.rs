@@ -42,6 +42,9 @@ fn tools() -> Value {
       {"name": "vtok_refs",
        "description": "Where a symbol is defined and where its name is used, across a project (Python/TypeScript/JavaScript/Rust files): one line per defining symbol and per using symbol, with file and line ranges you can pass to vtok_chunk. Matches by name, not by type, and says so when several definitions share the name. Replaces grep + reading each hit.",
        "inputSchema": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string", "description": "directory to search (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 500"}}, "required": ["name"]}},
+      {"name": "vtok_map",
+       "description": "Overview of a project directory within a token budget: every Python/TypeScript/JavaScript/Rust file with its size and its most used symbols (line range, x N = uses in other files, ~ = several definitions share the name), plus signatures for the top few. Use it to decide where to look; then vtok_outline / vtok_chunk. A plain file listing is cheaper when file names already tell you where to look.",
+       "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 700"}}}},
       {"name": "vtok_output",
        "description": "Read back part of the full output of a command run with `vtok run -- <command>` (id from its header). Give grep (text, `a|b` for alternatives, case-insensitive), lines (A-B), tail or head; default is the last 40 lines.",
        "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}, "grep": {"type": "string"}, "lines": {"type": "string", "description": "A-B (1-based)"}, "tail": {"type": "integer"}, "head": {"type": "integer"}, "context": {"type": "integer", "description": "lines around each grep hit (default 2)"}, "max_tokens": {"type": "integer"}}, "required": ["id"]}},
@@ -134,6 +137,14 @@ fn tool_refs(a: &Value) -> std::result::Result<String, String> {
     Ok(r.text)
 }
 
+fn tool_map(a: &Value) -> std::result::Result<String, String> {
+    let dir = a.get("path").and_then(|v| v.as_str()).unwrap_or(".");
+    let budget = a.get("max_tokens").and_then(|v| v.as_u64()).map_or(700, |n| n.clamp(200, 8000) as usize);
+    let r = crate::refs::map(std::path::Path::new(dir), budget);
+    crate::usage::record("map", r.raw_tokens.max(ntok(&r.text)), ntok(&r.text), dir);
+    Ok(r.text)
+}
+
 fn tool_outline(a: &Value) -> std::result::Result<String, String> {
     let path = arg_str(a, "path")?;
     let (src, lang, _) = read_source(path)?;
@@ -209,6 +220,7 @@ fn call(name: &str, args: &Value) -> std::result::Result<String, String> {
         "vtok_stats" => tool_stats(args),
         "vtok_outline" => tool_outline(args),
         "vtok_refs" => tool_refs(args),
+        "vtok_map" => tool_map(args),
         "vtok_run" => tool_run(args),
         "vtok_gain" => crate::usage::gain_text(args.get("days").and_then(|v| v.as_u64()).unwrap_or(30), false),
         "vtok_output" => tool_output(args),

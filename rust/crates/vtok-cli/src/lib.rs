@@ -20,7 +20,7 @@ const USAGE: &str = "usage: vtok <command> ...
   config [get max-lines | set max-lines N [--local] | unset max-lines [--local]]   persistent split threshold
   run [--max-tokens N] -- COMMAND [ARGS...]      run a command, show a compact view of its output (full output kept)
   output ID [--grep A|B] [--lines A-B] [--tail N] [--head N]   read back part of a stored output
-  refs NAME [DIR] [--max-tokens N]               where a symbol is defined and used (by name, whole project)
+  map [DIR] [--max-tokens N]                     project overview: most used symbols per file, with signatures\n  refs NAME [DIR] [--max-tokens N]               where a symbol is defined and used (by name, whole project)
   init [--write FILE]                            usage note for any agent (AGENTS.md etc.), as a fenced block
   gain [--days N] [--json]                       tokens saved by Vtok's tools (local usage log)
   outline FILE [--lang L]                        names and line ranges of a file (cheapest overview)
@@ -158,6 +158,7 @@ pub fn run(args: &[String]) -> i32 {
         "gain" => usage::gain(rest),
         "init" => init::run(rest),
         "refs" => refs::run(rest),
+        "map" => refs::run_map(rest),
         "output" => shell::output_cmd(rest),
         "outline" => {
             let pos = positional(rest);

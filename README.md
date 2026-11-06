@@ -145,6 +145,13 @@ file and line ranges you can hand to `vtok chunk` (MCP: `vtok_refs`). It matches
 same name in different types are not told apart, and the output says so when several definitions share the name. Names in comments
 and strings are not uses. Files that do not contain the text are never parsed. Benchmark: `bench/refs/RESULTS.md`.
 
+    vtok map [DIR] [--max-tokens N]   # every file, with its most used symbols (MCP: vtok_map)
+
+The map lists each file with its size and its most used symbols (line range, `xN` uses in other files, `~` when several files define the
+name) and adds signatures for the top few, within a token budget. Honest note: it names the right file for every benchmark question but
+so does a plain file listing at a fraction of the cost; the map pays when file names are not informative (several `lib.rs`) or when you
+want the symbol too. See `bench/map/RESULTS.md`.
+
 ## Configuration
 
 The size above which a file is split into chunks (default 150 lines) is configurable:
@@ -160,7 +167,8 @@ Order of precedence: `--max-lines` / the MCP `max_lines` argument, `VTOK_MAX_LIN
 
 - Docstrings and comments are dropped in the Vtok view; `apply` preserves them for untouched chunks, and
   Python docstrings are re-attached inside edited chunks (comments inside an edited chunk are lost).
-- TypeScript/JavaScript: semicolon-less (ASI) sources are supported; JSX/TSX supported (JSX text whitespace is normalized per JSX semantics), no Flow; multi-line template literals become `\n` escapes (error if tagged); decoded output is
+- TypeScript/JavaScript: semicolon-less (ASI) sources are supported; JSX/TSX supported (JSX text whitespace is normalized per JSX semantics), no Flow; multi-line template literals become `
+` escapes (error if tagged); decoded output is
   minified (format it afterwards).
 - Rust: tree-sitter-rust gaps make ~0.6% of crates.io files unparseable (attributes in struct patterns, `where` on unit structs, `const default`, exotic macro_rules tokens); vtok refuses them.
 - Python: decoded output goes through `ast.unparse` (canonical formatting).

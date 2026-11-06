@@ -1,0 +1,240 @@
+[
+ {
+  "tree": "vtok",
+  "question": "outputs stored and garbage-collected",
+  "file": "crates/vtok-cli/src/shell.rs",
+  "symbol": "gc",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": false
+ },
+ {
+  "tree": "vtok",
+  "question": "split a big file into chunks",
+  "file": "crates/vtok-core/src/split.rs",
+  "symbol": "plan_chunks",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "vtok",
+  "question": "MCP tool dispatch",
+  "file": "crates/vtok-cli/src/mcp.rs",
+  "symbol": "call",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": false
+ },
+ {
+  "tree": "vtok",
+  "question": "max-lines configuration order",
+  "file": "crates/vtok-cli/src/config.rs",
+  "symbol": "max_lines",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "vtok",
+  "question": "alias assignment for names",
+  "file": "crates/vtok-core/src/aliasing.rs",
+  "symbol": null,
+  "file@300": true,
+  "symbol@300": null,
+  "file@700": true,
+  "symbol@700": null,
+  "file@1500": true,
+  "symbol@1500": null
+ },
+ {
+  "tree": "vtok",
+  "question": "token counting",
+  "file": "crates/vtok-core/src/tokens.rs",
+  "symbol": "ntok",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "vtok",
+  "question": "find uses of a symbol across files",
+  "file": "crates/vtok-cli/src/refs.rs",
+  "symbol": "find",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "vtok",
+  "question": "Python encoder",
+  "file": "crates/vtok-py/src/lib.rs",
+  "symbol": "encode",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": false
+ },
+ {
+  "tree": "vtok",
+  "question": "usage log and gain report",
+  "file": "crates/vtok-cli/src/usage.rs",
+  "symbol": "record",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "vtok",
+  "question": "AGENTS.md block writer",
+  "file": "crates/vtok-cli/src/init.rs",
+  "symbol": "merge",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "vtok",
+  "question": "(costs)",
+  "listing_tokens": 258,
+  "all_outlines_tokens": 3544,
+  "map_tokens": {
+   "300": 289,
+   "700": 665,
+   "1500": 1475
+  }
+ },
+ {
+  "tree": "requests",
+  "question": "redirect handling",
+  "file": "sessions.py",
+  "symbol": "SessionRedirectMixin.resolve_redirects",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "cookie jar",
+  "file": "cookies.py",
+  "symbol": "RequestsCookieJar",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "basic auth",
+  "file": "auth.py",
+  "symbol": "HTTPBasicAuth",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "proxy selection",
+  "file": "utils.py",
+  "symbol": "select_proxy",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "connection pooling adapter",
+  "file": "adapters.py",
+  "symbol": "HTTPAdapter",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "decode a JSON response",
+  "file": "models.py",
+  "symbol": "Response.json",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "exception hierarchy",
+  "file": "exceptions.py",
+  "symbol": "RequestException",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": true,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "encode the request body",
+  "file": "models.py",
+  "symbol": "PreparedRequest.prepare_body",
+  "file@300": true,
+  "symbol@300": false,
+  "file@700": true,
+  "symbol@700": false,
+  "file@1500": true,
+  "symbol@1500": true
+ },
+ {
+  "tree": "requests",
+  "question": "(costs)",
+  "listing_tokens": 64,
+  "all_outlines_tokens": 3779,
+  "map_tokens": {
+   "300": 171,
+   "700": 638,
+   "1500": 1499
+  }
+ }
+]

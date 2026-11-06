@@ -1,0 +1,8 @@
+[package]
+name = "vtok-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+tiktoken-rs = "0.7"

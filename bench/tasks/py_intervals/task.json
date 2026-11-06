@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "intervals.py",
+ "cmd": "py",
+ "instruction": "`merge_intervals(intervals)` takes a list of (start, end) tuples and must return the merged, sorted list of tuples. It is wrong for unsorted input and does not merge intervals that merely touch (e.g. (1,2),(2,3) -> (1,3)). Fix it. It must not mutate its input."
+}

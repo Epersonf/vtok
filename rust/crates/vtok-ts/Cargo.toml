@@ -1,0 +1,10 @@
+[package]
+name = "vtok-ts"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+vtok-core = { path = "../vtok-core" }
+tree-sitter = "0.25"
+tree-sitter-typescript = "0.23"

@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "tally.py",
+ "cmd": "py",
+ "instruction": "`word_counts(text)` counts words case-sensitively and keeps punctuation attached. Fix it: lowercase everything and strip leading/trailing punctuation (characters in string.punctuation) from each word; drop words that become empty. Then add `top_n(text, n)` returning a list of (word, count) tuples sorted by count descending, ties broken alphabetically, at most n items (n <= 0 gives [])."
+}

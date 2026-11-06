@@ -1,0 +1,8 @@
+```vtok
+m re
+f slugify(text,max_len=None)
+ result=re.sub(r'[^a-z0-9]+','-',text.lower()).strip('-')
+ ?max_len is not None
+  result=result[:max_len].rstrip('-')
+ r result
+```

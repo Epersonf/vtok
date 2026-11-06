@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "stack.py",
+ "cmd": "py",
+ "instruction": "Add to class `Stack`: a method `peek()` returning the top item without removing it (raise IndexError('empty') if empty), a method `is_empty()` returning a bool, and make `pop()` also raise IndexError('empty') when empty. Add `__len__` too."
+}

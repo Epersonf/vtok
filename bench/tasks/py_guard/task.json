@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "orders.py",
+ "cmd": "py",
+ "instruction": "Refactor `ship_cost(order)` to use guard clauses / early returns (no `else` branches, at most one level of nesting) and fix this bug: an order with a negative or zero quantity must raise ValueError (right now it returns 0). Behaviour must otherwise stay identical."
+}

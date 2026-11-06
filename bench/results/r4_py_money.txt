@@ -1,0 +1,24 @@
+```vtok
+class Money:
+ def __init__(self,a,currency):
+  self.a=a;self.currency=currency
+ def __eq__(self,other):
+  return self.a==other.a and self.currency==other.currency
+ def __repr__(self):
+  return f'Money({self.a}, {self.currency!r})'
+ def format(self):
+  return f'{self.a // 100}.{self.a % 100:02d} {self.currency}'
+ def __add__(self,other):
+  if self.currency!=other.currency:raise ValueError(f'currency mismatch: {self.currency} vs {other.currency}')
+  return Money(self.a+other.a,self.currency)
+ @staticmethod
+ def parse(text):
+  parts=text.split()
+  if len(parts)!=2:raise ValueError(f'malformed money: {text!r}')
+  amount,currency=parts
+  whole,dot,frac=amount.partition('.')
+  if not whole.isdecimal() or (dot and (len(frac)!=2 or not frac.isdecimal())) or not currency.isalpha() or len(currency)!=3:raise ValueError(f'malformed money: {text!r}')
+  return Money(int(whole)*100+int(frac or 0),currency.upper())
+def zero(currency):
+ return Money(0,currency)
+```

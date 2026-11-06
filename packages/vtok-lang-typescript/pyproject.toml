@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+license = "MIT"
+name = "vtok-lang-typescript"
+version = "0.1.0"
+description = "Vtok language plugin: TypeScript (tree-sitter)"
+requires-python = ">=3.10"
+dependencies = ["vtok>=0.1.0", "tree-sitter>=0.23", "tree-sitter-typescript>=0.23"]
+
+[project.entry-points."vtok.languages"]
+typescript = "vtok_lang_typescript:TypeScript"
+
+[tool.setuptools.packages.find]
+where = ["src"]

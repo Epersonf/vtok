@@ -1,0 +1,6 @@
+{
+ "lang": "typescript",
+ "target": "emitter.ts",
+ "cmd": "node",
+ "instruction": "Class `Emitter` needs: `once(event, fn)` (listener runs at most once, then is removed), `off(event, fn)` returning true if a listener was removed, and `emit` must not break if a listener removes itself while emitting (iterate over a copy). Add `listenerCount(event): number`. Keep `on` and `emit` signatures; `emit` returns whether any listener ran."
+}

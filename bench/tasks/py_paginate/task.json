@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "pager.py",
+ "cmd": "py",
+ "instruction": "`paginate(items, page, size)` must return the items of the 1-based page `page` (page 1 = first `size` items). It currently returns the wrong slice. Also raise ValueError if page < 1 or size < 1."
+}

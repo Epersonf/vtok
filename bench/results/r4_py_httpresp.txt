@@ -1,0 +1,10 @@
+```vtok
+MESSAGES={200:'$1',404:'$2',429:'$3',500:'$4'}
+def build_response(code,detail=None,retry_after=None):
+ if code not in MESSAGES:raise KeyError(code)
+ message=MESSAGES[code]
+ if detail is not None:message+=': '+detail
+ result={'status':code,'ok':code<400,'message':message}
+ if code==429 and retry_after is not None:result['retry_after']=retry_after
+ return result
+```

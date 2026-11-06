@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+license = "MIT"
+name = "vtok-lang-python"
+version = "0.1.0"
+description = "Vtok language plugin: Python (stdlib ast)"
+requires-python = ">=3.10"
+dependencies = ["vtok>=0.1.0"]
+
+[project.entry-points."vtok.languages"]
+python = "vtok_lang_python:Python"
+
+[tool.setuptools.packages.find]
+where = ["src"]

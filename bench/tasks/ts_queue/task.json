@@ -1,0 +1,6 @@
+{
+ "lang": "typescript",
+ "target": "queue.ts",
+ "cmd": "node",
+ "instruction": "Class `Queue<T>` only has `enqueue`. Add: `dequeue(): T | undefined` (FIFO, undefined when empty), `peek(): T | undefined`, a getter `size`, `isEmpty(): boolean`, and make the queue iterable (`[Symbol.iterator]`) yielding items front to back without consuming them."
+}

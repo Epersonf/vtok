@@ -1,0 +1,41 @@
+```vtok
+f parse_kv(text)
+ out={}
+ i=0
+ n=len(text)
+ w i<n
+  j=i
+  w j<n&text[j]!='='&text[j]!=';'
+   j+=1
+  ?j>=n|text[j]==';'
+   seg=text[i:j].strip()
+   ?seg
+    R ValueError(seg)
+   i=j+1
+   K
+  key=text[i:j].strip()
+  j+=1
+  k=j
+  w k<n&text[k].isspace()
+   k+=1
+  ?k<n&text[k]=='"'
+   end=text.find('"',k+1)
+   ?end<0
+    value=text[k+1:]
+    i=n
+   E
+    value=text[k+1:end]
+    nxt=text.find(';',end+1)
+    ?nxt<0
+     i=n
+    E
+     i=nxt+1
+  E
+   nxt=text.find(';',j)
+   ?nxt<0
+    nxt=n
+   value=text[j:nxt].strip()
+   i=nxt+1
+  out[key]=value
+ r out
+```

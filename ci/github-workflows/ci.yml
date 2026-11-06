@@ -1,0 +1,38 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --release --manifest-path rust/Cargo.toml
+  npm:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: npm/vtok } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npm run build
+      - run: npm test
+  pip:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: pip } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m venv .venv && . .venv/bin/activate && pip install maturin pytest && maturin develop --release && pytest -q tests
+  reference-python:
+    # the pure-Python reference implementation (cross-check oracle for the Rust core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pytest -e packages/vtok -e packages/vtok-lang-python -e packages/vtok-lang-typescript
+      - run: python -m pytest -q packages/*/tests

@@ -1,0 +1,17 @@
+[package]
+name = "vtok-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "vtok_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "vtok"
+path = "src/main.rs"
+
+[dependencies]
+vtok-api = { path = "../vtok-api" }
+serde_json = "1"

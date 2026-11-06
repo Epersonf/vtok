@@ -1,0 +1,6 @@
+{
+ "lang": "typescript",
+ "target": "group.ts",
+ "cmd": "node",
+ "instruction": "Add and export: `groupBy<T>(arr: T[], key: (x: T) => string): Record<string, T[]>` (keeps input order inside each group), `countBy<T>(arr: T[], key: (x: T) => string): Record<string, number>`, and `partition<T>(arr: T[], pred: (x: T) => boolean): [T[], T[]]` (matching first). Keep `sum` unchanged."
+}

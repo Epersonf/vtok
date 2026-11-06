@@ -1,0 +1,26 @@
+{
+  "name": "vtok",
+  "version": "0.1.0",
+  "description": "Compact code notation that cuts LLM context tokens. Native Rust core (Python and TypeScript).",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": { "vtok": "bin/vtok.js" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/Epersonf/vtok.git" },
+  "keywords": ["llm", "tokens", "context", "compression", "code", "transpiler"],
+  "files": ["index.js", "index.d.ts", "bin", "*.node"],
+  "engines": { "node": ">= 16" },
+  "napi": {
+    "binaryName": "vtok",
+    "targets": [
+      "x86_64-unknown-linux-gnu", "aarch64-unknown-linux-gnu",
+      "x86_64-apple-darwin", "aarch64-apple-darwin",
+      "x86_64-pc-windows-msvc", "aarch64-pc-windows-msvc"
+    ]
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "test": "node --test test/api.test.js"
+  },
+  "devDependencies": { "@napi-rs/cli": "^3" }
+}

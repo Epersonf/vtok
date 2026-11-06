@@ -1,0 +1,30 @@
+```vtok
+X f groupBy<T>(arr:T[],key:(a0:T)=>string):Record<string,T[]>
+ k result:Record<string,T[]>={}
+ L k a0 of arr
+  k groupKey=key(a0)
+  ?!result[groupKey]
+   result[groupKey]=[]
+  result[groupKey].push(a0)
+ r result
+X f countBy<T>(arr:T[],key:(a0:T)=>string):Record<string,number>
+ k result:Record<string,number>={}
+ L k a0 of arr
+  k groupKey=key(a0)
+  result[groupKey]=(result[groupKey]??0)+1
+ r result
+X f partition<T>(arr:T[],pred:(a0:T)=>boolean):[T[],T[]]
+ k matched:T[]=[]
+ k rest:T[]=[]
+ L k a0 of arr
+  ?pred(a0)
+   matched.push(a0)
+  E
+   rest.push(a0)
+ r [matched,rest]
+X f sum(xs:number[]):number
+ l total=0
+ L k a0 of xs
+  total+=a0
+ r total
+```

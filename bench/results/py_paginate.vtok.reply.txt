@@ -1,0 +1,9 @@
+```vtok
+f paginate(items,page,size)
+ ?page<1|size<1 R ValueError('page and size must be >= 1')
+ start=(page-1)*size
+ end=start+size
+ r list(items[start:end])
+f page_count(total,size)
+ r (total+size-1)//size
+```

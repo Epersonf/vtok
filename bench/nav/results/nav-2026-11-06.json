@@ -1,0 +1,5545 @@
+{
+ "seed": 1,
+ "per_bucket": 25,
+ "errors": [
+  {
+   "error": [
+    "source has syntax errors near line 72",
+    ""
+   ],
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-sys-3.4.1/src/types.rs",
+   "symbol": "uv_loop_s"
+  }
+ ],
+ "rows": [
+  {
+   "file": "/usr/lib/python3.12/py_compile.py",
+   "lang": "python",
+   "lines": 214,
+   "symbol": "PyCompileError.__init__",
+   "sym_lines": 15,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1758,
+    "grep+exact": 188,
+    "grep+window": 848,
+    "vtok index": 430,
+    "vtok skel": 388,
+    "grep+vtok": 195,
+    "vtok exact": 155
+   },
+   "body_tokens": 148,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/asyncio/timeouts.py",
+   "lang": "python",
+   "lines": 169,
+   "symbol": "Timeout.reschedule",
+   "sym_lines": 22,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1206,
+    "grep+exact": 196,
+    "grep+window": 673,
+    "vtok index": 512,
+    "vtok skel": 478,
+    "grep+vtok": 209,
+    "vtok exact": 182
+   },
+   "body_tokens": 169,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/test/libregrtest/single.py",
+   "lang": "python",
+   "lines": 319,
+   "symbol": "_runtest",
+   "sym_lines": 61,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2315,
+    "grep+exact": 535,
+    "grep+window": 651,
+    "vtok index": 769,
+    "vtok skel": 706,
+    "grep+vtok": 442,
+    "vtok exact": 356
+   },
+   "body_tokens": 449,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/http/__init__.py",
+   "lang": "python",
+   "lines": 201,
+   "symbol": "HTTPStatus.__new__",
+   "sym_lines": 7,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2020,
+    "grep+exact": 104,
+    "grep+window": 792,
+    "vtok index": 1472,
+    "vtok skel": 1415,
+    "grep+vtok": 137,
+    "vtok exact": 82
+   },
+   "body_tokens": 49,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/string.py",
+   "lang": "python",
+   "lines": 310,
+   "symbol": "Template.__init_subclass__",
+   "sym_lines": 17,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2497,
+    "grep+exact": 220,
+    "grep+window": 719,
+    "vtok index": 735,
+    "vtok skel": 687,
+    "grep+vtok": 252,
+    "vtok exact": 206
+   },
+   "body_tokens": 174,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/unittest/main.py",
+   "lang": "python",
+   "lines": 292,
+   "symbol": "TestProgram.usageExit",
+   "sym_lines": 9,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2385,
+    "grep+exact": 107,
+    "grep+window": 726,
+    "vtok index": 723,
+    "vtok skel": 618,
+    "grep+vtok": 141,
+    "vtok exact": 112
+   },
+   "body_tokens": 78,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/json/__init__.py",
+   "lang": "python",
+   "lines": 360,
+   "symbol": "dumps",
+   "sym_lines": 56,
+   "grep_hits": 10,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3653,
+    "grep+exact": 835,
+    "grep+window": 1072,
+    "vtok index": 550,
+    "vtok skel": 496,
+    "grep+vtok": 363,
+    "vtok exact": 175
+   },
+   "body_tokens": 647,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/cgitb.py",
+   "lang": "python",
+   "lines": 333,
+   "symbol": "strong",
+   "sym_lines": 5,
+   "grep_hits": 8,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3100,
+    "grep+exact": 154,
+    "grep+window": 885,
+    "vtok index": 359,
+    "vtok skel": 315,
+    "grep+vtok": 173,
+    "vtok exact": 44
+   },
+   "body_tokens": 25,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/test/support/threading_helper.py",
+   "lang": "python",
+   "lines": 251,
+   "symbol": "requires_working_threading",
+   "sym_lines": 11,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1752,
+    "grep+exact": 92,
+    "grep+window": 92,
+    "vtok index": 360,
+    "vtok skel": 306,
+    "grep+vtok": 90,
+    "vtok exact": 78
+   },
+   "body_tokens": 80,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/importlib/resources/_adapters.py",
+   "lang": "python",
+   "lines": 169,
+   "symbol": "wrap_spec",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 959,
+    "grep+exact": 48,
+    "grep+window": 48,
+    "vtok index": 527,
+    "vtok skel": 489,
+    "grep+vtok": 52,
+    "vtok exact": 46
+   },
+   "body_tokens": 42,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/unittest/suite.py",
+   "lang": "python",
+   "lines": 380,
+   "symbol": "_isnotsuite",
+   "sym_lines": 7,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2586,
+    "grep+exact": 64,
+    "grep+window": 110,
+    "vtok index": 641,
+    "vtok skel": 559,
+    "grep+vtok": 86,
+    "vtok exact": 66
+   },
+   "body_tokens": 44,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/koi8_t.py",
+   "lang": "python",
+   "lines": 309,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5301,
+    "grep+exact": 72,
+    "grep+window": 1169,
+    "vtok index": 1297,
+    "vtok skel": 1250,
+    "grep+vtok": 95,
+    "vtok exact": 89
+   },
+   "body_tokens": 66,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp273.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "decoding_table",
+   "sym_lines": 258,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5362,
+    "grep+exact": 5134,
+    "grep+window": 5151,
+    "vtok index": 2004,
+    "vtok skel": 1956,
+    "grep+vtok": 971,
+    "vtok exact": 913
+   },
+   "body_tokens": 5076,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/iso8859_14.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "decoding_table",
+   "sym_lines": 258,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5302,
+    "grep+exact": 5062,
+    "grep+window": 5079,
+    "vtok index": 2144,
+    "vtok skel": 2097,
+    "grep+vtok": 1041,
+    "vtok exact": 983
+   },
+   "body_tokens": 5004,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/asyncio/windows_utils.py",
+   "lang": "python",
+   "lines": 174,
+   "symbol": "Popen.__init__",
+   "sym_lines": 44,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1272,
+    "grep+exact": 479,
+    "grep+window": 479,
+    "vtok index": 743,
+    "vtok skel": 704,
+    "grep+vtok": 433,
+    "vtok exact": 377
+   },
+   "body_tokens": 423,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/asyncio/taskgroups.py",
+   "lang": "python",
+   "lines": 241,
+   "symbol": "TaskGroup._abort",
+   "sym_lines": 6,
+   "grep_hits": 11,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1829,
+    "grep+exact": 136,
+    "grep+window": 571,
+    "vtok index": 338,
+    "vtok skel": 271,
+    "grep+vtok": 173,
+    "vtok exact": 69
+   },
+   "body_tokens": 32,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/codeop.py",
+   "lang": "python",
+   "lines": 162,
+   "symbol": "_is_syntax_error",
+   "sym_lines": 8,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1264,
+    "grep+exact": 80,
+    "grep+window": 664,
+    "vtok index": 359,
+    "vtok skel": 322,
+    "grep+vtok": 101,
+    "vtok exact": 88
+   },
+   "body_tokens": 67,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/xml/sax/handler.py",
+   "lang": "python",
+   "lines": 388,
+   "symbol": "ContentHandler.processingInstruction",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3164,
+    "grep+exact": 111,
+    "grep+window": 685,
+    "vtok index": 717,
+    "vtok skel": 630,
+    "grep+vtok": 53,
+    "vtok exact": 41
+   },
+   "body_tokens": 99,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/asyncio/queues.py",
+   "lang": "python",
+   "lines": 245,
+   "symbol": "Queue.task_done",
+   "sym_lines": 19,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1766,
+    "grep+exact": 245,
+    "grep+window": 519,
+    "vtok index": 533,
+    "vtok skel": 457,
+    "grep+vtok": 157,
+    "vtok exact": 82
+   },
+   "body_tokens": 170,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/iso8859_6.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4414,
+    "grep+exact": 73,
+    "grep+window": 1170,
+    "vtok index": 1271,
+    "vtok skel": 1224,
+    "grep+vtok": 101,
+    "vtok exact": 95
+   },
+   "body_tokens": 67,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp424.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4944,
+    "grep+exact": 70,
+    "grep+window": 1239,
+    "vtok index": 1248,
+    "vtok skel": 1201,
+    "grep+vtok": 92,
+    "vtok exact": 86
+   },
+   "body_tokens": 64,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp1258.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5242,
+    "grep+exact": 71,
+    "grep+window": 1168,
+    "vtok index": 1211,
+    "vtok skel": 1164,
+    "grep+vtok": 94,
+    "vtok exact": 88
+   },
+   "body_tokens": 65,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/_weakrefset.py",
+   "lang": "python",
+   "lines": 206,
+   "symbol": "WeakSet.__iter__",
+   "sym_lines": 8,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1342,
+    "grep+exact": 73,
+    "grep+window": 505,
+    "vtok index": 605,
+    "vtok skel": 525,
+    "grep+vtok": 77,
+    "vtok exact": 68
+   },
+   "body_tokens": 64,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp1253.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5303,
+    "grep+exact": 71,
+    "grep+window": 1168,
+    "vtok index": 1315,
+    "vtok skel": 1268,
+    "grep+vtok": 95,
+    "vtok exact": 89
+   },
+   "body_tokens": 65,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/tis_620.py",
+   "lang": "python",
+   "lines": 308,
+   "symbol": "decoding_table",
+   "sym_lines": 258,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5147,
+    "grep+exact": 4916,
+    "grep+window": 4933,
+    "vtok index": 2474,
+    "vtok skel": 2427,
+    "grep+vtok": 1206,
+    "vtok exact": 1148
+   },
+   "body_tokens": 4858,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp865.py",
+   "lang": "python",
+   "lines": 699,
+   "symbol": "encoding_map",
+   "sym_lines": 258,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 14651,
+    "grep+exact": 5934,
+    "grep+window": 5934,
+    "vtok index": 7954,
+    "vtok skel": 7898,
+    "grep+vtok": 2743,
+    "vtok exact": 2703
+   },
+   "body_tokens": 5894,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/email/generator.py",
+   "lang": "python",
+   "lines": 531,
+   "symbol": "Generator.clone",
+   "sym_lines": 6,
+   "grep_hits": 9,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4781,
+    "grep+exact": 163,
+    "grep+window": 883,
+    "vtok index": 812,
+    "vtok skel": 686,
+    "grep+vtok": 173,
+    "vtok exact": 60
+   },
+   "body_tokens": 50,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/contextlib.py",
+   "lang": "python",
+   "lines": 801,
+   "symbol": "AsyncContextDecorator.__call__",
+   "sym_lines": 6,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5696,
+    "grep+exact": 71,
+    "grep+window": 670,
+    "vtok index": 1219,
+    "vtok skel": 1111,
+    "grep+vtok": 112,
+    "vtok exact": 90
+   },
+   "body_tokens": 49,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/pprint.py",
+   "lang": "python",
+   "lines": 659,
+   "symbol": "PrettyPrinter._pprint_chain_map",
+   "sym_lines": 14,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5423,
+    "grep+exact": 189,
+    "grep+window": 797,
+    "vtok index": 1494,
+    "vtok skel": 1343,
+    "grep+vtok": 226,
+    "vtok exact": 183
+   },
+   "body_tokens": 146,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/numbers.py",
+   "lang": "python",
+   "lines": 419,
+   "symbol": "Integral.__pow__",
+   "sym_lines": 10,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2595,
+    "grep+exact": 115,
+    "grep+window": 487,
+    "vtok index": 971,
+    "vtok skel": 920,
+    "grep+vtok": 86,
+    "vtok exact": 61
+   },
+   "body_tokens": 90,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/compileall.py",
+   "lang": "python",
+   "lines": 473,
+   "symbol": "main",
+   "sym_lines": 151,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4111,
+    "grep+exact": 1440,
+    "grep+window": 1463,
+    "vtok index": 1612,
+    "vtok skel": 1551,
+    "grep+vtok": 1269,
+    "vtok exact": 1237
+   },
+   "body_tokens": 1408,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/unittest/loader.py",
+   "lang": "python",
+   "lines": 496,
+   "symbol": "TestLoader.__init__",
+   "sym_lines": 6,
+   "grep_hits": 10,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4275,
+    "grep+exact": 215,
+    "grep+window": 842,
+    "vtok index": 799,
+    "vtok skel": 691,
+    "grep+vtok": 233,
+    "vtok exact": 71
+   },
+   "body_tokens": 53,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/_strptime.py",
+   "lang": "python",
+   "lines": 566,
+   "symbol": "TimeRE.__init__",
+   "sym_lines": 45,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6072,
+    "grep+exact": 787,
+    "grep+window": 1102,
+    "vtok index": 1322,
+    "vtok skel": 1244,
+    "grep+vtok": 763,
+    "vtok exact": 733
+   },
+   "body_tokens": 757,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/webbrowser.py",
+   "lang": "python",
+   "lines": 701,
+   "symbol": "GenericBrowser.__init__",
+   "sym_lines": 9,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5419,
+    "grep+exact": 125,
+    "grep+window": 722,
+    "vtok index": 983,
+    "vtok skel": 896,
+    "grep+vtok": 143,
+    "vtok exact": 87
+   },
+   "body_tokens": 69,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/email/_parseaddr.py",
+   "lang": "python",
+   "lines": 558,
+   "symbol": "AddrlistClass.getdomain",
+   "sym_lines": 22,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4301,
+    "grep+exact": 234,
+    "grep+window": 699,
+    "vtok index": 846,
+    "vtok skel": 720,
+    "grep+vtok": 224,
+    "vtok exact": 180
+   },
+   "body_tokens": 190,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/tomllib/_parser.py",
+   "lang": "python",
+   "lines": 692,
+   "symbol": "parse_value",
+   "sym_lines": 66,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5813,
+    "grep+exact": 573,
+    "grep+window": 699,
+    "vtok index": 1655,
+    "vtok skel": 1548,
+    "grep+vtok": 458,
+    "vtok exact": 415
+   },
+   "body_tokens": 530,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/csv.py",
+   "lang": "python",
+   "lines": 452,
+   "symbol": "Sniffer.sniff",
+   "sym_lines": 27,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3760,
+    "grep+exact": 220,
+    "grep+window": 752,
+    "vtok index": 887,
+    "vtok skel": 805,
+    "grep+vtok": 208,
+    "vtok exact": 169
+   },
+   "body_tokens": 181,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/gettext.py",
+   "lang": "python",
+   "lines": 662,
+   "symbol": "NullTranslations.npgettext",
+   "sym_lines": 7,
+   "grep_hits": 11,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5240,
+    "grep+exact": 274,
+    "grep+window": 947,
+    "vtok index": 1055,
+    "vtok skel": 940,
+    "grep+vtok": 301,
+    "vtok exact": 92
+   },
+   "body_tokens": 65,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/pkgutil.py",
+   "lang": "python",
+   "lines": 530,
+   "symbol": "iter_modules",
+   "sym_lines": 24,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4037,
+    "grep+exact": 250,
+    "grep+window": 595,
+    "vtok index": 614,
+    "vtok skel": 540,
+    "grep+vtok": 208,
+    "vtok exact": 149
+   },
+   "body_tokens": 191,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp869.py",
+   "lang": "python",
+   "lines": 690,
+   "symbol": "decoding_table",
+   "sym_lines": 258,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 14362,
+    "grep+exact": 5327,
+    "grep+window": 6512,
+    "vtok index": 6232,
+    "vtok skel": 6176,
+    "grep+vtok": 1093,
+    "vtok exact": 1050
+   },
+   "body_tokens": 5284,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp864.py",
+   "lang": "python",
+   "lines": 691,
+   "symbol": "decoding_table",
+   "sym_lines": 258,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 14778,
+    "grep+exact": 5464,
+    "grep+window": 6648,
+    "vtok index": 6049,
+    "vtok skel": 5993,
+    "grep+vtok": 1049,
+    "vtok exact": 1006
+   },
+   "body_tokens": 5421,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/asyncio/futures.py",
+   "lang": "python",
+   "lines": 429,
+   "symbol": "Future.cancel",
+   "sym_lines": 14,
+   "grep_hits": 40,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3026,
+    "grep+exact": 569,
+    "grep+window": 1075,
+    "vtok index": 731,
+    "vtok skel": 620,
+    "grep+vtok": 562,
+    "vtok exact": 96
+   },
+   "body_tokens": 103,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/poplib.py",
+   "lang": "python",
+   "lines": 468,
+   "symbol": "POP3.uidl",
+   "sym_lines": 10,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3283,
+    "grep+exact": 125,
+    "grep+window": 658,
+    "vtok index": 776,
+    "vtok skel": 678,
+    "grep+vtok": 105,
+    "vtok exact": 79
+   },
+   "body_tokens": 99,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/concurrent/futures/_base.py",
+   "lang": "python",
+   "lines": 655,
+   "symbol": "_yield_finished_futures",
+   "sym_lines": 20,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4620,
+    "grep+exact": 207,
+    "grep+window": 603,
+    "vtok index": 1046,
+    "vtok skel": 935,
+    "grep+vtok": 151,
+    "vtok exact": 107
+   },
+   "body_tokens": 163,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/mac_arabic.py",
+   "lang": "python",
+   "lines": 699,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 15546,
+    "grep+exact": 72,
+    "grep+window": 1847,
+    "vtok index": 5220,
+    "vtok skel": 5164,
+    "grep+vtok": 95,
+    "vtok exact": 89
+   },
+   "body_tokens": 66,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/weakref.py",
+   "lang": "python",
+   "lines": 675,
+   "symbol": "WeakKeyDictionary.__deepcopy__",
+   "sym_lines": 9,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4814,
+    "grep+exact": 89,
+    "grep+window": 535,
+    "vtok index": 1230,
+    "vtok skel": 1083,
+    "grep+vtok": 128,
+    "vtok exact": 104
+   },
+   "body_tokens": 65,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/site.py",
+   "lang": "python",
+   "lines": 701,
+   "symbol": "execsitecustomize",
+   "sym_lines": 18,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5365,
+    "grep+exact": 138,
+    "grep+window": 538,
+    "vtok index": 595,
+    "vtok skel": 476,
+    "grep+vtok": 153,
+    "vtok exact": 138
+   },
+   "body_tokens": 123,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/multiprocessing/shared_memory.py",
+   "lang": "python",
+   "lines": 535,
+   "symbol": "ShareableList.format",
+   "sym_lines": 6,
+   "grep_hits": 45,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3926,
+    "grep+exact": 641,
+    "grep+window": 992,
+    "vtok index": 904,
+    "vtok skel": 771,
+    "grep+vtok": 666,
+    "vtok exact": 72
+   },
+   "body_tokens": 47,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/calendar.py",
+   "lang": "python",
+   "lines": 799,
+   "symbol": "TextCalendar.prmonth",
+   "sym_lines": 5,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6457,
+    "grep+exact": 99,
+    "grep+window": 771,
+    "vtok index": 1677,
+    "vtok skel": 1564,
+    "grep+vtok": 123,
+    "vtok exact": 72
+   },
+   "body_tokens": 48,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/encodings/cp850.py",
+   "lang": "python",
+   "lines": 699,
+   "symbol": "getregentry",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 14577,
+    "grep+exact": 70,
+    "grep+window": 1749,
+    "vtok index": 5301,
+    "vtok skel": 5245,
+    "grep+vtok": 96,
+    "vtok exact": 90
+   },
+   "body_tokens": 64,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/usr/lib/python3.12/asyncio/tasks.py",
+   "lang": "python",
+   "lines": 1066,
+   "symbol": "ensure_future",
+   "sym_lines": 30,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8096,
+    "grep+exact": 341,
+    "grep+window": 741,
+    "vtok index": 1543,
+    "vtok skel": 1338,
+    "grep+vtok": 331,
+    "vtok exact": 226
+   },
+   "body_tokens": 236,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/email/message.py",
+   "lang": "python",
+   "lines": 1206,
+   "symbol": "Message.items",
+   "sym_lines": 10,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10389,
+    "grep+exact": 189,
+    "grep+window": 735,
+    "vtok index": 1371,
+    "vtok skel": 1127,
+    "grep+vtok": 160,
+    "vtok exact": 62
+   },
+   "body_tokens": 91,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/nntplib.py",
+   "lang": "python",
+   "lines": 1094,
+   "symbol": "NNTP._getline",
+   "sym_lines": 16,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9472,
+    "grep+exact": 189,
+    "grep+window": 650,
+    "vtok index": 1831,
+    "vtok skel": 1658,
+    "grep+vtok": 187,
+    "vtok exact": 146
+   },
+   "body_tokens": 148,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/multiprocessing/connection.py",
+   "lang": "python",
+   "lines": 1179,
+   "symbol": "Connection._recv",
+   "sym_lines": 15,
+   "grep_hits": 10,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9135,
+    "grep+exact": 219,
+    "grep+window": 719,
+    "vtok index": 1774,
+    "vtok skel": 1621,
+    "grep+vtok": 248,
+    "vtok exact": 127
+   },
+   "body_tokens": 98,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/smtplib.py",
+   "lang": "python",
+   "lines": 1110,
+   "symbol": "SMTP.auth_login",
+   "sym_lines": 7,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9582,
+    "grep+exact": 70,
+    "grep+window": 648,
+    "vtok index": 1393,
+    "vtok skel": 1217,
+    "grep+vtok": 81,
+    "vtok exact": 70
+   },
+   "body_tokens": 59,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/pickle.py",
+   "lang": "python",
+   "lines": 1817,
+   "symbol": "_Unpickler.load_long_binget",
+   "sym_lines": 7,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 15449,
+    "grep+exact": 94,
+    "grep+window": 643,
+    "vtok index": 3604,
+    "vtok skel": 3250,
+    "grep+vtok": 133,
+    "vtok exact": 102
+   },
+   "body_tokens": 63,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/zipfile/__init__.py",
+   "lang": "python",
+   "lines": 2328,
+   "symbol": "code",
+   "sym_lines": 5,
+   "grep_hits": 34,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 20461,
+    "grep+exact": 575,
+    "grep+window": 1118,
+    "vtok index": 3141,
+    "vtok skel": 2734,
+    "grep+vtok": 588,
+    "vtok exact": 31
+   },
+   "body_tokens": 18,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/tarfile.py",
+   "lang": "python",
+   "lines": 3060,
+   "symbol": "OutsideDestinationError.__init__",
+   "sym_lines": 5,
+   "grep_hits": 20,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 25660,
+    "grep+exact": 404,
+    "grep+window": 1118,
+    "vtok index": 3815,
+    "vtok skel": 3276,
+    "grep+vtok": 442,
+    "vtok exact": 97
+   },
+   "body_tokens": 59,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/collections/__init__.py",
+   "lang": "python",
+   "lines": 1593,
+   "symbol": "UserList.__copy__",
+   "sym_lines": 6,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 12001,
+    "grep+exact": 89,
+    "grep+window": 441,
+    "vtok index": 2708,
+    "vtok skel": 2440,
+    "grep+vtok": 121,
+    "vtok exact": 91
+   },
+   "body_tokens": 59,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/tempfile.py",
+   "lang": "python",
+   "lines": 1092,
+   "symbol": "SpooledTemporaryFile.name",
+   "sym_lines": 6,
+   "grep_hits": 120,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8372,
+    "grep+exact": 1710,
+    "grep+window": 2122,
+    "vtok index": 1619,
+    "vtok skel": 1446,
+    "grep+vtok": 1734,
+    "vtok exact": 51
+   },
+   "body_tokens": 27,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/_pydecimal.py",
+   "lang": "python",
+   "lines": 6426,
+   "symbol": "Context.ln",
+   "sym_lines": 21,
+   "grep_hits": 24,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 55630,
+    "grep+exact": 571,
+    "grep+window": 1024,
+    "vtok index": 5467,
+    "vtok skel": 4428,
+    "grep+vtok": 465,
+    "vtok exact": 66
+   },
+   "body_tokens": 172,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/_collections_abc.py",
+   "lang": "python",
+   "lines": 1174,
+   "symbol": "Awaitable.__subclasshook__",
+   "sym_lines": 5,
+   "grep_hits": 15,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7313,
+    "grep+exact": 232,
+    "grep+window": 618,
+    "vtok index": 2320,
+    "vtok skel": 2181,
+    "grep+vtok": 277,
+    "vtok exact": 82
+   },
+   "body_tokens": 37,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/turtle.py",
+   "lang": "python",
+   "lines": 4208,
+   "symbol": "ScrolledCanvas.__init__",
+   "sym_lines": 24,
+   "grep_hits": 19,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 34872,
+    "grep+exact": 630,
+    "grep+window": 1177,
+    "vtok index": 5123,
+    "vtok skel": 4405,
+    "grep+vtok": 619,
+    "vtok exact": 350
+   },
+   "body_tokens": 361,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/xml/dom/minidom.py",
+   "lang": "python",
+   "lines": 2009,
+   "symbol": "Document.appendChild",
+   "sym_lines": 15,
+   "grep_hits": 12,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 14772,
+    "grep+exact": 272,
+    "grep+window": 709,
+    "vtok index": 4066,
+    "vtok skel": 3712,
+    "grep+vtok": 271,
+    "vtok exact": 150
+   },
+   "body_tokens": 151,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/codecs.py",
+   "lang": "python",
+   "lines": 1130,
+   "symbol": "open",
+   "sym_lines": 48,
+   "grep_hits": 9,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7724,
+    "grep+exact": 520,
+    "grep+window": 782,
+    "vtok index": 1905,
+    "vtok skel": 1720,
+    "grep+vtok": 309,
+    "vtok exact": 157
+   },
+   "body_tokens": 368,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/pathlib.py",
+   "lang": "python",
+   "lines": 1438,
+   "symbol": "PurePath.anchor",
+   "sym_lines": 5,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11406,
+    "grep+exact": 88,
+    "grep+window": 657,
+    "vtok index": 2246,
+    "vtok skel": 1978,
+    "grep+vtok": 96,
+    "vtok exact": 43
+   },
+   "body_tokens": 35,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/inspect.py",
+   "lang": "python",
+   "lines": 3396,
+   "symbol": "_ClassFinder.visit_ClassDef",
+   "sym_lines": 14,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 27010,
+    "grep+exact": 122,
+    "grep+window": 653,
+    "vtok index": 3991,
+    "vtok skel": 3458,
+    "grep+vtok": 136,
+    "vtok exact": 124
+   },
+   "body_tokens": 110,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/mailbox.py",
+   "lang": "python",
+   "lines": 2154,
+   "symbol": "Maildir.next",
+   "sym_lines": 11,
+   "grep_hits": 21,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 16820,
+    "grep+exact": 309,
+    "grep+window": 842,
+    "vtok index": 2663,
+    "vtok skel": 2332,
+    "grep+vtok": 336,
+    "vtok exact": 99
+   },
+   "body_tokens": 72,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/xmlrpc/server.py",
+   "lang": "python",
+   "lines": 1003,
+   "symbol": "SimpleXMLRPCDispatcher.system_methodHelp",
+   "sym_lines": 30,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7573,
+    "grep+exact": 241,
+    "grep+window": 628,
+    "vtok index": 1367,
+    "vtok skel": 1218,
+    "grep+vtok": 188,
+    "vtok exact": 162
+   },
+   "body_tokens": 215,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/dataclasses.py",
+   "lang": "python",
+   "lines": 1582,
+   "symbol": "_repr_fn",
+   "sym_lines": 9,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 14555,
+    "grep+exact": 111,
+    "grep+window": 720,
+    "vtok index": 1745,
+    "vtok skel": 1518,
+    "grep+vtok": 142,
+    "vtok exact": 111
+   },
+   "body_tokens": 80,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/logging/handlers.py",
+   "lang": "python",
+   "lines": 1606,
+   "symbol": "SocketHandler.createSocket",
+   "sym_lines": 27,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 13536,
+    "grep+exact": 291,
+    "grep+window": 718,
+    "vtok index": 2013,
+    "vtok skel": 1759,
+    "grep+vtok": 210,
+    "vtok exact": 148
+   },
+   "body_tokens": 229,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/argparse.py",
+   "lang": "python",
+   "lines": 2678,
+   "symbol": "ArgumentParser._read_args_from_files",
+   "sym_lines": 26,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 20159,
+    "grep+exact": 251,
+    "grep+window": 688,
+    "vtok index": 3190,
+    "vtok skel": 2717,
+    "grep+vtok": 236,
+    "vtok exact": 189
+   },
+   "body_tokens": 204,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/logging/config.py",
+   "lang": "python",
+   "lines": 1051,
+   "symbol": "_install_loggers",
+   "sym_lines": 85,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8193,
+    "grep+exact": 789,
+    "grep+window": 1310,
+    "vtok index": 1344,
+    "vtok skel": 1193,
+    "grep+vtok": 426,
+    "vtok exact": 397
+   },
+   "body_tokens": 760,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/pdb.py",
+   "lang": "python",
+   "lines": 1972,
+   "symbol": "Pdb.checkline",
+   "sym_lines": 21,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 15438,
+    "grep+exact": 242,
+    "grep+window": 640,
+    "vtok index": 2454,
+    "vtok skel": 2076,
+    "grep+vtok": 172,
+    "vtok exact": 146
+   },
+   "body_tokens": 216,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/usr/lib/python3.12/subprocess.py",
+   "lang": "python",
+   "lines": 2217,
+   "symbol": "check_output",
+   "sym_lines": 51,
+   "grep_hits": 8,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 18284,
+    "grep+exact": 699,
+    "grep+window": 923,
+    "vtok index": 2482,
+    "vtok skel": 2277,
+    "grep+vtok": 313,
+    "vtok exact": 171
+   },
+   "body_tokens": 557,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/impl_/pyfunction.rs",
+   "lang": "rust",
+   "lines": 167,
+   "symbol": "WrapPyFunctionArg for Python.wrap_pyfunction",
+   "sym_lines": 6,
+   "grep_hits": 17,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1443,
+    "grep+exact": 295,
+    "grep+window": 806,
+    "vtok index": 936,
+    "vtok skel": 886,
+    "grep+vtok": 359,
+    "vtok exact": 111
+   },
+   "body_tokens": 47,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-sys-3.4.1/src/lib.rs",
+   "lang": "rust",
+   "lines": 153,
+   "symbol": "generate",
+   "sym_lines": 87,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1131,
+    "grep+exact": 757,
+    "grep+window": 1043,
+    "vtok index": 1373,
+    "vtok skel": 1316,
+    "grep+vtok": 586,
+    "vtok exact": 524
+   },
+   "body_tokens": 695,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/linux_like/l4re/mod.rs",
+   "lang": "rust",
+   "lines": 252,
+   "symbol": "cfg_if!",
+   "sym_lines": 9,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2907,
+    "grep+exact": 113,
+    "grep+window": 149,
+    "vtok index": 2446,
+    "vtok skel": 2379,
+    "grep+vtok": 159,
+    "vtok exact": 147
+   },
+   "body_tokens": 101,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/conversions/bytes.rs",
+   "lang": "rust",
+   "lines": 151,
+   "symbol": "tests.test_bytearray",
+   "sym_lines": 15,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1238,
+    "grep+exact": 174,
+    "grep+window": 175,
+    "vtok index": 878,
+    "vtok skel": 688,
+    "grep+vtok": 168,
+    "vtok exact": 159
+   },
+   "body_tokens": 165,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/newlib/vita/mod.rs",
+   "lang": "rust",
+   "lines": 234,
+   "symbol": "s!",
+   "sym_lines": 78,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2101,
+    "grep+exact": 626,
+    "grep+window": 638,
+    "vtok index": 2457,
+    "vtok skel": 2396,
+    "grep+vtok": 586,
+    "vtok exact": 582
+   },
+   "body_tokens": 622,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.9/src/lookahead.rs",
+   "lang": "rust",
+   "lines": 351,
+   "symbol": "Lookahead1",
+   "sym_lines": 5,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2487,
+    "grep+exact": 126,
+    "grep+window": 693,
+    "vtok index": 626,
+    "vtok skel": 560,
+    "grep+vtok": 191,
+    "vtok exact": 98
+   },
+   "body_tokens": 33,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/linux_like/linux/uclibc/mips/mips64/mod.rs",
+   "lang": "rust",
+   "lines": 195,
+   "symbol": "s!",
+   "sym_lines": 173,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1666,
+    "grep+exact": 1469,
+    "grep+window": 1585,
+    "vtok index": 2799,
+    "vtok skel": 2696,
+    "grep+vtok": 1257,
+    "vtok exact": 1253
+   },
+   "body_tokens": 1465,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-derive-3.7.0/src/lib.rs",
+   "lang": "rust",
+   "lines": 193,
+   "symbol": "js_function",
+   "sym_lines": 57,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1530,
+    "grep+exact": 635,
+    "grep+window": 847,
+    "vtok index": 924,
+    "vtok skel": 887,
+    "grep+vtok": 612,
+    "vtok exact": 561
+   },
+   "body_tokens": 584,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.34/src/sink/mod.rs",
+   "lang": "rust",
+   "lines": 345,
+   "symbol": "SinkExt.flush",
+   "sym_lines": 6,
+   "grep_hits": 15,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2918,
+    "grep+exact": 286,
+    "grep+window": 1077,
+    "vtok index": 1159,
+    "vtok skel": 1076,
+    "grep+vtok": 343,
+    "vtok exact": 102
+   },
+   "body_tokens": 45,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-atomic-1.15.0/src/imp/float/aarch64.rs",
+   "lang": "rust",
+   "lines": 264,
+   "symbol": "atomic_rmw",
+   "sym_lines": 22,
+   "grep_hits": 10,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3093,
+    "grep+exact": 416,
+    "grep+window": 1219,
+    "vtok index": 1789,
+    "vtok skel": 1740,
+    "grep+vtok": 352,
+    "vtok exact": 227
+   },
+   "body_tokens": 291,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.9/src/macros.rs",
+   "lang": "rust",
+   "lines": 152,
+   "symbol": "ast_struct",
+   "sym_lines": 38,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1088,
+    "grep+exact": 290,
+    "grep+window": 586,
+    "vtok index": 1258,
+    "vtok skel": 1212,
+    "grep+vtok": 286,
+    "vtok exact": 278
+   },
+   "body_tokens": 282,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.18/src/meta/stopat.rs",
+   "lang": "rust",
+   "lines": 213,
+   "symbol": "dfa_eoi_fwd",
+   "sym_lines": 34,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2159,
+    "grep+exact": 359,
+    "grep+window": 715,
+    "vtok index": 773,
+    "vtok skel": 728,
+    "grep+vtok": 353,
+    "vtok exact": 321
+   },
+   "body_tokens": 327,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.34/src/future/future/flatten.rs",
+   "lang": "rust",
+   "lines": 154,
+   "symbol": "Sink for Flatten.start_send",
+   "sym_lines": 7,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1061,
+    "grep+exact": 135,
+    "grep+window": 306,
+    "vtok index": 745,
+    "vtok skel": 698,
+    "grep+vtok": 194,
+    "vtok exact": 137
+   },
+   "body_tokens": 78,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.9/src/precedence.rs",
+   "lang": "rust",
+   "lines": 211,
+   "symbol": "Precedence.of_binop",
+   "sym_lines": 30,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1756,
+    "grep+exact": 343,
+    "grep+window": 819,
+    "vtok index": 793,
+    "vtok skel": 739,
+    "grep+vtok": 351,
+    "vtok exact": 313
+   },
+   "body_tokens": 305,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-ffi-0.30.1/src/cpython/pythonrun.rs",
+   "lang": "rust",
+   "lines": 233,
+   "symbol": "Py_CompileStringFlags",
+   "sym_lines": 10,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2161,
+    "grep+exact": 123,
+    "grep+window": 860,
+    "vtok index": 1809,
+    "vtok skel": 1768,
+    "grep+vtok": 179,
+    "vtok exact": 137
+   },
+   "body_tokens": 81,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aho-corasick-1.1.5/src/packed/rabinkarp.rs",
+   "lang": "rust",
+   "lines": 169,
+   "symbol": "RabinKarp.find_at",
+   "sym_lines": 31,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1556,
+    "grep+exact": 216,
+    "grep+window": 693,
+    "vtok index": 579,
+    "vtok skel": 544,
+    "grep+vtok": 235,
+    "vtok exact": 225
+   },
+   "body_tokens": 206,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.47/src/to_tokens.rs",
+   "lang": "rust",
+   "lines": 282,
+   "symbol": "ToTokens.to_token_stream",
+   "sym_lines": 5,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1887,
+    "grep+exact": 83,
+    "grep+window": 574,
+    "vtok index": 1113,
+    "vtok skel": 1033,
+    "grep+vtok": 132,
+    "vtok exact": 84
+   },
+   "body_tokens": 35,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/core/private/doc.rs",
+   "lang": "rust",
+   "lines": 166,
+   "symbol": "ser::Error for Error.custom",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1289,
+    "grep+exact": 40,
+    "grep+window": 527,
+    "vtok index": 1243,
+    "vtok skel": 1191,
+    "grep+vtok": 85,
+    "vtok exact": 73
+   },
+   "body_tokens": 28,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/base64-0.22.1/src/chunked_encoder.rs",
+   "lang": "rust",
+   "lines": 173,
+   "symbol": "ChunkedEncoder.encode",
+   "sym_lines": 19,
+   "grep_hits": 31,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1333,
+    "grep+exact": 775,
+    "grep+window": 1188,
+    "vtok index": 787,
+    "vtok skel": 751,
+    "grep+vtok": 753,
+    "vtok exact": 181
+   },
+   "body_tokens": 203,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/new/linux_uapi/arch/sparc/asm/socket.rs",
+   "lang": "rust",
+   "lines": 191,
+   "symbol": "cfg_if!",
+   "sym_lines": 47,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1901,
+    "grep+exact": 406,
+    "grep+window": 443,
+    "vtok index": 1998,
+    "vtok skel": 1944,
+    "grep+vtok": 376,
+    "vtok exact": 370
+   },
+   "body_tokens": 400,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/once_cell-1.21.4/tests/it/sync_once_cell.rs",
+   "lang": "rust",
+   "lines": 329,
+   "symbol": "once_cell_get_mut",
+   "sym_lines": 8,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2218,
+    "grep+exact": 74,
+    "grep+window": 548,
+    "vtok index": 634,
+    "vtok skel": 533,
+    "grep+vtok": 137,
+    "vtok exact": 128
+   },
+   "body_tokens": 65,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cc-1.11.1/src/target/generated.rs",
+   "lang": "rust",
+   "lines": 353,
+   "symbol": "LLVM_TARGETS",
+   "sym_lines": 348,
+   "grep_hits": 1,
+   "raw_fallback": true,
+   "tokens": {
+    "full": 7516,
+    "grep+exact": 7489,
+    "grep+window": 7489,
+    "vtok index": 14425,
+    "vtok skel": 13685,
+    "grep+vtok": 6851,
+    "vtok exact": 6832
+   },
+   "body_tokens": 7470,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/core/ser/fmt.rs",
+   "lang": "rust",
+   "lines": 171,
+   "symbol": "Serializer for &mut fmt::Formatter<'a>.serialize_unit_variant",
+   "sym_lines": 8,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1078,
+    "grep+exact": 58,
+    "grep+window": 495,
+    "vtok index": 878,
+    "vtok skel": 834,
+    "grep+vtok": 109,
+    "vtok exact": 101
+   },
+   "body_tokens": 50,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.8.3/src/lib.rs",
+   "lang": "rust",
+   "lines": 222,
+   "symbol": "compile_error!",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2114,
+    "grep+exact": 69,
+    "grep+window": 216,
+    "vtok index": 433,
+    "vtok skel": 425,
+    "grep+vtok": 113,
+    "vtok exact": 93
+   },
+   "body_tokens": 49,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.18/src/hybrid/id.rs",
+   "lang": "rust",
+   "lines": 355,
+   "symbol": "core::fmt::Display for LazyStateIDError.fmt",
+   "sym_lines": 8,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3625,
+    "grep+exact": 100,
+    "grep+window": 101,
+    "vtok index": 790,
+    "vtok skel": 709,
+    "grep+vtok": 153,
+    "vtok exact": 114
+   },
+   "body_tokens": 61,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.18/tests/dfa/suite.rs",
+   "lang": "rust",
+   "lines": 444,
+   "symbol": "minimized_default",
+   "sym_lines": 11,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3878,
+    "grep+exact": 150,
+    "grep+window": 758,
+    "vtok index": 916,
+    "vtok skel": 823,
+    "grep+vtok": 219,
+    "vtok exact": 156
+   },
+   "body_tokens": 87,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cc-1.11.1/src/parallel/job_token.rs",
+   "lang": "rust",
+   "lines": 476,
+   "symbol": "inherited_jobserver.ActiveJobServer",
+   "sym_lines": 7,
+   "grep_hits": 6,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3931,
+    "grep+exact": 149,
+    "grep+window": 728,
+    "vtok index": 1114,
+    "vtok skel": 1015,
+    "grep+vtok": 209,
+    "vtok exact": 123
+   },
+   "body_tokens": 63,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/types/frozendict.rs",
+   "lang": "rust",
+   "lines": 502,
+   "symbol": "BoundFrozenDictIterator.new",
+   "sym_lines": 8,
+   "grep_hits": 26,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4061,
+    "grep+exact": 609,
+    "grep+window": 1163,
+    "vtok index": 1552,
+    "vtok skel": 1403,
+    "grep+vtok": 657,
+    "vtok exact": 94
+   },
+   "body_tokens": 46,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/src/de/struct_.rs",
+   "lang": "rust",
+   "lines": 698,
+   "symbol": "deserialize_map",
+   "sym_lines": 221,
+   "grep_hits": 6,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5590,
+    "grep+exact": 1867,
+    "grep+window": 2017,
+    "vtok index": 1989,
+    "vtok skel": 1923,
+    "grep+vtok": 1420,
+    "vtok exact": 1338
+   },
+   "body_tokens": 1785,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/linux_like/linux/gnu/b32/mod.rs",
+   "lang": "rust",
+   "lines": 418,
+   "symbol": "s!",
+   "sym_lines": 137,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3692,
+    "grep+exact": 1099,
+    "grep+window": 1373,
+    "vtok index": 3815,
+    "vtok skel": 3690,
+    "grep+vtok": 865,
+    "vtok exact": 855
+   },
+   "body_tokens": 1089,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.9/tests/common/eq.rs",
+   "lang": "rust",
+   "lines": 940,
+   "symbol": "doc_comment",
+   "sym_lines": 52,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9875,
+    "grep+exact": 346,
+    "grep+window": 541,
+    "vtok index": 8139,
+    "vtok skel": 7947,
+    "grep+vtok": 336,
+    "vtok exact": 294
+   },
+   "body_tokens": 304,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/tests/test_pyfunction.rs",
+   "lang": "rust",
+   "lines": 849,
+   "symbol": "extract_traceback",
+   "sym_lines": 9,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6310,
+    "grep+exact": 113,
+    "grep+window": 631,
+    "vtok index": 1393,
+    "vtok skel": 1224,
+    "grep+vtok": 157,
+    "vtok exact": 116
+   },
+   "body_tokens": 72,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-syntax-0.8.11/src/unicode_tables/property_values.rs",
+   "lang": "rust",
+   "lines": 957,
+   "symbol": "PROPERTY_VALUES",
+   "sym_lines": 948,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9614,
+    "grep+exact": 9550,
+    "grep+window": 9550,
+    "vtok index": 15492,
+    "vtok skel": 15484,
+    "grep+vtok": 7741,
+    "vtok exact": 7731
+   },
+   "body_tokens": 9540,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-ffi-0.30.1/src/pyerrors.rs",
+   "lang": "rust",
+   "lines": 415,
+   "symbol": "PyExceptionClass_Check",
+   "sym_lines": 7,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6473,
+    "grep+exact": 114,
+    "grep+window": 1039,
+    "vtok index": 4853,
+    "vtok skel": 4787,
+    "grep+vtok": 176,
+    "vtok exact": 136
+   },
+   "body_tokens": 74,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aho-corasick-1.1.5/src/util/primitives.rs",
+   "lang": "rust",
+   "lines": 760,
+   "symbol": "SmallIndex.as_u64",
+   "sym_lines": 5,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6435,
+    "grep+exact": 121,
+    "grep+window": 751,
+    "vtok index": 2520,
+    "vtok skel": 2394,
+    "grep+vtok": 155,
+    "vtok exact": 80
+   },
+   "body_tokens": 46,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-atomic-1.15.0/src/tests/mod.rs",
+   "lang": "rust",
+   "lines": 500,
+   "symbol": "foreign_mod_item",
+   "sym_lines": 27,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4953,
+    "grep+exact": 383,
+    "grep+window": 929,
+    "vtok index": 1269,
+    "vtok skel": 1202,
+    "grep+vtok": 376,
+    "vtok exact": 376
+   },
+   "body_tokens": 383,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/types/weakref/proxy.rs",
+   "lang": "rust",
+   "lines": 914,
+   "symbol": "PyWeakrefProxy.new",
+   "sym_lines": 37,
+   "grep_hits": 41,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6657,
+    "grep+exact": 1070,
+    "grep+window": 1620,
+    "vtok index": 1687,
+    "vtok skel": 1601,
+    "grep+vtok": 905,
+    "vtok exact": 171
+   },
+   "body_tokens": 336,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/src/rustc_literal_escaper.rs",
+   "lang": "rust",
+   "lines": 702,
+   "symbol": "Mode.in_double_quotes",
+   "sym_lines": 11,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5597,
+    "grep+exact": 87,
+    "grep+window": 590,
+    "vtok index": 1781,
+    "vtok skel": 1655,
+    "grep+vtok": 131,
+    "vtok exact": 118
+   },
+   "body_tokens": 74,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-3.16.1/src/js_values/string/latin1.rs",
+   "lang": "rust",
+   "lines": 463,
+   "symbol": "JsStringLatin1.from_data",
+   "sym_lines": 143,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4192,
+    "grep+exact": 1377,
+    "grep+window": 1560,
+    "vtok index": 1254,
+    "vtok skel": 1151,
+    "grep+vtok": 613,
+    "vtok exact": 537
+   },
+   "body_tokens": 1301,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/linux_like/linux/gnu/b32/x86/mod.rs",
+   "lang": "rust",
+   "lines": 962,
+   "symbol": "s_no_extra_traits!",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11207,
+    "grep+exact": 41,
+    "grep+window": 988,
+    "vtok index": 9235,
+    "vtok skel": 9047,
+    "grep+vtok": 101,
+    "vtok exact": 94
+   },
+   "body_tokens": 34,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashbrown-0.17.1/src/external_trait_impls/rayon/set.rs",
+   "lang": "rust",
+   "lines": 653,
+   "symbol": "ParallelIterator for ParDifference.drive_unindexed",
+   "sym_lines": 9,
+   "grep_hits": 14,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4875,
+    "grep+exact": 297,
+    "grep+window": 804,
+    "vtok index": 1842,
+    "vtok skel": 1688,
+    "grep+vtok": 346,
+    "vtok exact": 115
+   },
+   "body_tokens": 66,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bitflags-2.13.2/src/traits.rs",
+   "lang": "rust",
+   "lines": 488,
+   "symbol": "impl_bits",
+   "sym_lines": 42,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3266,
+    "grep+exact": 321,
+    "grep+window": 567,
+    "vtok index": 1429,
+    "vtok skel": 1353,
+    "grep+vtok": 306,
+    "vtok exact": 292
+   },
+   "body_tokens": 307,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/tests/test_coroutine.rs",
+   "lang": "rust",
+   "lines": 482,
+   "symbol": "test_async_function_args_kwargs",
+   "sym_lines": 25,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3236,
+    "grep+exact": 197,
+    "grep+window": 197,
+    "vtok index": 763,
+    "vtok skel": 667,
+    "grep+vtok": 241,
+    "vtok exact": 231
+   },
+   "body_tokens": 187,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/tests/test_inheritance.rs",
+   "lang": "rust",
+   "lines": 539,
+   "symbol": "SubClass",
+   "sym_lines": 5,
+   "grep_hits": 12,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3589,
+    "grep+exact": 194,
+    "grep+window": 722,
+    "vtok index": 1717,
+    "vtok skel": 1576,
+    "grep+vtok": 258,
+    "vtok exact": 91
+   },
+   "body_tokens": 27,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/linux_like/linux/gnu/b32/sparc/mod.rs",
+   "lang": "rust",
+   "lines": 802,
+   "symbol": "s_no_extra_traits!",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9634,
+    "grep+exact": 41,
+    "grep+window": 972,
+    "vtok index": 7951,
+    "vtok skel": 7767,
+    "grep+vtok": 102,
+    "vtok exact": 95
+   },
+   "body_tokens": 34,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/slab-0.4.12/tests/slab.rs",
+   "lang": "rust",
+   "lines": 783,
+   "symbol": "invalid_remove_panics",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5572,
+    "grep+exact": 51,
+    "grep+window": 514,
+    "vtok index": 1031,
+    "vtok skel": 801,
+    "grep+vtok": 117,
+    "vtok exact": 108
+   },
+   "body_tokens": 42,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/solid/mod.rs",
+   "lang": "rust",
+   "lines": 879,
+   "symbol": "foreign_mod_item",
+   "sym_lines": 458,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11521,
+    "grep+exact": 7456,
+    "grep+window": 7527,
+    "vtok index": 15210,
+    "vtok skel": 15085,
+    "grep+vtok": 5860,
+    "vtok exact": 5860
+   },
+   "body_tokens": 7456,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/napi-3.16.1/src/bindgen_runtime/js_values/array.rs",
+   "lang": "rust",
+   "lines": 446,
+   "symbol": "tuple_from_napi_value",
+   "sym_lines": 22,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3358,
+    "grep+exact": 211,
+    "grep+window": 672,
+    "vtok index": 1919,
+    "vtok skel": 1806,
+    "grep+vtok": 255,
+    "vtok exact": 225
+   },
+   "body_tokens": 181,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.34/src/io/mod.rs",
+   "lang": "rust",
+   "lines": 834,
+   "symbol": "assert_write",
+   "sym_lines": 6,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7453,
+    "grep+exact": 56,
+    "grep+window": 56,
+    "vtok index": 1804,
+    "vtok skel": 1614,
+    "grep+vtok": 103,
+    "vtok exact": 75
+   },
+   "body_tokens": 28,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.154/src/lib.rs",
+   "lang": "rust",
+   "lines": 442,
+   "symbol": "tri",
+   "sym_lines": 8,
+   "grep_hits": 30,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3736,
+    "grep+exact": 506,
+    "grep+window": 609,
+    "vtok index": 1025,
+    "vtok skel": 1017,
+    "grep+vtok": 548,
+    "vtok exact": 101
+   },
+   "body_tokens": 59,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aho-corasick-1.1.5/src/nfa/contiguous.rs",
+   "lang": "rust",
+   "lines": 1142,
+   "symbol": "core::fmt::Debug for State.fmt",
+   "sym_lines": 27,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10895,
+    "grep+exact": 331,
+    "grep+window": 733,
+    "vtok index": 1805,
+    "vtok skel": 1627,
+    "grep+vtok": 336,
+    "vtok exact": 222
+   },
+   "body_tokens": 217,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.8.3/src/arch/x86_64/sse2/memchr.rs",
+   "lang": "rust",
+   "lines": 1078,
+   "symbol": "One.count_raw",
+   "sym_lines": 16,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10174,
+    "grep+exact": 274,
+    "grep+window": 813,
+    "vtok index": 1994,
+    "vtok skel": 1766,
+    "grep+vtok": 262,
+    "vtok exact": 155
+   },
+   "body_tokens": 167,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aho-corasick-1.1.5/src/ahocorasick.rs",
+   "lang": "rust",
+   "lines": 2790,
+   "symbol": "AhoCorasick.new",
+   "sym_lines": 7,
+   "grep_hits": 55,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 27504,
+    "grep+exact": 1267,
+    "grep+window": 2017,
+    "vtok index": 2817,
+    "vtok skel": 2383,
+    "grep+vtok": 1328,
+    "vtok exact": 124
+   },
+   "body_tokens": 63,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/hurd/mod.rs",
+   "lang": "rust",
+   "lines": 4784,
+   "symbol": "PTHREAD_COND_INITIALIZER",
+   "sym_lines": 7,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 54856,
+    "grep+exact": 86,
+    "grep+window": 860,
+    "vtok index": 46222,
+    "vtok skel": 45494,
+    "grep+vtok": 150,
+    "vtok exact": 130
+   },
+   "body_tokens": 66,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/regex-automata-0.4.18/src/util/alphabet.rs",
+   "lang": "rust",
+   "lines": 1140,
+   "symbol": "ByteClasses.alphabet_len",
+   "sym_lines": 7,
+   "grep_hits": 12,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10182,
+    "grep+exact": 269,
+    "grep+window": 993,
+    "vtok index": 1732,
+    "vtok skel": 1513,
+    "grep+vtok": 276,
+    "vtok exact": 82
+   },
+   "body_tokens": 75,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/tests/test_proto_methods.rs",
+   "lang": "rust",
+   "lines": 1012,
+   "symbol": "SequenceIndex",
+   "sym_lines": 5,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6901,
+    "grep+exact": 98,
+    "grep+window": 605,
+    "vtok index": 2053,
+    "vtok skel": 1884,
+    "grep+vtok": 150,
+    "vtok exact": 83
+   },
+   "body_tokens": 31,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-channel-0.3.34/src/mpsc/mod.rs",
+   "lang": "rust",
+   "lines": 1469,
+   "symbol": "Sender.same_receiver",
+   "sym_lines": 6,
+   "grep_hits": 6,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11440,
+    "grep+exact": 154,
+    "grep+window": 762,
+    "vtok index": 2970,
+    "vtok skel": 2668,
+    "grep+vtok": 196,
+    "vtok exact": 94
+   },
+   "body_tokens": 52,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pin-project-lite-0.2.17/src/lib.rs",
+   "lang": "rust",
+   "lines": 1771,
+   "symbol": "pin_project",
+   "sym_lines": 9,
+   "grep_hits": 108,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 13612,
+    "grep+exact": 1532,
+    "grep+window": 2186,
+    "vtok index": 7362,
+    "vtok skel": 7095,
+    "grep+vtok": 1573,
+    "vtok exact": 86
+   },
+   "body_tokens": 45,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/mod.rs",
+   "lang": "rust",
+   "lines": 2566,
+   "symbol": "f!",
+   "sym_lines": 16,
+   "grep_hits": 27,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 28037,
+    "grep+exact": 324,
+    "grep+window": 751,
+    "vtok index": 21884,
+    "vtok skel": 21712,
+    "grep+vtok": 317,
+    "vtok exact": 145
+   },
+   "body_tokens": 152,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/linux_like/linux_l4re_shared.rs",
+   "lang": "rust",
+   "lines": 1986,
+   "symbol": "NI_IDN",
+   "sym_lines": 6,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 22988,
+    "grep+exact": 73,
+    "grep+window": 938,
+    "vtok index": 19498,
+    "vtok skel": 19114,
+    "grep+vtok": 124,
+    "vtok exact": 109
+   },
+   "body_tokens": 58,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashbrown-0.17.1/src/table.rs",
+   "lang": "rust",
+   "lines": 3198,
+   "symbol": "HashTable.with_capacity_in",
+   "sym_lines": 6,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 27503,
+    "grep+exact": 101,
+    "grep+window": 890,
+    "vtok index": 4816,
+    "vtok skel": 4230,
+    "grep+vtok": 147,
+    "vtok exact": 90
+   },
+   "body_tokens": 44,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.9/src/gen/fold.rs",
+   "lang": "rust",
+   "lines": 3935,
+   "symbol": "fold_trait_item_const",
+   "sym_lines": 21,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 38869,
+    "grep+exact": 222,
+    "grep+window": 731,
+    "vtok index": 19989,
+    "vtok skel": 19133,
+    "grep+vtok": 268,
+    "vtok exact": 217
+   },
+   "body_tokens": 171,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/aho-corasick-1.1.5/src/util/search.rs",
+   "lang": "rust",
+   "lines": 1159,
+   "symbol": "Input.span",
+   "sym_lines": 5,
+   "grep_hits": 112,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10273,
+    "grep+exact": 1740,
+    "grep+window": 2506,
+    "vtok index": 1549,
+    "vtok skel": 1356,
+    "grep+vtok": 1785,
+    "vtok exact": 83
+   },
+   "body_tokens": 38,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/core/ser/mod.rs",
+   "lang": "rust",
+   "lines": 2011,
+   "symbol": "Serializer.serialize_newtype_struct",
+   "sym_lines": 7,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 16361,
+    "grep+exact": 76,
+    "grep+window": 705,
+    "vtok index": 2492,
+    "vtok skel": 2239,
+    "grep+vtok": 118,
+    "vtok exact": 89
+   },
+   "body_tokens": 47,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/src/lib.rs",
+   "lang": "rust",
+   "lines": 1858,
+   "symbol": "Data.pack8",
+   "sym_lines": 11,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 20519,
+    "grep+exact": 299,
+    "grep+window": 1295,
+    "vtok index": 7446,
+    "vtok skel": 7215,
+    "grep+vtok": 302,
+    "vtok exact": 172
+   },
+   "body_tokens": 169,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.9/src/gen/debug.rs",
+   "lang": "rust",
+   "lines": 3400,
+   "symbol": "crate::PatRest.debug",
+   "sym_lines": 6,
+   "grep_hits": 568,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 32033,
+    "grep+exact": 10088,
+    "grep+window": 10757,
+    "vtok index": 14448,
+    "vtok skel": 13310,
+    "grep+vtok": 10139,
+    "vtok exact": 115
+   },
+   "body_tokens": 64,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-macros-backend-0.30.1/src/pyclass.rs",
+   "lang": "rust",
+   "lines": 3279,
+   "symbol": "PyClassImplsBuilder",
+   "sym_lines": 11,
+   "grep_hits": 6,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 27279,
+    "grep+exact": 197,
+    "grep+window": 729,
+    "vtok index": 5605,
+    "vtok skel": 5179,
+    "grep+vtok": 266,
+    "vtok exact": 162
+   },
+   "body_tokens": 93,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/impls.rs",
+   "lang": "rust",
+   "lines": 1046,
+   "symbol": "array_impls",
+   "sym_lines": 22,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7721,
+    "grep+exact": 136,
+    "grep+window": 512,
+    "vtok index": 4953,
+    "vtok skel": 4703,
+    "grep+vtok": 157,
+    "vtok exact": 141
+   },
+   "body_tokens": 120,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libc-0.2.191/src/unix/redox/mod.rs",
+   "lang": "rust",
+   "lines": 1582,
+   "symbol": "s!",
+   "sym_lines": 339,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 17957,
+    "grep+exact": 2655,
+    "grep+window": 3088,
+    "vtok index": 16585,
+    "vtok skel": 16321,
+    "grep+vtok": 2202,
+    "vtok exact": 2198
+   },
+   "body_tokens": 2651,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/marker.rs",
+   "lang": "rust",
+   "lines": 1037,
+   "symbol": "Python.NotImplemented",
+   "sym_lines": 5,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9220,
+    "grep+exact": 132,
+    "grep+window": 778,
+    "vtok index": 1602,
+    "vtok skel": 1435,
+    "grep+vtok": 168,
+    "vtok exact": 88
+   },
+   "body_tokens": 52,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/types/list.rs",
+   "lang": "rust",
+   "lines": 1784,
+   "symbol": "BoundListIterator.nth_unsynchronized",
+   "sym_lines": 24,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 15461,
+    "grep+exact": 222,
+    "grep+window": 651,
+    "vtok index": 3877,
+    "vtok skel": 3461,
+    "grep+vtok": 212,
+    "vtok exact": 187
+   },
+   "body_tokens": 197,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/slab-0.4.12/src/lib.rs",
+   "lang": "rust",
+   "lines": 1654,
+   "symbol": "Slab.iter_mut",
+   "sym_lines": 6,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 12158,
+    "grep+exact": 119,
+    "grep+window": 695,
+    "vtok index": 2361,
+    "vtok skel": 2030,
+    "grep+vtok": 173,
+    "vtok exact": 96
+   },
+   "body_tokens": 42,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/conversions/jiff.rs",
+   "lang": "rust",
+   "lines": 1317,
+   "symbol": "tests.test_pyo3_datetime_into_pyobject_fixed_offset",
+   "sym_lines": 27,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11466,
+    "grep+exact": 272,
+    "grep+window": 658,
+    "vtok index": 5613,
+    "vtok skel": 5231,
+    "grep+vtok": 317,
+    "vtok exact": 301
+   },
+   "body_tokens": 256,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-0.30.1/src/pyclass/guard.rs",
+   "lang": "rust",
+   "lines": 1201,
+   "symbol": "PyClassGuard.map",
+   "sym_lines": 10,
+   "grep_hits": 19,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11237,
+    "grep+exact": 487,
+    "grep+window": 1096,
+    "vtok index": 3531,
+    "vtok skel": 3194,
+    "grep+vtok": 526,
+    "vtok exact": 147
+   },
+   "body_tokens": 108,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bstr-1.13.1/src/ext_vec.rs",
+   "lang": "rust",
+   "lines": 1308,
+   "symbol": "ByteVec.into_os_string",
+   "sym_lines": 22,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10071,
+    "grep+exact": 271,
+    "grep+window": 690,
+    "vtok index": 1712,
+    "vtok skel": 1471,
+    "grep+vtok": 300,
+    "vtok exact": 180
+   },
+   "body_tokens": 151,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/aa39c4f4.js",
+   "lang": "typescript",
+   "lines": 220,
+   "symbol": "TrustedMetadataStore.updateDelegatedTargets",
+   "sym_lines": 38,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2398,
+    "grep+exact": 481,
+    "grep+window": 896,
+    "vtok index": 731,
+    "vtok skel": 660,
+    "grep+vtok": 380,
+    "vtok exact": 362
+   },
+   "body_tokens": 463,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/40a43ebf.ts",
+   "lang": "typescript",
+   "lines": 395,
+   "symbol": "SearchEngine.findNextWithSelection",
+   "sym_lines": 62,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3335,
+    "grep+exact": 503,
+    "grep+window": 666,
+    "vtok index": 873,
+    "vtok skel": 798,
+    "grep+vtok": 390,
+    "vtok exact": 359
+   },
+   "body_tokens": 472,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/42f941bf.js",
+   "lang": "typescript",
+   "lines": 321,
+   "symbol": "Container",
+   "sym_lines": 303,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3126,
+    "grep+exact": 2237,
+    "grep+window": 2250,
+    "vtok index": 1825,
+    "vtok skel": 1775,
+    "grep+vtok": 1557,
+    "vtok exact": 1491
+   },
+   "body_tokens": 2171,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/13d0de8a.js",
+   "lang": "typescript",
+   "lines": 334,
+   "symbol": "SemVer.compareBuild",
+   "sym_lines": 23,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2458,
+    "grep+exact": 158,
+    "grep+window": 643,
+    "vtok index": 482,
+    "vtok skel": 390,
+    "grep+vtok": 177,
+    "vtok exact": 168
+   },
+   "body_tokens": 149,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/e3bf2a18.js",
+   "lang": "typescript",
+   "lines": 337,
+   "symbol": "readdirOrEmpty",
+   "sym_lines": 9,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2297,
+    "grep+exact": 111,
+    "grep+window": 111,
+    "vtok index": 624,
+    "vtok skel": 542,
+    "grep+vtok": 169,
+    "vtok exact": 111
+   },
+   "body_tokens": 53,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/2d4e3656.ts",
+   "lang": "typescript",
+   "lines": 210,
+   "symbol": "expression_statement",
+   "sym_lines": 181,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2006,
+    "grep+exact": 1654,
+    "grep+window": 1654,
+    "vtok index": 1866,
+    "vtok skel": 1838,
+    "grep+vtok": 1383,
+    "vtok exact": 1383
+   },
+   "body_tokens": 1654,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/80a160eb.ts",
+   "lang": "typescript",
+   "lines": 159,
+   "symbol": "expression_statement",
+   "sym_lines": 61,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1298,
+    "grep+exact": 473,
+    "grep+window": 661,
+    "vtok index": 697,
+    "vtok skel": 662,
+    "grep+vtok": 443,
+    "vtok exact": 443
+   },
+   "body_tokens": 473,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/590178bf.ts",
+   "lang": "typescript",
+   "lines": 336,
+   "symbol": "FakeAdminGuard.canActivate",
+   "sym_lines": 14,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3041,
+    "grep+exact": 136,
+    "grep+window": 682,
+    "vtok index": 992,
+    "vtok skel": 955,
+    "grep+vtok": 180,
+    "vtok exact": 154
+   },
+   "body_tokens": 110,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/3979de7f.js",
+   "lang": "typescript",
+   "lines": 303,
+   "symbol": "UI.columnWidths",
+   "sym_lines": 28,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2304,
+    "grep+exact": 204,
+    "grep+window": 550,
+    "vtok index": 563,
+    "vtok skel": 477,
+    "grep+vtok": 208,
+    "vtok exact": 189
+   },
+   "body_tokens": 185,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/866e4ae6.ts",
+   "lang": "typescript",
+   "lines": 299,
+   "symbol": "expression_statement",
+   "sym_lines": 269,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2617,
+    "grep+exact": 2173,
+    "grep+window": 2173,
+    "vtok index": 2449,
+    "vtok skel": 2420,
+    "grep+vtok": 1797,
+    "vtok exact": 1797
+   },
+   "body_tokens": 2173,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/f83c37ce.ts",
+   "lang": "typescript",
+   "lines": 380,
+   "symbol": "expression_statement",
+   "sym_lines": 287,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3501,
+    "grep+exact": 2449,
+    "grep+window": 2449,
+    "vtok index": 2828,
+    "vtok skel": 2797,
+    "grep+vtok": 1976,
+    "vtok exact": 1976
+   },
+   "body_tokens": 2449,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/tsx/ca6c1eb0.tsx",
+   "lang": "typescript",
+   "lines": 325,
+   "symbol": "DeckActions",
+   "sym_lines": 8,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3267,
+    "grep+exact": 72,
+    "grep+window": 588,
+    "vtok index": 618,
+    "vtok skel": 568,
+    "grep+vtok": 132,
+    "vtok exact": 116
+   },
+   "body_tokens": 56,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/d7729763.ts",
+   "lang": "typescript",
+   "lines": 322,
+   "symbol": "argsToCommandLine",
+   "sym_lines": 51,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2744,
+    "grep+exact": 487,
+    "grep+window": 592,
+    "vtok index": 1050,
+    "vtok skel": 948,
+    "grep+vtok": 428,
+    "vtok exact": 374
+   },
+   "body_tokens": 433,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/79ac10cb.js",
+   "lang": "typescript",
+   "lines": 247,
+   "symbol": "Glob.walkSync",
+   "sym_lines": 13,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1930,
+    "grep+exact": 106,
+    "grep+window": 405,
+    "vtok index": 591,
+    "vtok skel": 493,
+    "grep+vtok": 157,
+    "vtok exact": 143
+   },
+   "body_tokens": 92,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/9b666555.ts",
+   "lang": "typescript",
+   "lines": 204,
+   "symbol": "WindowsTerminal.clear",
+   "sym_lines": 5,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1470,
+    "grep+exact": 42,
+    "grep+window": 339,
+    "vtok index": 511,
+    "vtok skel": 449,
+    "grep+vtok": 108,
+    "vtok exact": 92
+   },
+   "body_tokens": 26,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/092d77f7.ts",
+   "lang": "typescript",
+   "lines": 371,
+   "symbol": "VisitorObject$1",
+   "sym_lines": 332,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6908,
+    "grep+exact": 6531,
+    "grep+window": 6787,
+    "vtok index": 11277,
+    "vtok skel": 11234,
+    "grep+vtok": 5515,
+    "vtok exact": 5497
+   },
+   "body_tokens": 6513,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/1f1434d7.js",
+   "lang": "typescript",
+   "lines": 318,
+   "symbol": "GitFetcher.resolve",
+   "sym_lines": 14,
+   "grep_hits": 40,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2798,
+    "grep+exact": 624,
+    "grep+window": 1239,
+    "vtok index": 678,
+    "vtok skel": 570,
+    "grep+vtok": 621,
+    "vtok exact": 111
+   },
+   "body_tokens": 114,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/49b8de02.js",
+   "lang": "typescript",
+   "lines": 379,
+   "symbol": "Yallist.pop",
+   "sym_lines": 17,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2345,
+    "grep+exact": 89,
+    "grep+window": 516,
+    "vtok index": 496,
+    "vtok skel": 418,
+    "grep+vtok": 133,
+    "vtok exact": 127
+   },
+   "body_tokens": 83,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/73283515.ts",
+   "lang": "typescript",
+   "lines": 314,
+   "symbol": "DevOptions",
+   "sym_lines": 28,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3377,
+    "grep+exact": 500,
+    "grep+window": 970,
+    "vtok index": 1650,
+    "vtok skel": 1564,
+    "grep+vtok": 318,
+    "vtok exact": 109
+   },
+   "body_tokens": 291,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/1cc36d25.ts",
+   "lang": "typescript",
+   "lines": 158,
+   "symbol": "DecorationManager.createHighlightDecorations",
+   "sym_lines": 12,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1257,
+    "grep+exact": 110,
+    "grep+window": 745,
+    "vtok index": 971,
+    "vtok skel": 522,
+    "grep+vtok": 170,
+    "vtok exact": 147
+   },
+   "body_tokens": 87,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/faaf1b21.js",
+   "lang": "typescript",
+   "lines": 387,
+   "symbol": "GlobUtil.matchSync",
+   "sym_lines": 5,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2936,
+    "grep+exact": 78,
+    "grep+window": 686,
+    "vtok index": 710,
+    "vtok skel": 614,
+    "grep+vtok": 141,
+    "vtok exact": 102
+   },
+   "body_tokens": 39,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/b4107c27.ts",
+   "lang": "typescript",
+   "lines": 398,
+   "symbol": "expression_statement",
+   "sym_lines": 339,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3649,
+    "grep+exact": 2748,
+    "grep+window": 2748,
+    "vtok index": 3203,
+    "vtok skel": 3174,
+    "grep+vtok": 2189,
+    "vtok exact": 2189
+   },
+   "body_tokens": 2748,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/4d1a38fb.ts",
+   "lang": "typescript",
+   "lines": 288,
+   "symbol": "Filters",
+   "sym_lines": 6,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2659,
+    "grep+exact": 83,
+    "grep+window": 765,
+    "vtok index": 913,
+    "vtok skel": 884,
+    "grep+vtok": 132,
+    "vtok exact": 96
+   },
+   "body_tokens": 47,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/8d2abb69.ts",
+   "lang": "typescript",
+   "lines": 199,
+   "symbol": "expression_statement",
+   "sym_lines": 174,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 1636,
+    "grep+exact": 1353,
+    "grep+window": 1353,
+    "vtok index": 1540,
+    "vtok skel": 1512,
+    "grep+vtok": 1115,
+    "vtok exact": 1115
+   },
+   "body_tokens": 1353,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/07c1d3e0.js",
+   "lang": "typescript",
+   "lines": 273,
+   "symbol": "QRUtil",
+   "sym_lines": 265,
+   "grep_hits": 8,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2525,
+    "grep+exact": 2668,
+    "grep+window": 2674,
+    "vtok index": 2327,
+    "vtok skel": 2287,
+    "grep+vtok": 1775,
+    "vtok exact": 1588
+   },
+   "body_tokens": 2481,
+   "bucket": "150-399"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/c920944a.js",
+   "lang": "typescript",
+   "lines": 558,
+   "symbol": "testSet",
+   "sym_lines": 35,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4824,
+    "grep+exact": 332,
+    "grep+window": 332,
+    "vtok index": 762,
+    "vtok skel": 661,
+    "grep+vtok": 229,
+    "vtok exact": 197
+   },
+   "body_tokens": 300,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/43c392c0.js",
+   "lang": "typescript",
+   "lines": 579,
+   "symbol": "Search",
+   "sym_lines": 418,
+   "grep_hits": 62,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4580,
+    "grep+exact": 4087,
+    "grep+window": 4091,
+    "vtok index": 2727,
+    "vtok skel": 2674,
+    "grep+vtok": 2950,
+    "vtok exact": 2159
+   },
+   "body_tokens": 3296,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/f7c87b48.js",
+   "lang": "typescript",
+   "lines": 498,
+   "symbol": "FetcherBase.constructor",
+   "sym_lines": 95,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4175,
+    "grep+exact": 1010,
+    "grep+window": 1406,
+    "vtok index": 1241,
+    "vtok skel": 1095,
+    "grep+vtok": 577,
+    "vtok exact": 551
+   },
+   "body_tokens": 984,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/87e61ff0.ts",
+   "lang": "typescript",
+   "lines": 717,
+   "symbol": "expression_statement",
+   "sym_lines": 680,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6310,
+    "grep+exact": 5779,
+    "grep+window": 5779,
+    "vtok index": 5352,
+    "vtok skel": 5324,
+    "grep+vtok": 4501,
+    "vtok exact": 4501
+   },
+   "body_tokens": 5779,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/3a9bbcac.js",
+   "lang": "typescript",
+   "lines": 427,
+   "symbol": "unshift",
+   "sym_lines": 7,
+   "grep_hits": 4,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2500,
+    "grep+exact": 86,
+    "grep+window": 221,
+    "vtok index": 445,
+    "vtok skel": 392,
+    "grep+vtok": 131,
+    "vtok exact": 90
+   },
+   "body_tokens": 45,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/770949b1.js",
+   "lang": "typescript",
+   "lines": 840,
+   "symbol": "convert",
+   "sym_lines": 17,
+   "grep_hits": 60,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6917,
+    "grep+exact": 1008,
+    "grep+window": 1444,
+    "vtok index": 1138,
+    "vtok skel": 1064,
+    "grep+vtok": 1030,
+    "vtok exact": 269
+   },
+   "body_tokens": 247,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/59593b31.js",
+   "lang": "typescript",
+   "lines": 601,
+   "symbol": "VisualStudioFinder.findVisualStudio2017UsingSetupModule",
+   "sym_lines": 8,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5186,
+    "grep+exact": 100,
+    "grep+window": 808,
+    "vtok index": 839,
+    "vtok skel": 680,
+    "grep+vtok": 176,
+    "vtok exact": 147
+   },
+   "body_tokens": 71,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/acf652ed.ts",
+   "lang": "typescript",
+   "lines": 448,
+   "symbol": "expression_statement",
+   "sym_lines": 413,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4042,
+    "grep+exact": 3561,
+    "grep+window": 3561,
+    "vtok index": 3324,
+    "vtok skel": 3296,
+    "grep+vtok": 2688,
+    "vtok exact": 2688
+   },
+   "body_tokens": 3561,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/7d06dd9e.ts",
+   "lang": "typescript",
+   "lines": 412,
+   "symbol": "CacheableMemoryOptions",
+   "sym_lines": 10,
+   "grep_hits": 9,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4667,
+    "grep+exact": 322,
+    "grep+window": 1052,
+    "vtok index": 1621,
+    "vtok skel": 1563,
+    "grep+vtok": 377,
+    "vtok exact": 134
+   },
+   "body_tokens": 79,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/95b249ee.ts",
+   "lang": "typescript",
+   "lines": 626,
+   "symbol": "TaskContext",
+   "sym_lines": 38,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5004,
+    "grep+exact": 360,
+    "grep+window": 650,
+    "vtok index": 1300,
+    "vtok skel": 1214,
+    "grep+vtok": 184,
+    "vtok exact": 96
+   },
+   "body_tokens": 272,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/12b481c8.js",
+   "lang": "typescript",
+   "lines": 743,
+   "symbol": "AST.clone",
+   "sym_lines": 7,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6441,
+    "grep+exact": 58,
+    "grep+window": 598,
+    "vtok index": 1021,
+    "vtok skel": 876,
+    "grep+vtok": 103,
+    "vtok exact": 87
+   },
+   "body_tokens": 42,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/bf822125.js",
+   "lang": "typescript",
+   "lines": 540,
+   "symbol": "Progress.off",
+   "sym_lines": 12,
+   "grep_hits": 7,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4070,
+    "grep+exact": 138,
+    "grep+window": 542,
+    "vtok index": 960,
+    "vtok skel": 847,
+    "grep+vtok": 178,
+    "vtok exact": 111
+   },
+   "body_tokens": 71,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/f1cc22b7.js",
+   "lang": "typescript",
+   "lines": 427,
+   "symbol": "Yallist",
+   "sym_lines": 22,
+   "grep_hits": 32,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 2500,
+    "grep+exact": 486,
+    "grep+window": 750,
+    "vtok index": 511,
+    "vtok skel": 458,
+    "grep+vtok": 514,
+    "vtok exact": 156
+   },
+   "body_tokens": 128,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/0c74cece.ts",
+   "lang": "typescript",
+   "lines": 766,
+   "symbol": "GetOptions",
+   "sym_lines": 7,
+   "grep_hits": 10,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9133,
+    "grep+exact": 468,
+    "grep+window": 1316,
+    "vtok index": 2287,
+    "vtok skel": 2184,
+    "grep+vtok": 512,
+    "vtok exact": 81
+   },
+   "body_tokens": 37,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/19fd2c65.js",
+   "lang": "typescript",
+   "lines": 449,
+   "symbol": "publishQueue",
+   "sym_lines": 7,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3378,
+    "grep+exact": 65,
+    "grep+window": 587,
+    "vtok index": 632,
+    "vtok skel": 584,
+    "grep+vtok": 130,
+    "vtok exact": 98
+   },
+   "body_tokens": 33,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/c1a8201a.ts",
+   "lang": "typescript",
+   "lines": 665,
+   "symbol": "expression_statement",
+   "sym_lines": 618,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6015,
+    "grep+exact": 5328,
+    "grep+window": 5328,
+    "vtok index": 4913,
+    "vtok skel": 4885,
+    "grep+vtok": 4042,
+    "vtok exact": 4042
+   },
+   "body_tokens": 5328,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/34101ba3.js",
+   "lang": "typescript",
+   "lines": 473,
+   "symbol": "objectifyDeps",
+   "sym_lines": 8,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3300,
+    "grep+exact": 72,
+    "grep+window": 156,
+    "vtok index": 638,
+    "vtok skel": 563,
+    "grep+vtok": 132,
+    "vtok exact": 110
+   },
+   "body_tokens": 50,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/a2c2f7e0.js",
+   "lang": "typescript",
+   "lines": 463,
+   "symbol": "expression_statement",
+   "sym_lines": 305,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3403,
+    "grep+exact": 2275,
+    "grep+window": 2398,
+    "vtok index": 1931,
+    "vtok skel": 1881,
+    "grep+vtok": 1518,
+    "vtok exact": 1518
+   },
+   "body_tokens": 2275,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/1c59b4b6.js",
+   "lang": "typescript",
+   "lines": 614,
+   "symbol": "removal",
+   "sym_lines": 30,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 26225,
+    "grep+exact": 226,
+    "grep+window": 496,
+    "vtok index": 776,
+    "vtok skel": 676,
+    "grep+vtok": 203,
+    "vtok exact": 166
+   },
+   "body_tokens": 189,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/f6ea16e4.js",
+   "lang": "typescript",
+   "lines": 655,
+   "symbol": "Parser.[PROCESSENTRY]",
+   "sym_lines": 20,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 5523,
+    "grep+exact": 154,
+    "grep+window": 676,
+    "vtok index": 1276,
+    "vtok skel": 1113,
+    "grep+vtok": 184,
+    "vtok exact": 155
+   },
+   "body_tokens": 125,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/ba54feaf.js",
+   "lang": "typescript",
+   "lines": 473,
+   "symbol": "View.completion",
+   "sym_lines": 20,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3475,
+    "grep+exact": 217,
+    "grep+window": 670,
+    "vtok index": 782,
+    "vtok skel": 677,
+    "grep+vtok": 210,
+    "vtok exact": 183
+   },
+   "body_tokens": 190,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/4303d365.js",
+   "lang": "typescript",
+   "lines": 793,
+   "symbol": "SocksClient.createConnectionChain",
+   "sym_lines": 63,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7379,
+    "grep+exact": 495,
+    "grep+window": 674,
+    "vtok index": 1249,
+    "vtok skel": 1088,
+    "grep+vtok": 345,
+    "vtok exact": 333
+   },
+   "body_tokens": 483,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/8587bf9a.ts",
+   "lang": "typescript",
+   "lines": 464,
+   "symbol": "expression_statement",
+   "sym_lines": 424,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4208,
+    "grep+exact": 3616,
+    "grep+window": 3616,
+    "vtok index": 3685,
+    "vtok skel": 3657,
+    "grep+vtok": 2862,
+    "vtok exact": 2862
+   },
+   "body_tokens": 3616,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/dc0b7c6e.js",
+   "lang": "typescript",
+   "lines": 436,
+   "symbol": "Advisory.load",
+   "sym_lines": 88,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 3530,
+    "grep+exact": 809,
+    "grep+window": 1486,
+    "vtok index": 978,
+    "vtok skel": 886,
+    "grep+vtok": 544,
+    "vtok exact": 469
+   },
+   "body_tokens": 734,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/b2ffcc59.js",
+   "lang": "typescript",
+   "lines": 414,
+   "symbol": "expression_statement",
+   "sym_lines": 8,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 4530,
+    "grep+exact": 78,
+    "grep+window": 841,
+    "vtok index": 916,
+    "vtok skel": 873,
+    "grep+vtok": 129,
+    "vtok exact": 129
+   },
+   "body_tokens": 78,
+   "bucket": "400-999"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/8cbbcd60.js",
+   "lang": "typescript",
+   "lines": 1003,
+   "symbol": "Address6.toByteArray",
+   "sym_lines": 10,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8550,
+    "grep+exact": 127,
+    "grep+window": 638,
+    "vtok index": 1123,
+    "vtok skel": 909,
+    "grep+vtok": 179,
+    "vtok exact": 156
+   },
+   "body_tokens": 104,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/73f0d9b4.js",
+   "lang": "typescript",
+   "lines": 1691,
+   "symbol": "expression_statement",
+   "sym_lines": 1606,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9532,
+    "grep+exact": 8966,
+    "grep+window": 9118,
+    "vtok index": 12791,
+    "vtok skel": 12746,
+    "grep+vtok": 6360,
+    "vtok exact": 6343
+   },
+   "body_tokens": 8949,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/55ba4740.js",
+   "lang": "typescript",
+   "lines": 2014,
+   "symbol": "defaultFS",
+   "sym_lines": 13,
+   "grep_hits": 6,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 15681,
+    "grep+exact": 200,
+    "grep+window": 931,
+    "vtok index": 2786,
+    "vtok skel": 2412,
+    "grep+vtok": 276,
+    "vtok exact": 179
+   },
+   "body_tokens": 103,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/85b714c7.js",
+   "lang": "typescript",
+   "lines": 1086,
+   "symbol": "parse",
+   "sym_lines": 937,
+   "grep_hits": 5,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7109,
+    "grep+exact": 6283,
+    "grep+window": 6449,
+    "vtok index": 4576,
+    "vtok skel": 4505,
+    "grep+vtok": 4326,
+    "vtok exact": 4248
+   },
+   "body_tokens": 6205,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/7a8ca228.js",
+   "lang": "typescript",
+   "lines": 10908,
+   "symbol": "expression_statement",
+   "sym_lines": 10896,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 81182,
+    "grep+exact": 81122,
+    "grep+window": 81122,
+    "vtok index": 71939,
+    "vtok skel": 37373,
+    "grep+vtok": 35958,
+    "vtok exact": 35958
+   },
+   "body_tokens": 81122,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/a40be32b.js",
+   "lang": "typescript",
+   "lines": 1015,
+   "symbol": "Parser",
+   "sym_lines": 923,
+   "grep_hits": 6,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9280,
+    "grep+exact": 8040,
+    "grep+window": 8053,
+    "vtok index": 6252,
+    "vtok skel": 6199,
+    "grep+vtok": 5471,
+    "vtok exact": 5414
+   },
+   "body_tokens": 7983,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/32a1e9a7.js",
+   "lang": "typescript",
+   "lines": 1150,
+   "symbol": "expression_statement",
+   "sym_lines": 1097,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7133,
+    "grep+exact": 6866,
+    "grep+window": 6974,
+    "vtok index": 5232,
+    "vtok skel": 5186,
+    "grep+vtok": 4802,
+    "vtok exact": 4802
+   },
+   "body_tokens": 6866,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/faff4078.js",
+   "lang": "typescript",
+   "lines": 1979,
+   "symbol": "PathScurryBase.resolve",
+   "sym_lines": 21,
+   "grep_hits": 61,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 15158,
+    "grep+exact": 1000,
+    "grep+window": 1457,
+    "vtok index": 2577,
+    "vtok skel": 2188,
+    "grep+vtok": 999,
+    "vtok exact": 163
+   },
+   "body_tokens": 164,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/7d76dbd6.js",
+   "lang": "typescript",
+   "lines": 1546,
+   "symbol": "getUintArray",
+   "sym_lines": 11,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 12373,
+    "grep+exact": 137,
+    "grep+window": 581,
+    "vtok index": 1435,
+    "vtok skel": 1153,
+    "grep+vtok": 179,
+    "vtok exact": 133
+   },
+   "body_tokens": 91,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/c42e5718.js",
+   "lang": "typescript",
+   "lines": 1233,
+   "symbol": "SmartBuffer.insertStringNT",
+   "sym_lines": 7,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10349,
+    "grep+exact": 69,
+    "grep+window": 654,
+    "vtok index": 1391,
+    "vtok skel": 1117,
+    "grep+vtok": 133,
+    "vtok exact": 120
+   },
+   "body_tokens": 56,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/c5b2a0b4.js",
+   "lang": "typescript",
+   "lines": 2043,
+   "symbol": "expression_statement",
+   "sym_lines": 2041,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 17483,
+    "grep+exact": 17472,
+    "grep+window": 17483,
+    "vtok index": 17631,
+    "vtok skel": 9130,
+    "grep+vtok": 8804,
+    "vtok exact": 8804
+   },
+   "body_tokens": 17472,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/a0df5ff7.js",
+   "lang": "typescript",
+   "lines": 1700,
+   "symbol": "applyPatches",
+   "sym_lines": 32,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 13081,
+    "grep+exact": 248,
+    "grep+window": 529,
+    "vtok index": 1751,
+    "vtok skel": 1498,
+    "grep+vtok": 265,
+    "vtok exact": 171
+   },
+   "body_tokens": 154,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/462cdd0e.js",
+   "lang": "typescript",
+   "lines": 1542,
+   "symbol": "LRUCache.rentries",
+   "sym_lines": 9,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 12339,
+    "grep+exact": 83,
+    "grep+window": 585,
+    "vtok index": 1378,
+    "vtok skel": 1108,
+    "grep+vtok": 127,
+    "vtok exact": 119
+   },
+   "body_tokens": 75,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/d3b2a45b.ts",
+   "lang": "typescript",
+   "lines": 1300,
+   "symbol": "decodeHTML",
+   "sym_lines": 6,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10985,
+    "grep+exact": 73,
+    "grep+window": 672,
+    "vtok index": 1629,
+    "vtok skel": 1442,
+    "grep+vtok": 137,
+    "vtok exact": 102
+   },
+   "body_tokens": 38,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/3e510dfc.js",
+   "lang": "typescript",
+   "lines": 1010,
+   "symbol": "Jack.loadEnvDefaults",
+   "sym_lines": 11,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8228,
+    "grep+exact": 110,
+    "grep+window": 688,
+    "vtok index": 1316,
+    "vtok skel": 1147,
+    "grep+vtok": 158,
+    "vtok exact": 142
+   },
+   "body_tokens": 94,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/149d491a.js",
+   "lang": "typescript",
+   "lines": 1496,
+   "symbol": "Node.satisfies",
+   "sym_lines": 14,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 10897,
+    "grep+exact": 124,
+    "grep+window": 610,
+    "vtok index": 1257,
+    "vtok skel": 983,
+    "grep+vtok": 164,
+    "vtok exact": 138
+   },
+   "body_tokens": 98,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/5898eb3c.js",
+   "lang": "typescript",
+   "lines": 1007,
+   "symbol": "Minimatch.make",
+   "sym_lines": 68,
+   "grep_hits": 9,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9186,
+    "grep+exact": 784,
+    "grep+window": 945,
+    "vtok index": 1896,
+    "vtok skel": 1703,
+    "grep+vtok": 568,
+    "vtok exact": 446
+   },
+   "body_tokens": 662,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/d6690a35.js",
+   "lang": "typescript",
+   "lines": 1020,
+   "symbol": "Minipass.[BUFFERPUSH]",
+   "sym_lines": 7,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 7972,
+    "grep+exact": 85,
+    "grep+window": 681,
+    "vtok index": 1476,
+    "vtok skel": 1295,
+    "grep+vtok": 149,
+    "vtok exact": 116
+   },
+   "body_tokens": 52,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/30e638a4.js",
+   "lang": "typescript",
+   "lines": 1235,
+   "symbol": "expression_statement",
+   "sym_lines": 1170,
+   "grep_hits": 2,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 6609,
+    "grep+exact": 6230,
+    "grep+window": 6362,
+    "vtok index": 8798,
+    "vtok skel": 8753,
+    "grep+vtok": 4446,
+    "vtok exact": 4429
+   },
+   "body_tokens": 6213,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/5fe793ed.js",
+   "lang": "typescript",
+   "lines": 1580,
+   "symbol": "fixLinks",
+   "sym_lines": 10,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 12968,
+    "grep+exact": 110,
+    "grep+window": 743,
+    "vtok index": 1303,
+    "vtok skel": 1055,
+    "grep+vtok": 158,
+    "vtok exact": 152
+   },
+   "body_tokens": 104,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/777b0b19.js",
+   "lang": "typescript",
+   "lines": 1182,
+   "symbol": "Shrinkwrap.constructor",
+   "sym_lines": 34,
+   "grep_hits": 1,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 9431,
+    "grep+exact": 238,
+    "grep+window": 745,
+    "vtok index": 1230,
+    "vtok skel": 992,
+    "grep+vtok": 238,
+    "vtok exact": 229
+   },
+   "body_tokens": 229,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/904a08d6.js",
+   "lang": "typescript",
+   "lines": 1731,
+   "symbol": "expression_statement",
+   "sym_lines": 1730,
+   "grep_hits": 0,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 13461,
+    "grep+exact": 13461,
+    "grep+window": 13461,
+    "vtok index": 16065,
+    "vtok skel": 8649,
+    "grep+vtok": 8021,
+    "vtok exact": 8021
+   },
+   "body_tokens": 13461,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/22d9b462.js",
+   "lang": "typescript",
+   "lines": 1000,
+   "symbol": "toEnvKey",
+   "sym_lines": 7,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8056,
+    "grep+exact": 117,
+    "grep+window": 906,
+    "vtok index": 1193,
+    "vtok skel": 1036,
+    "grep+vtok": 177,
+    "vtok exact": 120
+   },
+   "body_tokens": 60,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/ts/64d52a0f.ts",
+   "lang": "typescript",
+   "lines": 1139,
+   "symbol": "NULL_RASTERIZED_GLYPH",
+   "sym_lines": 8,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 11486,
+    "grep+exact": 140,
+    "grep+window": 805,
+    "vtok index": 2015,
+    "vtok skel": 1860,
+    "grep+vtok": 208,
+    "vtok exact": 167
+   },
+   "body_tokens": 99,
+   "bucket": "1000+"
+  },
+  {
+   "file": "/tmp/claude-0/-root/a9397c7e-337d-41c4-ab69-64370a3ddd88/scratchpad/js/763eabf3.js",
+   "lang": "typescript",
+   "lines": 1038,
+   "symbol": "Minipass.[EMITEND2]",
+   "sym_lines": 18,
+   "grep_hits": 3,
+   "raw_fallback": false,
+   "tokens": {
+    "full": 8160,
+    "grep+exact": 157,
+    "grep+window": 577,
+    "vtok index": 1642,
+    "vtok skel": 1447,
+    "grep+vtok": 214,
+    "vtok exact": 173
+   },
+   "body_tokens": 116,
+   "bucket": "1000+"
+  }
+ ],
+ "summary": {
+  "python 150-399": {
+   "n": 25,
+   "full": {
+    "median": 2497,
+    "mean": 3035
+   },
+   "grep+exact": {
+    "median": 111,
+    "mean": 765
+   },
+   "grep+window": {
+    "median": 726,
+    "mean": 1245
+   },
+   "vtok index": {
+    "median": 723,
+    "mean": 933
+   },
+   "vtok skel": {
+    "median": 630,
+    "mean": 878
+   },
+   "grep+vtok": {
+    "median": 141,
+    "mean": 273
+   },
+   "vtok exact": {
+    "median": 89,
+    "mean": 229
+   },
+   "vtok index vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.29
+   },
+   "vtok skel vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.26
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.07
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.05
+   },
+   "vtok index vs grep+exact": {
+    "wins": "4/25",
+    "median_ratio": 3.91
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "4/25",
+    "median_ratio": 3.33
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "9/25",
+    "median_ratio": 1.08
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "17/25",
+    "median_ratio": 0.85
+   },
+   "vtok index vs grep+window": {
+    "wins": "10/25",
+    "median_ratio": 1.03
+   },
+   "vtok skel vs grep+window": {
+    "wins": "15/25",
+    "median_ratio": 0.96
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "24/25",
+    "median_ratio": 0.2
+   },
+   "vtok exact vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.16
+   }
+  },
+  "python 400-999": {
+   "n": 25,
+   "full": {
+    "median": 5240,
+    "mean": 6677
+   },
+   "grep+exact": {
+    "median": 215,
+    "mean": 936
+   },
+   "grep+window": {
+    "median": 797,
+    "mean": 1541
+   },
+   "vtok index": {
+    "median": 1055,
+    "mean": 2079
+   },
+   "vtok skel": {
+    "median": 940,
+    "mean": 1984
+   },
+   "grep+vtok": {
+    "median": 208,
+    "mean": 455
+   },
+   "vtok exact": {
+    "median": 104,
+    "mean": 365
+   },
+   "vtok index vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.24
+   },
+   "vtok skel vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.21
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.05
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.02
+   },
+   "vtok index vs grep+exact": {
+    "wins": "0/25",
+    "median_ratio": 4.03
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "0/25",
+    "median_ratio": 3.45
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "13/25",
+    "median_ratio": 0.99
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "20/25",
+    "median_ratio": 0.7
+   },
+   "vtok index vs grep+window": {
+    "wins": "6/25",
+    "median_ratio": 1.2
+   },
+   "vtok skel vs grep+window": {
+    "wins": "9/25",
+    "median_ratio": 1.07
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.28
+   },
+   "vtok exact vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.15
+   }
+  },
+  "python 1000+": {
+   "n": 25,
+   "full": {
+    "median": 13536,
+    "mean": 16076
+   },
+   "grep+exact": {
+    "median": 251,
+    "mean": 370
+   },
+   "grep+window": {
+    "median": 719,
+    "mean": 841
+   },
+   "vtok index": {
+    "median": 2320,
+    "mean": 2607
+   },
+   "vtok skel": {
+    "median": 2076,
+    "mean": 2283
+   },
+   "grep+vtok": {
+    "median": 248,
+    "mean": 329
+   },
+   "vtok exact": {
+    "median": 124,
+    "mean": 136
+   },
+   "vtok index vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.16
+   },
+   "vtok skel vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.14
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.02
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.01
+   },
+   "vtok index vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 9.44
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 7.75
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "13/25",
+    "median_ratio": 1.0
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "20/25",
+    "median_ratio": 0.55
+   },
+   "vtok index vs grep+window": {
+    "wins": "1/25",
+    "median_ratio": 2.82
+   },
+   "vtok skel vs grep+window": {
+    "wins": "2/25",
+    "median_ratio": 2.55
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.34
+   },
+   "vtok exact vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.19
+   }
+  },
+  "python all": {
+   "n": 75,
+   "full": {
+    "median": 5362,
+    "mean": 8596
+   },
+   "grep+exact": {
+    "median": 215,
+    "mean": 690
+   },
+   "grep+window": {
+    "median": 735,
+    "mean": 1209
+   },
+   "vtok index": {
+    "median": 1344,
+    "mean": 1873
+   },
+   "vtok skel": {
+    "median": 1224,
+    "mean": 1715
+   },
+   "grep+vtok": {
+    "median": 195,
+    "mean": 352
+   },
+   "vtok exact": {
+    "median": 102,
+    "mean": 243
+   },
+   "vtok index vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.23
+   },
+   "vtok skel vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.2
+   },
+   "grep+vtok vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.04
+   },
+   "vtok exact vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.02
+   },
+   "vtok index vs grep+exact": {
+    "wins": "5/75",
+    "median_ratio": 6.21
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "5/75",
+    "median_ratio": 5.42
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "35/75",
+    "median_ratio": 1.04
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "57/75",
+    "median_ratio": 0.67
+   },
+   "vtok index vs grep+window": {
+    "wins": "17/75",
+    "median_ratio": 1.36
+   },
+   "vtok skel vs grep+window": {
+    "wins": "26/75",
+    "median_ratio": 1.33
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "74/75",
+    "median_ratio": 0.28
+   },
+   "vtok exact vs grep+window": {
+    "wins": "75/75",
+    "median_ratio": 0.16
+   }
+  },
+  "rust 150-399": {
+   "n": 25,
+   "full": {
+    "median": 1887,
+    "mean": 2130
+   },
+   "grep+exact": {
+    "median": 286,
+    "mean": 618
+   },
+   "grep+window": {
+    "median": 693,
+    "mean": 952
+   },
+   "vtok index": {
+    "median": 936,
+    "mean": 1746
+   },
+   "vtok skel": {
+    "median": 887,
+    "mean": 1657
+   },
+   "grep+vtok": {
+    "median": 286,
+    "mean": 597
+   },
+   "vtok exact": {
+    "median": 159,
+    "mean": 526
+   },
+   "vtok index vs full": {
+    "wins": "19/25",
+    "median_ratio": 0.65
+   },
+   "vtok skel vs full": {
+    "wins": "19/25",
+    "median_ratio": 0.58
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.15
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.13
+   },
+   "vtok index vs grep+exact": {
+    "wins": "0/25",
+    "median_ratio": 4.34
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 4.18
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "11/25",
+    "median_ratio": 1.09
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "15/25",
+    "median_ratio": 0.91
+   },
+   "vtok index vs grep+window": {
+    "wins": "4/25",
+    "median_ratio": 1.77
+   },
+   "vtok skel vs grep+window": {
+    "wins": "6/25",
+    "median_ratio": 1.7
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "23/25",
+    "median_ratio": 0.49
+   },
+   "vtok exact vs grep+window": {
+    "wins": "24/25",
+    "median_ratio": 0.43
+   }
+  },
+  "rust 400-999": {
+   "n": 25,
+   "full": {
+    "median": 5572,
+    "mean": 5948
+   },
+   "grep+exact": {
+    "median": 211,
+    "mean": 1056
+   },
+   "grep+window": {
+    "median": 758,
+    "mean": 1475
+   },
+   "vtok index": {
+    "median": 1781,
+    "mean": 3668
+   },
+   "vtok skel": {
+    "median": 1614,
+    "mean": 3549
+   },
+   "grep+vtok": {
+    "median": 258,
+    "mean": 888
+   },
+   "vtok exact": {
+    "median": 136,
+    "mean": 776
+   },
+   "vtok index vs full": {
+    "wins": "22/25",
+    "median_ratio": 0.38
+   },
+   "vtok skel vs full": {
+    "wins": "23/25",
+    "median_ratio": 0.35
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.07
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.03
+   },
+   "vtok index vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 6.2
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 5.68
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "9/25",
+    "median_ratio": 1.21
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "15/25",
+    "median_ratio": 0.85
+   },
+   "vtok index vs grep+window": {
+    "wins": "2/25",
+    "median_ratio": 2.29
+   },
+   "vtok skel vs grep+window": {
+    "wins": "3/25",
+    "median_ratio": 2.1
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "23/25",
+    "median_ratio": 0.4
+   },
+   "vtok exact vs grep+window": {
+    "wins": "23/25",
+    "median_ratio": 0.21
+   }
+  },
+  "rust 1000+": {
+   "n": 25,
+   "full": {
+    "median": 13612,
+    "mean": 18589
+   },
+   "grep+exact": {
+    "median": 269,
+    "mean": 857
+   },
+   "grep+window": {
+    "median": 778,
+    "mean": 1458
+   },
+   "vtok index": {
+    "median": 3877,
+    "mean": 8197
+   },
+   "vtok skel": {
+    "median": 3461,
+    "mean": 7831
+   },
+   "grep+vtok": {
+    "median": 268,
+    "mean": 872
+   },
+   "vtok exact": {
+    "median": 130,
+    "mean": 220
+   },
+   "vtok index vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.26
+   },
+   "vtok skel vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.23
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.02
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.01
+   },
+   "vtok index vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 19.29
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "1/25",
+    "median_ratio": 17.06
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "4/25",
+    "median_ratio": 1.11
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "20/25",
+    "median_ratio": 0.67
+   },
+   "vtok index vs grep+window": {
+    "wins": "1/25",
+    "median_ratio": 3.53
+   },
+   "vtok skel vs grep+window": {
+    "wins": "1/25",
+    "median_ratio": 3.25
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.33
+   },
+   "vtok exact vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.14
+   }
+  },
+  "rust all": {
+   "n": 75,
+   "full": {
+    "median": 5590,
+    "mean": 8889
+   },
+   "grep+exact": {
+    "median": 269,
+    "mean": 844
+   },
+   "grep+window": {
+    "median": 751,
+    "mean": 1295
+   },
+   "vtok index": {
+    "median": 1805,
+    "mean": 4537
+   },
+   "vtok skel": {
+    "median": 1688,
+    "mean": 4345
+   },
+   "grep+vtok": {
+    "median": 268,
+    "mean": 785
+   },
+   "vtok exact": {
+    "median": 141,
+    "mean": 507
+   },
+   "vtok index vs full": {
+    "wins": "66/75",
+    "median_ratio": 0.4
+   },
+   "vtok skel vs full": {
+    "wins": "67/75",
+    "median_ratio": 0.37
+   },
+   "grep+vtok vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.07
+   },
+   "vtok exact vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.03
+   },
+   "vtok index vs grep+exact": {
+    "wins": "2/75",
+    "median_ratio": 6.32
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "3/75",
+    "median_ratio": 6.15
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "24/75",
+    "median_ratio": 1.15
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "50/75",
+    "median_ratio": 0.85
+   },
+   "vtok index vs grep+window": {
+    "wins": "7/75",
+    "median_ratio": 2.38
+   },
+   "vtok skel vs grep+window": {
+    "wins": "10/75",
+    "median_ratio": 2.17
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "71/75",
+    "median_ratio": 0.42
+   },
+   "vtok exact vs grep+window": {
+    "wins": "72/75",
+    "median_ratio": 0.2
+   }
+  },
+  "typescript 150-399": {
+   "n": 25,
+   "full": {
+    "median": 2617,
+    "mean": 2715
+   },
+   "grep+exact": {
+    "median": 481,
+    "mean": 1043
+   },
+   "grep+window": {
+    "median": 745,
+    "mean": 1326
+   },
+   "vtok index": {
+    "median": 913,
+    "mean": 1619
+   },
+   "vtok skel": {
+    "median": 798,
+    "mean": 1542
+   },
+   "grep+vtok": {
+    "median": 380,
+    "mean": 864
+   },
+   "vtok exact": {
+    "median": 189,
+    "mean": 810
+   },
+   "vtok index vs full": {
+    "wins": "24/25",
+    "median_ratio": 0.35
+   },
+   "vtok skel vs full": {
+    "wins": "24/25",
+    "median_ratio": 0.33
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.14
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.11
+   },
+   "vtok index vs grep+exact": {
+    "wins": "2/25",
+    "median_ratio": 2.16
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "3/25",
+    "median_ratio": 1.95
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "14/25",
+    "median_ratio": 0.94
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "15/25",
+    "median_ratio": 0.84
+   },
+   "vtok index vs grep+window": {
+    "wins": "6/25",
+    "median_ratio": 1.14
+   },
+   "vtok skel vs grep+window": {
+    "wins": "10/25",
+    "median_ratio": 1.11
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "24/25",
+    "median_ratio": 0.5
+   },
+   "vtok exact vs grep+window": {
+    "wins": "24/25",
+    "median_ratio": 0.4
+   }
+  },
+  "typescript 400-999": {
+   "n": 25,
+   "full": {
+    "median": 4580,
+    "mean": 5653
+   },
+   "grep+exact": {
+    "median": 360,
+    "mean": 1245
+   },
+   "grep+window": {
+    "median": 808,
+    "mean": 1579
+   },
+   "vtok index": {
+    "median": 1138,
+    "mean": 1652
+   },
+   "vtok skel": {
+    "median": 1064,
+    "mean": 1568
+   },
+   "grep+vtok": {
+    "median": 345,
+    "mean": 978
+   },
+   "vtok exact": {
+    "median": 166,
+    "mean": 853
+   },
+   "vtok index vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.23
+   },
+   "vtok skel vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.2
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.06
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.04
+   },
+   "vtok index vs grep+exact": {
+    "wins": "5/25",
+    "median_ratio": 3.43
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "6/25",
+    "median_ratio": 2.99
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "13/25",
+    "median_ratio": 0.97
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "18/25",
+    "median_ratio": 0.75
+   },
+   "vtok index vs grep+window": {
+    "wins": "9/25",
+    "median_ratio": 1.09
+   },
+   "vtok skel vs grep+window": {
+    "wins": "11/25",
+    "median_ratio": 1.01
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.41
+   },
+   "vtok exact vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.32
+   }
+  },
+  "typescript 1000+": {
+   "n": 25,
+   "full": {
+    "median": 10349,
+    "mean": 13468
+   },
+   "grep+exact": {
+    "median": 200,
+    "mean": 6090
+   },
+   "grep+window": {
+    "median": 805,
+    "mean": 6471
+   },
+   "vtok index": {
+    "median": 1751,
+    "mean": 6827
+   },
+   "vtok skel": {
+    "median": 1498,
+    "mean": 4635
+   },
+   "grep+vtok": {
+    "median": 238,
+    "mean": 3301
+   },
+   "vtok exact": {
+    "median": 171,
+    "mean": 3234
+   },
+   "vtok index vs full": {
+    "wins": "21/25",
+    "median_ratio": 0.18
+   },
+   "vtok skel vs full": {
+    "wins": "23/25",
+    "median_ratio": 0.15
+   },
+   "grep+vtok vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.02
+   },
+   "vtok exact vs full": {
+    "wins": "25/25",
+    "median_ratio": 0.02
+   },
+   "vtok index vs grep+exact": {
+    "wins": "4/25",
+    "median_ratio": 8.84
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "6/25",
+    "median_ratio": 7.16
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "10/25",
+    "median_ratio": 1.31
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "14/25",
+    "median_ratio": 0.96
+   },
+   "vtok index vs grep+window": {
+    "wins": "4/25",
+    "median_ratio": 1.77
+   },
+   "vtok skel vs grep+window": {
+    "wins": "6/25",
+    "median_ratio": 1.5
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.32
+   },
+   "vtok exact vs grep+window": {
+    "wins": "25/25",
+    "median_ratio": 0.24
+   }
+  },
+  "typescript all": {
+   "n": 75,
+   "full": {
+    "median": 4667,
+    "mean": 7278
+   },
+   "grep+exact": {
+    "median": 332,
+    "mean": 2793
+   },
+   "grep+window": {
+    "median": 765,
+    "mean": 3125
+   },
+   "vtok index": {
+    "median": 1303,
+    "mean": 3366
+   },
+   "vtok skel": {
+    "median": 1113,
+    "mean": 2582
+   },
+   "grep+vtok": {
+    "median": 276,
+    "mean": 1714
+   },
+   "vtok exact": {
+    "median": 171,
+    "mean": 1632
+   },
+   "vtok index vs full": {
+    "wins": "70/75",
+    "median_ratio": 0.25
+   },
+   "vtok skel vs full": {
+    "wins": "72/75",
+    "median_ratio": 0.24
+   },
+   "grep+vtok vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.07
+   },
+   "vtok exact vs full": {
+    "wins": "75/75",
+    "median_ratio": 0.05
+   },
+   "vtok index vs grep+exact": {
+    "wins": "11/75",
+    "median_ratio": 3.3
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "15/75",
+    "median_ratio": 2.99
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "37/75",
+    "median_ratio": 1.0
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "47/75",
+    "median_ratio": 0.82
+   },
+   "vtok index vs grep+window": {
+    "wins": "19/75",
+    "median_ratio": 1.31
+   },
+   "vtok skel vs grep+window": {
+    "wins": "27/75",
+    "median_ratio": 1.16
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "74/75",
+    "median_ratio": 0.41
+   },
+   "vtok exact vs grep+window": {
+    "wins": "74/75",
+    "median_ratio": 0.32
+   }
+  },
+  "ALL": {
+   "n": 225,
+   "full": {
+    "median": 5302,
+    "mean": 8255
+   },
+   "grep+exact": {
+    "median": 232,
+    "mean": 1442
+   },
+   "grep+window": {
+    "median": 751,
+    "mean": 1876
+   },
+   "vtok index": {
+    "median": 1494,
+    "mean": 3259
+   },
+   "vtok skel": {
+    "median": 1353,
+    "mean": 2881
+   },
+   "grep+vtok": {
+    "median": 236,
+    "mean": 951
+   },
+   "vtok exact": {
+    "median": 147,
+    "mean": 794
+   },
+   "vtok index vs full": {
+    "wins": "211/225",
+    "median_ratio": 0.26
+   },
+   "vtok skel vs full": {
+    "wins": "214/225",
+    "median_ratio": 0.24
+   },
+   "grep+vtok vs full": {
+    "wins": "225/225",
+    "median_ratio": 0.06
+   },
+   "vtok exact vs full": {
+    "wins": "225/225",
+    "median_ratio": 0.03
+   },
+   "vtok index vs grep+exact": {
+    "wins": "18/225",
+    "median_ratio": 5.46
+   },
+   "vtok skel vs grep+exact": {
+    "wins": "23/225",
+    "median_ratio": 4.75
+   },
+   "grep+vtok vs grep+exact": {
+    "wins": "96/225",
+    "median_ratio": 1.06
+   },
+   "vtok exact vs grep+exact": {
+    "wins": "154/225",
+    "median_ratio": 0.8
+   },
+   "vtok index vs grep+window": {
+    "wins": "43/225",
+    "median_ratio": 1.73
+   },
+   "vtok skel vs grep+window": {
+    "wins": "63/225",
+    "median_ratio": 1.53
+   },
+   "grep+vtok vs grep+window": {
+    "wins": "219/225",
+    "median_ratio": 0.34
+   },
+   "vtok exact vs grep+window": {
+    "wins": "221/225",
+    "median_ratio": 0.21
+   }
+  }
+ }
+}

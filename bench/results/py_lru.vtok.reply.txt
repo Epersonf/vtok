@@ -1,0 +1,26 @@
+```vtok
+C SimpleCache
+ f __init__(self,capacity)
+  self.capacity=capacity
+  self._data={}
+ f get(self,key,default=N)
+  ?key in self._data
+   value=self._data.pop(key)
+   self._data[key]=value
+   r value
+  r default
+ f put(self,key,value)
+  ?key in self._data
+   self._data.pop(key)
+  E ?len(self._data)>=self.capacity
+   ?self._data
+    oldest=next(iter(self._data))
+    del self._data[oldest]
+  self._data[key]=value
+ f __contains__(self,key)
+  r key in self._data
+ f __len__(self)
+  r len(self._data)
+ f keys(self)
+  r list(self._data)
+```

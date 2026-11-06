@@ -1,0 +1,30 @@
+```vtok
+X f chunk<T>(arr:T[],size:number):T[][]
+ ?size<1||!Number.isInteger(size)
+  R new RangeError('size must be positive')
+ k out:T[][]=[]
+ l i=0
+ w i<arr.length
+  out.push(arr.slice(i,i+size))
+  i+=size
+ r out
+X f unique<T>(arr:T[]):T[]
+ k seen=new Set<T>()
+ k out:T[]=[]
+ l i=0
+ w i<arr.length
+  k item=arr[i]
+  ?!seen.has(item)
+   seen.add(item)
+   out.push(item)
+  i+=1
+ r out
+X f zip<A,B>(a:A[],b:B[]):[A,B][]
+ k n=Math.min(a.length,b.length)
+ k out:[A,B][]=[]
+ l i=0
+ w i<n
+  out.push([a[i],b[i]])
+  i+=1
+ r out
+```

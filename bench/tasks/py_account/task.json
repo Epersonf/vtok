@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "account.py",
+ "cmd": "py",
+ "instruction": "Add to `Account`: class `InsufficientFunds(Exception)`; `withdraw` must raise it (instead of going negative) when amount > balance, and raise ValueError for amount <= 0 (same for `deposit`); a `history` list of ('deposit'|'withdraw', amount) tuples recorded for successful operations; and `transfer(other, amount)` that withdraws from self and deposits to other (nothing changes on failure)."
+}

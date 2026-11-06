@@ -1,0 +1,30 @@
+```vtok
+f parse_kv(text)
+ out={}
+ pos=0
+ size=len(text)
+ w pos<size
+  eq=text.find('=',pos)
+  semi=text.find(';',pos)
+  ?eq<0|(semi>=0&semi<eq)
+   end=size if semi<0 else semi
+   seg=text[pos:end].strip()
+   ?seg R ValueError(seg)
+   pos=end+1
+   K
+  key=text[pos:eq].strip()
+  start=eq+1
+  w start<size&text[start].isspace()
+   start+=1
+  ?start<size&text[start]=='"'
+   close=text.find('"',start+1)
+   ?close<0 close=size
+   out[key]=text[start+1:close]
+   semi=text.find(';',close)
+   pos=size if semi<0 else semi+1
+  E
+   end=size if semi<0 else semi
+   out[key]=text[start:end].strip()
+   pos=end+1
+ r out
+```

@@ -1,0 +1,250 @@
+//! Minimal MCP server (stdio, newline-delimited JSON-RPC 2.0) exposing Vtok to coding agents.
+use serde_json::{json, Value};
+use std::collections::BTreeMap;
+use std::io::{BufRead, Write};
+use vtok_api::*;
+
+const PROTOCOL_FALLBACK: &str = "2025-06-18";
+
+fn fnv(s: &str) -> String {
+    let mut h: u64 = 0xcbf29ce484222325;
+    for b in s.as_bytes() { h ^= *b as u64; h = h.wrapping_mul(0x100000001b3); }
+    format!("{h:016x}")
+}
+
+fn instructions() -> String {
+    let mut s = String::from("Vtok shows source code in a compact notation that costs fewer tokens (comments and docstrings are dropped, names are aliased, whitespace is minimal). Use vtok_read instead of reading Python / TypeScript / JavaScript / Rust files when you do not need the comments; it prints an alias table (alias=original) followed by the code. Cheapest way to work on a big file: vtok_outline lists the name and line range of every symbol (a few hundred tokens); then vtok_chunk with id = one of those names (`name`, or `Class.method` when ambiguous) returns just that item, with the aliases it uses. If you already know the name, call vtok_chunk directly. vtok_read with view=skeleton adds signatures but costs about 3x more than the outline. Big files read in full come back as an index plus a chunk map (ids like c3), which vtok_chunk also accepts. To change code, send the edited Vtok of a chunk or symbol to vtok_edit with the rev from the read (the server decodes it, splices it into the original file and rejects the edit if the file changed). Only the tokens you change are rewritten; comments next to a changed token are kept, comments inside a replaced item are lost; for one-line tweaks the normal edit tool may be better. New names are written in full; names in the alias table stay aliased.\n\nUse these tools only when they save tokens: read a small file (under ~100 lines) or run a short command directly; use a narrow pattern for vtok_output (matches are capped); if a Vtok call would cost more than the plain alternative, skip it.\n\nLong command output: use vtok_run if it is available (it is only listed when the user enabled it); otherwise run the command through your shell tool as `vtok run -- <command>`. Either way you get a compact view (errors, summary, head/tail, repeated lines collapsed) plus an id, and vtok_output(id, grep/lines/tail) returns any part of the full output.\n");
+    for l in languages() {
+        s.push_str(&format!("\n[{}]\n{}", l.name(), l.grammar_prompt()));
+    }
+    s
+}
+
+fn tools() -> Value {
+    let all = json!([
+      {"name": "vtok_read",
+       "description": "Read a Python/TypeScript/JavaScript/Rust file as compact Vtok (far fewer tokens than the raw file). Returns rev, an alias table and the code; files above max_lines come back as an index + chunk map. view: full (default, lossless), skeleton (signatures only: use it to find the symbol to fetch with vtok_chunk), lean (no types/import paths; read-only).",
+       "inputSchema": {"type": "object", "properties": {
+          "path": {"type": "string"}, "view": {"type": "string", "enum": ["full", "skeleton", "lean"]},
+          "max_lines": {"type": "integer", "description": "split files longer than this (default: `vtok config` max-lines, else 150)"}}, "required": ["path"]}},
+      {"name": "vtok_chunk",
+       "description": "Full Vtok of one chunk (id like c3 from the chunk map of vtok_read) or of exactly one symbol (id = its name from the skeleton, or Class.method).",
+       "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}, "id": {"type": "string"}, "max_lines": {"type": "integer"}}, "required": ["path", "id"]}},
+      {"name": "vtok_edit",
+       "description": "Replace chunks or symbols with edited Vtok. chunks maps chunk id or symbol name -> complete new Vtok of that chunk/symbol (c1 for a small file = whole file). rev must be the rev from vtok_read/vtok_chunk. Unchanged tokens keep their exact original text; comments inside a replaced item are lost.",
+       "inputSchema": {"type": "object", "properties": {
+          "path": {"type": "string"}, "rev": {"type": "string"},
+          "chunks": {"type": "object", "additionalProperties": {"type": "string"}},
+          "max_lines": {"type": "integer"}, "dry_run": {"type": "boolean"}}, "required": ["path", "rev", "chunks"]}},
+      {"name": "vtok_outline",
+       "description": "Names and line ranges of every symbol in a Python/TypeScript/JavaScript/Rust file, one per line (imports merged). The cheapest overview of a file; then fetch one symbol with vtok_chunk.",
+       "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}},
+      {"name": "vtok_output",
+       "description": "Read back part of the full output of a command run with `vtok run -- <command>` (id from its header). Give grep (text, `a|b` for alternatives, case-insensitive), lines (A-B), tail or head; default is the last 40 lines.",
+       "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}, "grep": {"type": "string"}, "lines": {"type": "string", "description": "A-B (1-based)"}, "tail": {"type": "integer"}, "head": {"type": "integer"}, "context": {"type": "integer", "description": "lines around each grep hit (default 2)"}, "max_tokens": {"type": "integer"}}, "required": ["id"]}},
+      {"name": "vtok_run",
+       "description": "Run a shell command and get a compact view of its output (errors, summary, head/tail, repeated lines collapsed) plus an id; the full output stays stored and vtok_output(id, grep/lines/tail) returns any part. Use it instead of a plain shell call for commands with long output (test runs, builds, installs, listings). The command runs with the user's privileges, in cwd (default: the server's directory), and is killed after timeout_s (default 120, max 900). Always reports the exit status first.",
+       "inputSchema": {"type": "object", "properties": {"command": {"type": "string"}, "cwd": {"type": "string"}, "timeout_s": {"type": "integer"}, "max_tokens": {"type": "integer", "description": "size of the compact view (default 700)"}}, "required": ["command"]}},
+      {"name": "vtok_gain",
+       "description": "Tokens saved by Vtok's tools on this machine (local usage log): calls, raw vs shown tokens per tool. Upper bound: raw means the whole file or whole command output.",
+       "inputSchema": {"type": "object", "properties": {"days": {"type": "integer", "description": "default 30"}}}},
+      {"name": "vtok_stats",
+       "description": "Token counts of files: raw vs Vtok (incl. alias table). Use it to decide whether vtok_read pays off.",
+       "inputSchema": {"type": "object", "properties": {"paths": {"type": "array", "items": {"type": "string"}}}, "required": ["paths"]}}
+    ]);
+    let mut v = all;
+    if let Some(a) = v.as_array_mut() { if !crate::config::mcp_run_enabled() { a.retain(|t| t["name"] != "vtok_run"); } }
+    v
+}
+
+fn read_source(path: &str) -> std::result::Result<(String, &'static dyn Language, bool), String> {
+    let lang = language_for_path(path).map_err(|e| format!("{e} (supported: {}; use the normal read tool for this file)",languages().iter().flat_map(|l|l.extensions().iter().copied()).collect::<Vec<_>>().join(" ")))?;
+    let raw = std::fs::read_to_string(path).map_err(|e| format!("cannot read {path}: {e}"))?;
+    let crlf = raw.contains("\r\n");
+    Ok((normalize_newlines(&raw), lang, crlf))
+}
+
+fn arg_str<'a>(a: &'a Value, k: &str) -> std::result::Result<&'a str, String> {
+    a.get(k).and_then(|v| v.as_str()).ok_or_else(|| format!("missing string argument {k:?}"))
+}
+
+fn max_lines(a: &Value) -> usize {
+    a.get("max_lines").and_then(|v| v.as_u64()).map(|n| n.max(1) as usize).unwrap_or_else(|| {
+        crate::config::max_lines(a.get("path").and_then(|v| v.as_str()).map(std::path::Path::new)).0
+    })
+}
+
+fn tool_read(a: &Value) -> std::result::Result<String, String> {
+    let path = arg_str(a, "path")?;
+    let (src, lang, _) = read_source(path)?;
+    let view = a.get("view").and_then(|v| v.as_str()).unwrap_or("full");
+    let rev = fnv(&src);
+    let raw_tokens = ntok(&src);
+    let (body, table, note) = if view == "full" {
+        let s = split_file(lang.name(), &src, max_lines(a)).map_err(|e| e.to_string())?;
+        let n = if s.whole_file { format!("1 chunk (c1 = whole file), {} lines", src.lines().count()) } else { format!("{} chunks, {} lines", s.chunks.len(), src.lines().count()) };
+        (s.index, s.table, n)
+    } else {
+        let o = Options { view: Some(view.to_string()), ..Default::default() };
+        let r = encode(lang.name(), &src, &o).map_err(|e| e.to_string())?;
+        (r.vtok, r.table.clone(), format!("{view} view (read-only)"))
+    };
+    let tbl = render_table(&table);
+    let total = ntok(&body) + ntok(&tbl);
+    if view == "full" && (total + 30) * 10 >= raw_tokens * 9 {
+        crate::usage::record("read", raw_tokens, raw_tokens, path);
+        return Ok(format!("# {path} rev={rev}: Vtok would not be smaller ({total} vs {raw_tokens} tokens); raw file below. Edit it with the normal edit tool.\n---\n{src}"));
+    }
+    crate::usage::record("read", raw_tokens, total, path);
+    Ok(format!("# {path} lang={} rev={rev} {note}; {raw_tokens} raw tokens -> {total}\n# aliases (alias=original)\n{tbl}\n---\n{body}", lang.name()))
+}
+
+fn tool_chunk(a: &Value) -> std::result::Result<String, String> {
+    let path = arg_str(a, "path")?;
+    let id = arg_str(a, "id")?;
+    let (src, lang, _) = read_source(path)?;
+    let (v, used) = chunk_with_aliases(lang.name(), &src, id, max_lines(a)).map_err(|e| e.to_string())?;
+    let aliases = if used.is_empty() { String::new() } else { format!("# aliases used (alias=original)\n{}\n", render_table(&used)) };
+    let out = format!("# {path} chunk {id} rev={}\n{aliases}---\n{v}", fnv(&src));
+    crate::usage::record("chunk", ntok(&src), ntok(&out), &format!("{path} {id}"));
+    Ok(out)
+}
+
+fn tool_run(a: &Value) -> std::result::Result<String, String> {
+    if !crate::config::mcp_run_enabled() {
+        return Err("vtok_run is disabled. The user can enable it with `vtok config set mcp-run on` or by starting the server with `vtok mcp --allow-run`; until then run the command with your shell tool as `vtok run -- <command>`.".into());
+    }
+    let command = arg_str(a, "command")?;
+    let cwd = a.get("cwd").and_then(|v| v.as_str());
+    let timeout = a.get("timeout_s").and_then(|v| v.as_u64()).unwrap_or(120).min(3600);
+    let budget = a.get("max_tokens").and_then(|v| v.as_u64()).map_or(700, |n| n.clamp(100, 8000) as usize);
+    crate::shell::run_for_mcp(command, cwd, timeout, budget)
+}
+
+fn tool_outline(a: &Value) -> std::result::Result<String, String> {
+    let path = arg_str(a, "path")?;
+    let (src, lang, _) = read_source(path)?;
+    let o = outline(lang.name(), &src).map_err(|e| e.to_string())?;
+    let out = format!("# {path} lang={} rev={} {} lines, {} raw tokens\n---\n{o}", lang.name(), fnv(&src), src.lines().count(), ntok(&src));
+    crate::usage::record("outline", ntok(&src), ntok(&out), path);
+    Ok(out)
+}
+
+fn tool_output(a: &Value) -> std::result::Result<String, String> {
+    let id = arg_str(a, "id")?;
+    let num = |k: &str| a.get(k).and_then(|v| v.as_u64()).map(|n| n as usize);
+    let q = crate::shell::Query {
+        grep: a.get("grep").and_then(|v| v.as_str()).map(|s| s.split('|').map(String::from).collect()).unwrap_or_default(),
+        range: a.get("lines").and_then(|v| v.as_str()).and_then(crate::shell::parse_range),
+        tail: num("tail"),
+        head: num("head"),
+        context: num("context").unwrap_or(2),
+        max_tokens: num("max_tokens").unwrap_or(2000),
+    };
+    let out = crate::shell::fetch(id, &q)?;
+    crate::usage::record("output", 0, ntok(&out), id);
+    Ok(out)
+}
+
+fn tool_edit(a: &Value) -> std::result::Result<String, String> {
+    let path = arg_str(a, "path")?;
+    let rev = arg_str(a, "rev")?;
+    let (src, lang, crlf) = read_source(path)?;
+    if fnv(&src) != rev {
+        return Err(format!("{path} changed since it was read (rev {rev} != {}); read it again before editing", fnv(&src)));
+    }
+    let chunks = a.get("chunks").and_then(|v| v.as_object()).ok_or("missing object argument \"chunks\"")?;
+    let mut edits: BTreeMap<String, String> = BTreeMap::new();
+    for (k, v) in chunks { edits.insert(k.clone(), v.as_str().ok_or("chunk values must be strings")?.to_string()); }
+    let out = apply_chunks(lang.name(), &src, &edits, max_lines(a), false).map_err(|e| e.to_string())?;
+    let changed = out != src;
+    let delta = (out.lines().count() as i64) - (src.lines().count() as i64);
+    if changed && !a.get("dry_run").and_then(|v| v.as_bool()).unwrap_or(false) {
+        let text = if crlf { out.replace('\n', "\r\n") } else { out.clone() };
+        let tmp = format!("{path}.vtok.tmp");
+        std::fs::write(&tmp, &text).map_err(|e| format!("cannot write {tmp}: {e}"))?;
+        std::fs::rename(&tmp, path).map_err(|e| format!("cannot replace {path}: {e}"))?;
+    }
+    Ok(if !changed { format!("{path}: no change (the edited chunks are equivalent to the original)") }
+       else { format!("{path}: {} ({:+} lines); new rev={}", if a.get("dry_run").and_then(|v| v.as_bool()).unwrap_or(false) { "dry run, not written" } else { "written" }, delta, fnv(&out)) })
+}
+
+fn tool_stats(a: &Value) -> std::result::Result<String, String> {
+    let paths = a.get("paths").and_then(|v| v.as_array()).ok_or("missing array argument \"paths\"")?;
+    let (mut raw, mut vt) = (0usize, 0usize);
+    let mut rows = vec![];
+    for p in paths {
+        let p = p.as_str().ok_or("paths must be strings")?;
+        match read_source(p).and_then(|(src, lang, _)| encode(lang.name(), &src, &Options::default()).map(|r| (src, r)).map_err(|e| e.to_string())) {
+            Ok((src, r)) => {
+                let (a, b) = (ntok(&src), ntok(&r.vtok) + ntok(&render_table(&r.table)));
+                raw += a; vt += b;
+                rows.push(format!("{p}: {a} -> {b} ({:.0}%)", 100.0 * (1.0 - b as f64 / a.max(1) as f64)));
+            }
+            Err(e) => rows.push(format!("{p}: {e}")),
+        }
+    }
+    rows.push(format!("total: {raw} -> {vt} tokens ({:.0}% saved)", 100.0 * (1.0 - vt as f64 / raw.max(1) as f64)));
+    Ok(rows.join("\n"))
+}
+
+fn call(name: &str, args: &Value) -> std::result::Result<String, String> {
+    match name {
+        "vtok_read" => tool_read(args),
+        "vtok_chunk" => tool_chunk(args),
+        "vtok_edit" => tool_edit(args),
+        "vtok_stats" => tool_stats(args),
+        "vtok_outline" => tool_outline(args),
+        "vtok_run" => tool_run(args),
+        "vtok_gain" => crate::usage::gain_text(args.get("days").and_then(|v| v.as_u64()).unwrap_or(30), false),
+        "vtok_output" => tool_output(args),
+        _ => Err(format!("unknown tool {name:?}")),
+    }
+}
+
+fn handle(msg: &Value) -> Option<Value> {
+    let method = msg.get("method")?.as_str()?;
+    let id = msg.get("id").cloned();
+    let params = msg.get("params").cloned().unwrap_or(Value::Null);
+    let result = match method {
+        "initialize" => {
+            let v = params.get("protocolVersion").and_then(|v| v.as_str()).unwrap_or(PROTOCOL_FALLBACK);
+            json!({"protocolVersion": v, "capabilities": {"tools": {}},
+                   "serverInfo": {"name": "vtok", "version": env!("CARGO_PKG_VERSION")}, "instructions": instructions()})
+        }
+        "ping" => json!({}),
+        "tools/list" => json!({"tools": tools()}),
+        "tools/call" => {
+            let name = params.get("name").and_then(|v| v.as_str()).unwrap_or("");
+            let args = params.get("arguments").cloned().unwrap_or(json!({}));
+            match call(name, &args) {
+                Ok(t) => json!({"content": [{"type": "text", "text": t}]}),
+                Err(e) => json!({"content": [{"type": "text", "text": e}], "isError": true}),
+            }
+        }
+        _ if method.starts_with("notifications/") => return None,
+        _ => {
+            return id.map(|id| json!({"jsonrpc": "2.0", "id": id, "error": {"code": -32601, "message": format!("method not found: {method}")}}));
+        }
+    };
+    id.map(|id| json!({"jsonrpc": "2.0", "id": id, "result": result}))
+}
+
+pub fn serve(args: &[String]) -> i32 {
+    if args.iter().any(|a| a == "--allow-run") { crate::config::ALLOW_RUN.store(true, std::sync::atomic::Ordering::Relaxed); }
+    let stdin = std::io::stdin();
+    let mut out = std::io::stdout();
+    for line in stdin.lock().lines() {
+        let Ok(line) = line else { break };
+        if line.trim().is_empty() { continue; }
+        let reply = match serde_json::from_str::<Value>(&line) {
+            Ok(msg) => handle(&msg),
+            Err(e) => Some(json!({"jsonrpc": "2.0", "id": Value::Null, "error": {"code": -32700, "message": format!("parse error: {e}")}})),
+        };
+        if let Some(r) = reply {
+            let _ = writeln!(out, "{r}");
+            let _ = out.flush();
+        }
+    }
+    0
+}

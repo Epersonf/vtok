@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = ["crates/vtok-core", "crates/vtok-ts", "crates/vtok-py", "crates/vtok-rs", "crates/vtok-api", "crates/vtok-cli"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/Epersonf/vtok"

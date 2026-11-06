@@ -1,0 +1,125 @@
+[
+ {
+  "case": "cargo test (passing, 3 crates)",
+  "raw_tokens": 1042,
+  "shown_tokens": 315,
+  "ratio": 0.302,
+  "stored": true,
+  "facts_in_view": "1/1",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "1/1"
+ },
+ {
+  "case": "cargo test (1 failing of 31)",
+  "raw_tokens": 475,
+  "shown_tokens": 274,
+  "ratio": 0.577,
+  "stored": true,
+  "facts_in_view": "3/3",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "3/3"
+ },
+ {
+  "case": "cargo build (11 compile errors)",
+  "raw_tokens": 1153,
+  "shown_tokens": 644,
+  "ratio": 0.559,
+  "stored": true,
+  "facts_in_view": "3/3",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "3/3"
+ },
+ {
+  "case": "pytest -v (failing, 63 tests)",
+  "raw_tokens": 1403,
+  "shown_tokens": 502,
+  "ratio": 0.358,
+  "stored": true,
+  "facts_in_view": "4/4",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "4/4"
+ },
+ {
+  "case": "pytest -v (regex package, passing)",
+  "raw_tokens": 3854,
+  "shown_tokens": 743,
+  "ratio": 0.193,
+  "stored": true,
+  "facts_in_view": "1/1",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "1/1"
+ },
+ {
+  "case": "unittest -v (stdlib test_json)",
+  "raw_tokens": 127,
+  "shown_tokens": 127,
+  "ratio": 1.0,
+  "stored": false,
+  "facts_in_view": "1/1",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [
+   "OK"
+  ],
+  "recoverable_via_output": null
+ },
+ {
+  "case": "log: 4000 lines, 1 buried error",
+  "raw_tokens": 112095,
+  "shown_tokens": 221,
+  "ratio": 0.002,
+  "stored": true,
+  "facts_in_view": "3/3",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "3/3"
+ },
+ {
+  "case": "git log --stat -n 60",
+  "raw_tokens": 9430,
+  "shown_tokens": 526,
+  "ratio": 0.056,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ },
+ {
+  "case": "pip list",
+  "raw_tokens": 249,
+  "shown_tokens": 249,
+  "ratio": 1.0,
+  "stored": false,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ },
+ {
+  "case": "find site-packages -name '*.py'",
+  "raw_tokens": 29630,
+  "shown_tokens": 731,
+  "ratio": 0.025,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ },
+ {
+  "case": "grep -rn 'def ' (regex pkg)",
+  "raw_tokens": 18430,
+  "shown_tokens": 666,
+  "ratio": 0.036,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ }
+]

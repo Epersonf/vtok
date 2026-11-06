@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "slug.py",
+ "cmd": "py",
+ "instruction": "`slugify(text)` only lowercases. Make it: lowercase, replace every run of non-alphanumeric ASCII characters with a single '-', strip leading/trailing '-'. Add optional `max_len=None`: when given, cut the result to at most max_len characters and strip any trailing '-'."
+}

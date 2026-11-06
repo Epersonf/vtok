@@ -1,0 +1,23 @@
+```vtok
+C InsufficientFunds(Exception)
+ p
+C Account
+ f __init__(self,balance=0)
+  self.balance=balance
+  self.history=[]
+ f deposit(self,amount)
+  ?amount<=0
+   R ValueError('amount must be positive')
+  self.balance+=amount
+  self.history.append(('deposit',amount))
+ f withdraw(self,amount)
+  ?amount<=0
+   R ValueError('amount must be positive')
+  ?amount>self.balance
+   R InsufficientFunds('insufficient funds')
+  self.balance-=amount
+  self.history.append(('withdraw',amount))
+ f transfer(self,other,amount)
+  self.withdraw(amount)
+  other.deposit(amount)
+```

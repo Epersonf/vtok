@@ -1,0 +1,15 @@
+```vtok
+m string
+f word_counts(text)
+ counts={}
+ L word in text.split()
+  word=word.lower().strip(string.punctuation)
+  ?!word K
+  counts[word]=counts.get(word,0)+1
+ r counts
+f top_n(text,n)
+ ?n<=0 r []
+ counts=word_counts(text)
+ items=sorted(counts.items(),key=lambda item:(-item[1],item[0]))
+ r items[:n]
+```

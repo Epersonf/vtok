@@ -1,0 +1,6 @@
+{
+ "lang": "typescript",
+ "target": "matrix.ts",
+ "cmd": "node",
+ "instruction": "Add and export `transpose(m: number[][]): number[][]` (empty matrix -> []) and `multiply(a: number[][], b: number[][]): number[][]` (standard matrix product; throw `new Error('dimension mismatch')` when a's column count != b's row count). Also make `identity(n)` throw `new RangeError('n must be positive')` for n < 1. Keep `identity` otherwise unchanged."
+}

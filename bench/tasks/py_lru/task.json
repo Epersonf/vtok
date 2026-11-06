@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "cache.py",
+ "cmd": "py",
+ "instruction": "`SimpleCache(capacity)` currently never evicts. Make it a least-recently-used cache: `get(key, default=None)` and `put(key, value)` both count as a use; when `put` would exceed `capacity`, evict the least recently used key. Add `__contains__` (does NOT count as a use), `__len__`, and `keys()` returning keys from least to most recently used."
+}

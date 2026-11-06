@@ -1,0 +1,28 @@
+```vtok
+M collections import defaultdict,deque
+C RateLimiter
+ f __init__(self,limit,window)
+  self.limit=limit
+  self.window=window
+  self._hits=defaultdict(deque)
+  self._limits={}
+ f _prune(self,key,now)
+  hits=self._hits[key]
+  w hits&hits[0]<=now-self.window
+   hits.popleft()
+  r hits
+ f _limit_for(self,key)
+  r self._limits.get(key,self.limit)
+ f reset(self,key)
+  self._hits.pop(key,N)
+ f set_limit(self,key,limit)
+  self._limits[key]=limit
+ f allow(self,key,now)
+  hits=self._prune(key,now)
+  ?len(hits)>=self._limit_for(key) r F
+  hits.append(now)
+  r T
+ f remaining(self,key,now)
+  hits=self._prune(key,now)
+  r max(0,self._limit_for(key)-len(hits))
+```

@@ -1,0 +1,25 @@
+```vtok
+f get_path(d,path,default=N)
+ cur=d
+ L part in path.split('.')
+  ?!isinstance(cur,dict)|part!in cur r default
+  cur=cur[part]
+ r cur
+f flatten(d,sep='.')
+ out={}
+ L key,val in d.items()
+  ?isinstance(val,dict)&val
+   L subkey,subval in flatten(val,sep).items()
+    out[key+sep+subkey]=subval
+  E out[key]=val
+ r out
+f unflatten(d,sep='.')
+ out={}
+ L key,val in d.items()
+  parts=key.split(sep)
+  cur=out
+  L part in parts[:-1]
+   cur=cur.setdefault(part,{})
+  cur[parts[-1]]=val
+ r out
+```

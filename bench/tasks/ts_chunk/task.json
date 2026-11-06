@@ -1,0 +1,6 @@
+{
+ "lang": "typescript",
+ "target": "arrays.ts",
+ "cmd": "node",
+ "instruction": "`chunk(arr, size)` must split an array into consecutive chunks of `size` (last one may be shorter) and throw `new RangeError('size must be positive')` when size < 1 or not an integer. It currently loops forever for some inputs. Also add and export `unique<T>(arr: T[]): T[]` (first occurrence kept, order preserved) and `zip<A, B>(a: A[], b: B[]): [A, B][]` (length of the shorter)."
+}

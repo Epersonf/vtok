@@ -1,0 +1,7 @@
+{
+ "lang": "python",
+ "target": "resp.py",
+ "cmd": "py",
+ "instruction": "`build_response(code, detail=None)` must (1) append `': ' + detail` to the message when `detail` is given, (2) accept a keyword `retry_after=None` and, only when code is 429 and retry_after is not None, include the key 'retry_after' in the result, (3) raise KeyError for unknown codes (it currently falls back silently). Keep the existing messages unchanged.",
+ "hide": 5
+}

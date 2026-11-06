@@ -1,0 +1,20 @@
+[build-system]
+requires = ["maturin>=1.5,<2"]
+build-backend = "maturin"
+
+[project]
+name = "vtok"
+version = "0.1.0"
+description = "Compact code notation that cuts LLM context tokens. Native Rust core (Python and TypeScript)."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+classifiers = ["Programming Language :: Rust", "Programming Language :: Python :: 3"]
+
+[project.scripts]
+vtok = "vtok:main"
+
+[tool.maturin]
+python-source = "python"
+module-name = "vtok._vtok"
+features = ["pyo3/extension-module"]

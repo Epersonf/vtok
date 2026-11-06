@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+license = "MIT"
+name = "vtok"
+version = "0.1.0"
+description = "Vtok core: compact code notation for LLM context. Language support comes from optional plugins."
+requires-python = ">=3.10"
+dependencies = ["tiktoken>=0.7"]
+
+[project.optional-dependencies]
+python = ["vtok-lang-python"]
+typescript = ["vtok-lang-typescript"]
+all = ["vtok-lang-python", "vtok-lang-typescript"]
+
+[project.scripts]
+vtok = "vtok.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

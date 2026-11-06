@@ -1,0 +1,4 @@
+```vtok
+import type{User,Role}from'./types.ts'
+export class UserService{private users:User[]=[];add(user:User):void{this.users.push(user)}list(limit:number=10,offset:number=0):User[]{return this.users.slice(offset,offset+limit)}findByRole(role:Role,limit?:number):User[]{const r=this.users.filter(u=>u.role===role);return limit===undefined?r:r.slice(0,limit)}}
+```

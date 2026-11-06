@@ -1,0 +1,9 @@
+{
+ "lang": "typescript",
+ "target": "service.ts",
+ "cmd": "node",
+ "instruction": "In `UserService`, change `list` to `list(limit: number = 10, offset: number = 0): User[]` returning that window of users (insertion order), and add `findByRole(role: Role, limit?: number): User[]` returning users with that role (at most `limit` when given). Use the existing types.",
+ "context": [
+  "types.ts"
+ ]
+}

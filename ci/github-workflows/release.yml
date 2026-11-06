@@ -1,0 +1,72 @@
+name: release
+# Push a tag like v0.1.0. Needs repository secrets NPM_TOKEN and PYPI_API_TOKEN.
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  wheels:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64 }
+          - { os: ubuntu-latest, target: aarch64 }
+          - { os: macos-13, target: x86_64 }
+          - { os: macos-14, target: aarch64 }
+          - { os: windows-latest, target: x64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          working-directory: pip
+          args: --release --out dist
+          manylinux: auto
+      - uses: actions/upload-artifact@v4
+        with: { name: wheels-${{ matrix.os }}-${{ matrix.target }}, path: pip/dist }
+  pypi:
+    needs: wheels
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { pattern: wheels-*, merge-multiple: true, path: dist }
+      - uses: PyO3/maturin-action@v1
+        env: { MATURIN_PYPI_TOKEN: "${{ secrets.PYPI_API_TOKEN }}" }
+        with: { command: upload, args: --non-interactive --skip-existing dist/* }
+  npm-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, target: aarch64-unknown-linux-gnu }
+          - { os: macos-13, target: x86_64-apple-darwin }
+          - { os: macos-14, target: aarch64-apple-darwin }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc }
+    runs-on: ${{ matrix.os }}
+    defaults: { run: { working-directory: npm/vtok } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: "${{ matrix.target }}" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npx napi build --platform --release --target ${{ matrix.target }} ${{ contains(matrix.target, 'aarch64-unknown-linux') && '--use-napi-cross' || '' }}
+      - uses: actions/upload-artifact@v4
+        with: { name: bindings-${{ matrix.target }}, path: "npm/vtok/*.node" }
+  npm-publish:
+    needs: npm-build
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: npm/vtok } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, registry-url: "https://registry.npmjs.org" }
+      - run: npm install
+      - uses: actions/download-artifact@v4
+        with: { pattern: bindings-*, path: npm/vtok/artifacts }
+      - run: npx napi create-npm-dirs && npx napi artifacts -d artifacts && npx napi prepublish -t npm
+      - run: npm publish --access public
+        env: { NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}" }

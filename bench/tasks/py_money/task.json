@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "money.py",
+ "cmd": "py",
+ "instruction": "Add to class `Money`: a static method `parse(text)` that turns strings like '12.50 USD' or '3 EUR' into a Money (cents as int, currency upper-case; raise ValueError on malformed text), and `__add__` returning a new Money (ValueError if currencies differ). Do not change existing members."
+}

@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "flat.py",
+ "cmd": "py",
+ "instruction": "Add `flatten(d, sep='.')` to the module: flattens nested dicts into one dict with joined keys ({'a': {'b': 1, 'c': {'d': 2}}, 'e': 3} -> {'a.b': 1, 'a.c.d': 2, 'e': 3}); non-dict values (including lists) are kept as-is; an empty nested dict is kept as an empty dict under its key. Also add `unflatten(d, sep='.')` as the inverse, and keep `get_path` unchanged."
+}

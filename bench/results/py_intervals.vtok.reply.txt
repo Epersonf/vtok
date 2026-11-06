@@ -1,0 +1,10 @@
+```vtok
+f merge_intervals(intervals)
+ merged=[]
+ L start,end in sorted(intervals)
+  ?merged&start<=merged[-1][1]
+   merged[-1]=(merged[-1][0],max(merged[-1][1],end))
+  E
+   merged.append((start,end))
+ r merged
+```

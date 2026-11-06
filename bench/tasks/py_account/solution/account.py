@@ -1,0 +1,26 @@
+class InsufficientFunds(Exception):
+    pass
+
+
+class Account:
+    def __init__(self, balance=0):
+        self.balance = balance
+        self.history = []
+
+    def deposit(self, amount):
+        if amount <= 0:
+            raise ValueError("amount must be positive")
+        self.balance += amount
+        self.history.append(("deposit", amount))
+
+    def withdraw(self, amount):
+        if amount <= 0:
+            raise ValueError("amount must be positive")
+        if amount > self.balance:
+            raise InsufficientFunds()
+        self.balance -= amount
+        self.history.append(("withdraw", amount))
+
+    def transfer(self, other, amount):
+        self.withdraw(amount)
+        other.deposit(amount)

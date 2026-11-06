@@ -1,0 +1,6 @@
+{
+ "lang": "typescript",
+ "target": "retry.ts",
+ "cmd": "node",
+ "instruction": "`retry(fn, attempts)` should call the async `fn` up to `attempts` times total until it resolves, returning its value. If every attempt rejects, reject with the LAST error. Throw `new RangeError('attempts must be >= 1')` (synchronously rejected promise is fine) if attempts < 1. Add an optional third parameter `onRetry?: (error: unknown, attempt: number) => void` called after each failed attempt that will be retried (attempt is 1-based; not called after the final failure)."
+}

@@ -1,0 +1,179 @@
+# Vtok
+
+Vtok turns source code into a compact notation so that code costs fewer tokens when it is sent to an LLM as
+context. Everything is deterministic and local: the model reads and writes Vtok, and a decoder converts its
+answer back into ordinary source code. No step of the round trip depends on an LLM being right, only the
+generation of the answer does (and invalid output is caught and can be retried).
+
+    source code --encode--> Vtok (+ alias table) --> LLM --> Vtok --decode--> source code
+
+Status: **early prototype** (Python implementation). Languages: Python, TypeScript/JavaScript (`.js .mjs .cjs .jsx .tsx` via the TS grammar), Rust (Rust: native binary only, `vtok-rs` crate).
+
+## Layout (core + optional language plugins)
+
+    packages/vtok                  core: Language ABC, plugin registry, alias planning, token counting, CLI
+    packages/vtok-lang-python      Python plugin   (stdlib `ast`)
+    packages/vtok-lang-typescript  TypeScript plugin (tree-sitter)
+    bench/                         LLM self-validation tasks, prompt builder, checker, results
+
+Plugins are discovered through entry points (group `vtok.languages`); install only what you need:
+
+    pip install vtok                 # core, no language
+    pip install vtok[python]         # + Python plugin   (or: pip install vtok-lang-python)
+    pip install vtok[typescript]
+    # development:
+    pip install -e packages/vtok -e packages/vtok-lang-python -e packages/vtok-lang-typescript
+
+To add a language, subclass `vtok.Language` (`encode`, `decode`, `analyze`, `extensions`, `grammar_prompt`;
+chunking hooks are optional) and register it under `[project.entry-points."vtok.languages"]`.
+
+## Rust core and packages
+
+`rust/` is a Cargo workspace with the whole pipeline as one native library: `vtok-core` (tokens, alias
+planning, chunking), `vtok-ts` and `vtok-py` (tree-sitter language plugins), `vtok-api` (string-based API)
+and `vtok-cli` (the `vtok` executable). Two thin bindings expose exactly the same API:
+
+| package | path | install / build |
+|---|---|---|
+| npm `vtok` (napi-rs addon + `vtok` bin) | `npm/vtok` | `npm install && npm run build` |
+| pip `vtok` (PyO3 / maturin wheel + `vtok` script) | `pip` | `maturin develop --release` |
+| native CLI | `rust` | `cargo build --release --manifest-path rust/Cargo.toml` |
+
+Release workflows (`ci/github-workflows/`, copy them to `.github/workflows/`; pushing that folder needs a token with the `workflow` scope) build wheels and per-platform npm binaries for Linux, macOS and
+Windows; they have not been run yet (they need `NPM_TOKEN` / `PYPI_API_TOKEN`). The pure-Python packages in
+`packages/` are the reference implementation that the Rust core is cross-checked against (they are not
+published).
+
+Cross-checks: `python rust/difftest_ts.py <dir>` (TypeScript output byte-identical to the reference on
+rxjs), `python rust/oracle_py.py <dir>...` (Python round trip checked with CPython's own `ast`; the whole
+stdlib passes) and `python rust/oracle_chunks.py <dir>` (chunk edits keep the AST, docstrings included).
+`cargo test --release` also checks the chunk invariants on real corpora (`VTOK_PY_CORPUS`,
+`VTOK_TS_CORPUS`): unchanged chunks reproduce the file byte for byte, forced re-encoding stays equivalent.
+
+Decoded output: TypeScript comes back minified (run your formatter); Python comes back with 4-space
+statement layout but compact expressions (`a=b+c`), valid either way.
+
+## Usage
+
+    vtok languages                              # installed plugins
+    vtok encode f.py [--table t.txt] [--hide-literals 5 --literals l.json] [--view full|skeleton|lean]
+    vtok decode f.vtok --lang python --table t.txt [--literals l.json]
+    vtok stats <files|dirs> [--view skeleton]   # token counts (tiktoken o200k_base)
+    vtok roundtrip <files|dirs>                 # verifies the AST/tree is preserved
+    vtok grammar --lang python                  # the short grammar prompt to give the LLM
+    python -m pytest -q packages/*/tests
+
+Large files: `vtok split big.py` prints an index (signatures + chunk map), `vtok chunk big.py c7` prints the
+full Vtok of one chunk, and `vtok apply big.py -e c7=edited.vtok -o big.py` decodes an edited chunk and splices
+it into the ORIGINAL file by line range, leaving every other chunk byte-identical.
+
+## How it works
+
+- **Lossless view (`full`)**: *native-tight* notation. The text is still real Python / TypeScript, so the
+  model needs almost no grammar prompt (about 100 tokens): comments and docstrings removed, no optional
+  whitespace, Python uses 1-space indents with single-statement bodies inlined (`if x:return 1`) and simple
+  statements joined by `;`, TypeScript is one minified statement per line. A deterministic alias table
+  shortens frequent names (exact break-even computed with the real tokenizer). `encode()` always verifies
+  `decode(encode(x))` against `x` (AST for Python, canonical tree-sitter dump for TypeScript). Decoding is
+  just parse + alias reversal (+ `ast.unparse` for Python); TypeScript output is minified, so run your
+  formatter afterwards. Earlier experiments with one-letter keywords, `!`/`&`/`|` operators and removed
+  braces/colons showed no token gain (frequent keywords are already single tokens) and more model errors, so
+  they are kept only as `style="legacy"`.
+- **`skeleton` view**: signatures only, function bodies elided. Read-only context for files the model does not edit.
+- **Project table** (`plan_project`): one stable alias table for many files, paid once.
+- **Chunking** (`split` / `chunk` / `apply`): files above `--max-lines` (default 150) become an index plus
+  chunks cut on definition boundaries (large classes are split per method).
+- **Retry loop**: `decode` raises `VtokError` with the Vtok line number, meant to be fed back to the model.
+
+## Measurements (tiktoken o200k_base; proxy for Claude's tokenizer)
+
+Savings versus the original source, including alias table and the one-time grammar prompt:
+
+| scenario | Python (stdlib subset) | TypeScript (rxjs) |
+|---|---|---|
+| full view | -43% | -68% |
+| index + 2 chunks for files > 150 lines | -69% | -69% |
+
+Most of that comes from dropping comments and docstrings. Against the same code with comments already
+removed, the notation itself saves about 11.6% (Python) and 16.4% (TypeScript). The `skeleton` view cuts
+-79% (Python) / -48% (TypeScript) against comment-free code. Reading a >= 400-line file through the index plus
+one average chunk costs about 27% of the raw tokens.
+
+Honest caveats: one-character keywords gain about nothing in tokens (`function` and `return` are already one
+token), which is why the default profile does not use them; the fixed grammar+example prompt (~100 tokens) makes Vtok *larger* than raw code on tiny files; savings
+need real context volume.
+
+## LLM validation
+
+`bench/` contains 12 small edit tasks (Python and TypeScript) with hidden tests. Fresh Claude agents that
+had seen nothing of the project received only the Vtok prompt and answered in Vtok; answers were decoded
+locally and tested. Details and numbers in [`bench/RESULTS.md`](bench/RESULTS.md). Summary: every answer that
+decoded passed its tests; early failures were grammar ambiguities, not logic errors; on a same-model comparison
+Vtok matched raw code (4/4 vs 4/4) and cut output tokens by 24%. Sample sizes are small - treat as encouraging,
+not conclusive.
+
+To reproduce: `cd bench && python make_tasks.py && python prepare.py`, give each `<task>.vtok.prompt.txt` to a
+fresh model, then `python check.py <task> vtok <reply-file>`.
+
+## Outline, and compact command output
+
+    vtok outline FILE                 # name and line range of every symbol (a few hundred tokens), imports merged
+    vtok run -- cargo test            # run a command; print errors, summary, head/tail, repeated lines collapsed
+    vtok output ID --grep "FAILED|panic" --context 3     # read back part of the full output (also --lines A-B, --tail N)
+
+`vtok run` stores the whole (ANSI-stripped) output under `~/.local/state/vtok/out` (`$VTOK_STATE`; the newest 100 files for 7
+days) and prints a compact view with an id. Output under ~250 tokens, or a compact view that is not smaller, is printed as is.
+The command's exit code is preserved.
+
+Works with any agent that speaks MCP; nothing is Claude-specific. The MCP server exposes `vtok_outline`, `vtok_output`, `vtok_gain`
+(read-only) and sends usage guidance in its `instructions`. `vtok_run` (runs a command) is **off by default**: enable it with
+`vtok mcp --allow-run`, `VTOK_MCP_RUN=1` or `vtok config set mcp-run on`. It is user-level only: a repo's `.vtok.json` cannot enable it, so a
+cloned repository cannot grant itself command execution. Without it, agents run `vtok run -- ...` in their shell tool, so existing
+permission rules apply. For clients that ignore MCP instructions, `vtok init --write AGENTS.md` adds (or updates) a fenced usage block.
+
+`vtok output --grep` shows at most 40 matching lines and says how many more there are. Agents are told to skip Vtok when the plain alternative is cheaper (small files, short output).
+
+`vtok gain [--days N] [--json]` reports what the tools saved (an upper bound versus raw output; `output` reads count as extra cost;
+disable logging with `VTOK_NO_USAGE=1`). Benchmarks: `bench/nav/RESULTS.md`, `bench/run/RESULTS.md`.
+
+## Configuration
+
+The size above which a file is split into chunks (default 150 lines) is configurable:
+
+    vtok config                       # show the effective value and where it comes from
+    vtok config set max-lines 300     # for your user (~/.config/vtok/config.json, or $VTOK_CONFIG)
+    vtok config set max-lines 80 --local   # for this repo (.vtok.json, found by walking up from the file)
+    vtok config unset max-lines [--local]
+
+Order of precedence: `--max-lines` / the MCP `max_lines` argument, `VTOK_MAX_LINES`, nearest `.vtok.json`, the user file, 150.
+
+## Known limits
+
+- Docstrings and comments are dropped in the Vtok view; `apply` preserves them for untouched chunks, and
+  Python docstrings are re-attached inside edited chunks (comments inside an edited chunk are lost).
+- TypeScript/JavaScript: semicolon-less (ASI) sources are supported; JSX/TSX supported (JSX text whitespace is normalized per JSX semantics), no Flow; multi-line template literals become `\n` escapes (error if tagged); decoded output is
+  minified (format it afterwards).
+- Rust: tree-sitter-rust gaps make ~0.6% of crates.io files unparseable (attributes in struct patterns, `where` on unit structs, `const default`, exotic macro_rules tokens); vtok refuses them.
+- Python: decoded output goes through `ast.unparse` (canonical formatting).
+- Rust (`rust/crates/vtok-rs`, tree-sitter-rust 0.23): every token is kept (`;` and `,` included), so the
+  notation only drops comments and optional whitespace; decoded output is minified (run `rustfmt`). Names in
+  `use`, attributes, macro names, format-string captures, `pub` items and trait members are never aliased.
+  Grammar gaps (e.g. a variable named `raw` after `&`, `unsafe extern` blocks) are rejected with a syntax error.
+
+## Extra ideas, measured (tiktoken o200k_base, share of comment-free native-tight tokens)
+
+| idea | Python | TypeScript | status |
+|---|---|---|---|
+| Aliases that cost one token (single letters, then one-token words) | -3.9% | -2.6% | **adopted** |
+| Hide string literals >= 5 tokens (`--hide-literals 5`, decoder restores from a local file) | -6.2% | -0.5% | **implemented**, opt-in (the model cannot see the text; TS gain is small because most strings are import paths and type literals, which are never hidden) |
+| `lean` view: no type annotations, imports as names only (`--view lean`, read-only) | -0.1% | -28% | **implemented** (lossy, for files the model will not edit) |
+| Short names for locals | already covered by aliasing | | |
+| Tab instead of spaces for indentation | +0.6% (worse) | n/a | rejected |
+| Drop `self.` / `this.` (decoder re-inserts) | -0.8% | -0.2% | rejected: tiny gain, high ambiguity risk |
+| Drop decorators in skeleton | -0.3% | 0% | rejected: negligible |
+| Grouped imports line | n/a | at most -6.8% (upper bound; loses `as`/default/type forms) | not implemented; a lossless form would gain far less |
+| Boilerplate macros (trivial getters, `__init__`) | not measured | | not implemented; needs per-framework pattern matching |
+
+## License
+
+MIT, see [LICENSE](LICENSE).

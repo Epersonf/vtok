@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "kv.py",
+ "cmd": "py",
+ "instruction": "`parse_kv(text)` parses 'a=1; b=two' into a dict. Extend it so values may be double-quoted and then may contain ';' and '=' (e.g. 'a=\"x;y=z\"; b=2' -> {'a': 'x;y=z', 'b': '2'}). Whitespace around keys and unquoted values is stripped; empty segments are ignored; a segment without '=' raises ValueError(segment)."
+}

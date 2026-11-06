@@ -1,0 +1,20 @@
+[package]
+name = "vtok-pyo3"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Python bindings for Vtok (native extension)"
+
+[lib]
+name = "_vtok"
+crate-type = ["cdylib"]
+
+[dependencies]
+vtok-api = { path = "../rust/crates/vtok-api" }
+vtok-cli = { path = "../rust/crates/vtok-cli" }
+pyo3 = { version = "0.30", features = ["extension-module", "abi3-py39"] }
+
+[profile.release]
+lto = true
+strip = "symbols"
+opt-level = 3

@@ -1,0 +1,182 @@
+[
+ {
+  "rtk": {
+   "tokens": 16,
+   "facts": "0/0",
+   "head": "cargo test: 18 passed (15 suites, 1.69s)\n"
+  },
+  "case": "cargo test (passing, 3 crates)",
+  "raw_tokens": 1110,
+  "shown_tokens": 80,
+  "ratio": 0.072,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [
+   "16 passed"
+  ],
+  "recoverable_via_output": null
+ },
+ {
+  "rtk": {
+   "tokens": 131,
+   "facts": "3/3",
+   "head": "---- tests::parses_config_value stdout ----\n\nthread 'tests::parses_config_value' (28007) panicked at src/lib.rs:33:40:\na"
+  },
+  "case": "cargo test (1 failing of 31)",
+  "raw_tokens": 472,
+  "shown_tokens": 196,
+  "ratio": 0.415,
+  "stored": true,
+  "facts_in_view": "3/3",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "3/3"
+ },
+ {
+  "rtk": {
+   "tokens": 1118,
+   "facts": "1/3",
+   "head": "[full output: rtk recall cd2a486fbd1b272f]\nerror[E0308]: mismatched types\n --> src/lib.rs:2:5\n  |\n1 | pub fn f0(x: u32) "
+  },
+  "case": "cargo build (11 compile errors)",
+  "raw_tokens": 1150,
+  "shown_tokens": 541,
+  "ratio": 0.47,
+  "stored": true,
+  "facts_in_view": "3/3",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "3/3"
+ },
+ {
+  "rtk": {
+   "tokens": 158,
+   "facts": "4/4",
+   "head": "Pytest: 60 passed, 3 failed in 1.50s\n\nFailures:\n1. [FAIL] test_total_is_wrong\n     test_demo.py:9: in test_total_is_wron"
+  },
+  "case": "pytest -v (failing, 63 tests)",
+  "raw_tokens": 1400,
+  "shown_tokens": 371,
+  "ratio": 0.265,
+  "stored": true,
+  "facts_in_view": "4/4",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "4/4"
+ },
+ {
+  "rtk": {
+   "tokens": 98,
+   "facts": "1/1",
+   "head": "Pytest: 101 passed, 1 failed in 3.93s\n\nFailures:\n1. [FAIL] test_main\n     .venv/lib/python3.12/site-packages/regex/tests"
+  },
+  "case": "pytest -v (regex package, passing)",
+  "raw_tokens": 3854,
+  "shown_tokens": 502,
+  "ratio": 0.13,
+  "stored": true,
+  "facts_in_view": "1/1",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "1/1"
+ },
+ {
+  "rtk": {
+   "tokens": 47,
+   "facts": "1/1",
+   "head": "OUTPUT (last 5 lines):\n  ----------------------------------------------------------------------\n  Ran 1 test in 0.001s\n "
+  },
+  "case": "unittest -v (stdlib test_json)",
+  "raw_tokens": 127,
+  "shown_tokens": 127,
+  "ratio": 1.0,
+  "stored": false,
+  "facts_in_view": "1/1",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [
+   "OK"
+  ],
+  "recoverable_via_output": null
+ },
+ {
+  "rtk": {
+   "tokens": 83,
+   "facts": "2/3",
+   "head": "Log Summary\n   [error] 2 errors (2 unique)\n   [warn] 0 warnings (0 unique)\n   [info] 4001 info messages\n\n[ERRORS]\n   202"
+  },
+  "case": "log: 4000 lines, 1 buried error",
+  "raw_tokens": 112095,
+  "shown_tokens": 219,
+  "ratio": 0.002,
+  "stored": true,
+  "facts_in_view": "3/3",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": "3/3"
+ },
+ {
+  "rtk": {
+   "tokens": 10404,
+   "facts": "0/0",
+   "head": "commit 964962c34f2986c2a993b2a1e6e9de4842b131f8\nAuthor: Eperson <epersoncmxf@gmail.com>\nDate:   Fri Nov 6 20:41:11 2026 "
+  },
+  "case": "git log --stat -n 60",
+  "raw_tokens": 10404,
+  "shown_tokens": 557,
+  "ratio": 0.054,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ },
+ {
+  "rtk": {
+   "tokens": 218,
+   "facts": "0/0",
+   "head": "pip list: 19 packages\n\n[C]\n  certifi (2026.10.23)\n  charset-normalizer (3.5.2)\n\n[I]\n  idna (3.20)\n  iniconfig (2.3.1)\n\n["
+  },
+  "case": "pip list",
+  "raw_tokens": 249,
+  "shown_tokens": 249,
+  "ratio": 1.0,
+  "stored": false,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ },
+ {
+  "rtk": {
+   "tokens": 202,
+   "facts": "0/0",
+   "head": "1057F 95D:\n\n./ py.py\n_pytest/ __init__.py _argcomplete.py _version.py approx.py cacheprovider.py capture.py compat.py de"
+  },
+  "case": "find site-packages -name '*.py'",
+  "raw_tokens": 29630,
+  "shown_tokens": 379,
+  "ratio": 0.013,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ },
+ {
+  "rtk": {
+   "tokens": 1536,
+   "facts": "0/0",
+   "head": "487 matches in 3 files:\n\n/.../regex/_main.py:252:def match(pattern, string, flags=0, pos=None, endpos=None, partial=Fals"
+  },
+  "case": "grep -rn 'def ' (regex pkg)",
+  "raw_tokens": 18430,
+  "shown_tokens": 168,
+  "ratio": 0.009,
+  "stored": true,
+  "facts_in_view": "0/0",
+  "facts_missing": [],
+  "invalid_facts_not_in_raw": [],
+  "recoverable_via_output": null
+ }
+]

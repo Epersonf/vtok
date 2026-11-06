@@ -1,0 +1,17 @@
+```vtok
+X C Queue<T>
+ private items:T[]=[]
+ enqueue(item:T):void
+  this.items.push(item)
+ dequeue():T|undefined
+  r this.items.shift()
+ peek():T|undefined
+  r this.items[0]
+ get size():number
+  r this.items.length
+ isEmpty():boolean
+  r this.items.length===0
+ *[Symbol.iterator]():IterableIterator<T>
+  L k item of this.items
+   yield item
+```

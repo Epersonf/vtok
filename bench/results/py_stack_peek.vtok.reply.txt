@@ -1,0 +1,19 @@
+```vtok
+C Stack
+ f __init__(self)
+  self._items=[]
+ f push(self,item)
+  self._items.append(item)
+ f pop(self)
+  ?!self._items R IndexError('empty')
+  r self._items.pop()
+ f peek(self)
+  ?!self._items R IndexError('empty')
+  r self._items[-1]
+ f is_empty(self)->b
+  r len(self._items)==0
+ f size(self)
+  r len(self._items)
+ f __len__(self)
+  r len(self._items)
+```

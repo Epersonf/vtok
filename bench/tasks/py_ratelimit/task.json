@@ -1,0 +1,6 @@
+{
+ "lang": "python",
+ "target": "limiter.py",
+ "cmd": "py",
+ "instruction": "Class `RateLimiter` allows `limit` calls per key within a sliding window of `window` seconds. Add: (1) method `reset(key)` that forgets a key's history; (2) an optional per-key override: `set_limit(key, limit)` so that `allow(key, now)` uses that key's limit instead of the default; (3) method `remaining(key, now)` returning how many more calls are allowed right now for that key (never negative). `allow` must keep its current behaviour otherwise."
+}

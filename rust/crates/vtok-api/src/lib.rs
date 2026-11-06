@@ -134,3 +134,22 @@ pub fn apply_chunks(lang: &str, source: &str, edits: &BTreeMap<String, String>, 
 pub fn project_table(lang: &str, sources: &[&str]) -> Result<BTreeMap<String, String>> {
     Ok(split::plan_project(language(lang)?, sources, 2))
 }
+
+/// Every identifier occurrence in the source as (name, 1-based line), from the grammar's leaf tokens
+/// (comments and string contents are not identifiers). Used for name-based reference search.
+pub fn idents(lang: &str, source: &str) -> Result<Vec<(String, usize)>> {
+    let l = language(lang)?;
+    let src = normalize_newlines(source);
+    let spans = l.identifier_spans(&src).ok_or_else(|| VtokError::new("cannot tokenize this source (syntax error?)"))?;
+    let mut line_starts = vec![0usize];
+    for (i, b) in src.bytes().enumerate() { if b == b'\n' { line_starts.push(i + 1); } }
+    let mut out = vec![];
+    for (a, b) in spans {
+        let Some(t) = src.get(a..b) else { continue };
+        let mut cs = t.chars();
+        if !cs.next().map_or(false, |c| c.is_alphabetic() || c == '_' || c == '$') || !t.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '$') { continue; }
+        let line = line_starts.partition_point(|&s| s <= a);
+        out.push((t.to_string(), line));
+    }
+    Ok(out)
+}

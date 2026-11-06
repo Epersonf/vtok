@@ -136,6 +136,15 @@ permission rules apply. For clients that ignore MCP instructions, `vtok init --w
 `vtok gain [--days N] [--json]` reports what the tools saved (an upper bound versus raw output; `output` reads count as extra cost;
 disable logging with `VTOK_NO_USAGE=1`). Benchmarks: `bench/nav/RESULTS.md`, `bench/run/RESULTS.md`.
 
+## Where is it defined, who uses it
+
+    vtok refs NAME [DIR] [--max-tokens N]
+
+Searches a project for the identifier `NAME` and prints, one line each, the symbols that define it and the symbols that use it, with
+file and line ranges you can hand to `vtok chunk` (MCP: `vtok_refs`). It matches **by name, not by type**: two functions with the
+same name in different types are not told apart, and the output says so when several definitions share the name. Names in comments
+and strings are not uses. Files that do not contain the text are never parsed. Benchmark: `bench/refs/RESULTS.md`.
+
 ## Configuration
 
 The size above which a file is split into chunks (default 150 lines) is configurable:

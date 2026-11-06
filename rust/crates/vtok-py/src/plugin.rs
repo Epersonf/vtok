@@ -76,6 +76,25 @@ impl Language for Python {
         Ok(CoreAnalysis { counts: a.counts, excluded: a.excluded, avoid: a.avoid, reserved: HashSet::new() })
     }
 
+    fn identifier_spans(&self, text: &str) -> Option<Vec<(usize, usize)>> {
+        let tree = parse(text.as_bytes());
+        if first_error(tree.root_node()).is_some() { return None; }
+        let mut out = vec![];
+        let mut st = vec![tree.root_node()];
+        while let Some(n) = st.pop() {
+            match n.kind() {
+                "comment" | "string" => continue,
+                "identifier" => { out.push((n.start_byte(), n.end_byte())); continue; }
+                _ => {}
+            }
+            let mut c = n.walk();
+            let kids: Vec<_> = n.children(&mut c).collect();
+            for k in kids { st.push(k); }
+        }
+        out.sort();
+        Some(out)
+    }
+
     fn units(&self, source: &str, max_lines: usize) -> Result<Vec<Unit>> {
         let source = source.replace("\r\n", "\n");
         let src = source.as_bytes();

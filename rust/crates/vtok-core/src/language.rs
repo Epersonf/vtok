@@ -39,6 +39,9 @@ pub trait Language: Sync {
     /// Byte spans (within `text`) of the top-level items, one per Vtok line of `encode_chunk`; None = unsupported.
     fn item_spans(&self, _text: &str, _member: bool) -> Option<Vec<(usize, usize)>> { None }
     /// Byte spans of the leaf tokens of `text` (comments excluded), in order; None = unsupported.
+    /// Byte spans of identifier occurrences in a whole source file (not in comments or strings). Default: the
+    /// grammar's leaf tokens; the caller keeps only identifier-shaped ones.
+    fn identifier_spans(&self, text: &str) -> Option<Vec<(usize, usize)>> { self.tokens(text, false) }
     fn tokens(&self, _text: &str, _member: bool) -> Option<Vec<(usize, usize)>> { None }
     fn equivalent(&self, a: &str, b: &str, member: bool) -> bool;
     fn validate(&self, source: &str) -> Result<()>;

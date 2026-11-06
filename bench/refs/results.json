@@ -1,0 +1,281 @@
+[
+ {
+  "name": "compact",
+  "root": "rust",
+  "grep_tokens": 1331,
+  "grep_hits": 15,
+  "refs_tokens": 102,
+  "code_hits": 9,
+  "missed_code_hits": 1,
+  "hits_in_strings": 4,
+  "missed_examples": [
+   [
+    "crates/vtok-cli/src/lib.rs",
+    21,
+    "run [--max-tokens N] -- COMMAND [ARGS...]      run a command, show a c"
+   ]
+  ],
+  "truncated": false
+ },
+ {
+  "name": "summarize",
+  "root": "rust",
+  "grep_tokens": 140,
+  "grep_hits": 4,
+  "refs_tokens": 112,
+  "code_hits": 4,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "symbols",
+  "root": "rust",
+  "grep_tokens": 418,
+  "grep_hits": 9,
+  "refs_tokens": 92,
+  "code_hits": 8,
+  "missed_code_hits": 1,
+  "hits_in_strings": 2,
+  "missed_examples": [
+   [
+    "crates/vtok-cli/src/lib.rs",
+    27,
+    "symbols FILE [--lang L]                        id and line range of ev"
+   ]
+  ],
+  "truncated": false
+ },
+ {
+  "name": "outline",
+  "root": "rust",
+  "grep_tokens": 811,
+  "grep_hits": 9,
+  "refs_tokens": 78,
+  "code_hits": 8,
+  "missed_code_hits": 2,
+  "hits_in_strings": 1,
+  "missed_examples": [
+   [
+    "crates/vtok-cli/src/lib.rs",
+    26,
+    "outline FILE [--lang L]                        names and line ranges o"
+   ],
+   [
+    "crates/vtok-cli/src/lib.rs",
+    29,
+    "mcp [--allow-run]                              MCP server on stdio (vt"
+   ]
+  ],
+  "truncated": false
+ },
+ {
+  "name": "language_for_path",
+  "root": "rust",
+  "grep_tokens": 332,
+  "grep_hits": 6,
+  "refs_tokens": 132,
+  "code_hits": 6,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "ntok",
+  "root": "rust",
+  "grep_tokens": 1471,
+  "grep_hits": 37,
+  "refs_tokens": 542,
+  "code_hits": 37,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "score",
+  "root": "rust",
+  "grep_tokens": 498,
+  "grep_hits": 12,
+  "refs_tokens": 171,
+  "code_hits": 12,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "store",
+  "root": "rust",
+  "grep_tokens": 136,
+  "grep_hits": 3,
+  "refs_tokens": 75,
+  "code_hits": 3,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "resolve_chunks",
+  "root": "rust",
+  "grep_tokens": 134,
+  "grep_hits": 3,
+  "refs_tokens": 77,
+  "code_hits": 3,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "apply_edits",
+  "root": "rust",
+  "grep_tokens": 186,
+  "grep_hits": 4,
+  "refs_tokens": 81,
+  "code_hits": 4,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "Options",
+  "root": "rust",
+  "grep_tokens": 253,
+  "grep_hits": 7,
+  "refs_tokens": 166,
+  "code_hits": 7,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "tokens",
+  "root": "rust",
+  "grep_tokens": 2940,
+  "grep_hits": 50,
+  "refs_tokens": 284,
+  "code_hits": 43,
+  "missed_code_hits": 3,
+  "hits_in_strings": 19,
+  "missed_examples": [
+   [
+    "crates/vtok-cli/src/lib.rs",
+    21,
+    "run [--max-tokens N] -- COMMAND [ARGS...]      run a command, show a c"
+   ],
+   [
+    "crates/vtok-cli/src/lib.rs",
+    23,
+    "refs NAME [DIR] [--max-tokens N]               where a symbol is defin"
+   ],
+   [
+    "crates/vtok-cli/src/lib.rs",
+    25,
+    "gain [--days N] [--json]                       tokens saved by Vtok's "
+   ]
+  ],
+  "truncated": false
+ },
+ {
+  "name": "Session",
+  "root": "requests",
+  "grep_tokens": 669,
+  "grep_hits": 19,
+  "refs_tokens": 81,
+  "code_hits": 5,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "prepare_request",
+  "root": "requests",
+  "grep_tokens": 74,
+  "grep_hits": 2,
+  "refs_tokens": 49,
+  "code_hits": 2,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "merge_setting",
+  "root": "requests",
+  "grep_tokens": 324,
+  "grep_hits": 9,
+  "refs_tokens": 87,
+  "code_hits": 9,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "HTTPAdapter",
+  "root": "requests",
+  "grep_tokens": 731,
+  "grep_hits": 19,
+  "refs_tokens": 95,
+  "code_hits": 6,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "PreparedRequest",
+  "root": "requests",
+  "grep_tokens": 2994,
+  "grep_hits": 77,
+  "refs_tokens": 630,
+  "code_hits": 45,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "urlparse",
+  "root": "requests",
+  "grep_tokens": 976,
+  "grep_hits": 27,
+  "refs_tokens": 372,
+  "code_hits": 26,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "get_adapter",
+  "root": "requests",
+  "grep_tokens": 76,
+  "grep_hits": 2,
+  "refs_tokens": 49,
+  "code_hits": 2,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ },
+ {
+  "name": "RequestException",
+  "root": "requests",
+  "grep_tokens": 663,
+  "grep_hits": 19,
+  "refs_tokens": 98,
+  "code_hits": 17,
+  "missed_code_hits": 0,
+  "hits_in_strings": 0,
+  "missed_examples": [],
+  "truncated": false
+ }
+]

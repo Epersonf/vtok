@@ -51,34 +51,94 @@ Caveats, read before quoting any number:
   and `vtok output ID` returns any part, but the agent sees less on the first read.
 - Caveman's terse response style is not measured by `bench.py` (see "Answer style" below). Its engine
   (`caveman-engine compress`) left every output in this table unchanged because they are small and not repetitive. It
-  is built for large repetitive files; "Large data files" below is where it does well and vtok does not.
+  is built for large repetitive files; "Large data files" below measures both tools on those.
 - Small corpus, one machine, no repeat runs, no agent in the loop. It says nothing about task success.
 
-## Large data files (`blobs.py`)
+## Large data files (`blobs.py`, `needles.py`, `bigfiles.py`)
 
 Caveman's own benchmark (`docs/WRAP-BENCHMARK.md` in its repository) compresses 18-28k-token CSV, log, YAML, JSON and
 test-output files that hide one record among thousands of near-identical ones, and reports 98-99% smaller. Its corpus
 generator is not public, so `python benchmarks/blobs.py OUTDIR` builds five look-alikes (1,800-row CSV with one outlier
 amount, 900-line log with one `OOMKilled`, 45 near-identical YAML services with one drifted image tag, a 900-test pytest
 run with one failure, 130 JSON deployments with one `4000m` limit) and gives the same bytes to `caveman-engine compress`
-and to `vtok run -- cat FILE` (env `CAVEMAN_BIN`, `VTOK_BIN`). "needle" is whether the hidden record is in the output;
-"retrieve" is the size of `vtok output --grep NEEDLE`, which an agent can only run when it already knows what to look for.
+and to `vtok run -- cat FILE` (env `CAVEMAN_BIN`, `VTOK_BIN`). "needle" is whether the hidden record is in the output.
 
-| payload | raw | Caveman | needle | vtok | needle | vtok retrieve |
-|---|---:|---:|---|---:|---|---:|
-| CSV, 1,800 rows | 35,264 | 658 | yes | 29 | **no** | 113 |
-| log, 900 lines | 31,760 | 291 | yes | 180 | yes | |
-| YAML, 45 services | 5,123 | 302 | yes | 1,365 | **no** | 51 |
-| pytest -v, 900 tests | 14,797 | 14,797 (unchanged) | yes | 35 | yes | |
-| JSON, 130 deployments | 24,413 | 711 | yes | 132 | **no** | 39 |
+| payload | raw | Caveman | needle | vtok | needle |
+|---|---:|---:|---|---:|---|
+| CSV, 1,800 rows | 35,264 | 658 | yes | 274 | yes |
+| log, 900 lines | 31,760 | 291 | yes | 180 | yes |
+| YAML, 45 services | 5,123 | 302 | yes | 253 | yes |
+| pytest -v, 900 tests | 14,797 | 14,797 (unchanged) | yes | 35 | yes |
+| JSON, 130 deployments | 24,413 | 711 | yes | 260 | yes |
 
-Caveman is ahead on CSV, YAML and JSON. Its engine replaces runs of similar rows with a per-column summary and keeps the
-odd record. vtok's generic view prints one row for the CSV (a 40-row CSV also prints only its last row, with no header
-and no row count: a defect, not a design choice), the first services of the YAML, and a type outline of the JSON; only a
-`grep` for a value the agent already knows finds the record. vtok is ahead on the log (level counts and the error line)
-and on the pytest run (this engine leaves that format unchanged; its own benchmark's test-output file may use another
-format). These are look-alikes written by the vtok author, one per shape, one run each: they show where the gaps are, not
-by how much.
+vtok is smaller on all five and has the record in every output (the pytest format is one this engine leaves unchanged;
+its own benchmark's test-output file may use another format). It did not start there. With the generic view (head and
+tail, one row for a CSV, a type outline for JSON) it printed 29, 1,365 and 132 tokens on the CSV, YAML and JSON and had
+the record in none of them; a 40-row CSV printed only its last row, with no header and no row count. `src/data/` replaced
+that for CSV, TSV, JSON (a list of objects anywhere in the document, minified or not), NDJSON and YAML. Those outputs grew
+(29 -> 274 on the CSV) because they now carry what the old ones lost. For a file that is a long list of similar records
+the view prints: the record count and field count; the header and the first three rows; one line per field (constant
+value, numeric range and quartiles, the common values of a categorical field with counts, the shape of ids and
+timestamps); the records that stand out, verbatim with their line numbers and the reason; and the last row. A record
+stands out for a value seen once or twice in an otherwise uniform column, a number beyond three interquartile ranges, text
+in a numeric column, an id or timestamp of another shape, a blank in a full column, a field that only a few records have or
+lack, an id that appears twice, a break in a sorted column, or a row with the wrong number of fields. The whole file stays
+under the id.
+
+`python benchmarks/needles.py OUTDIR` hides other kinds of record in an 1,800-row CSV, an 1,800-item JSON document and an
+1,800-line NDJSON file (45-114k tokens raw; token counts below):
+
+| file | hidden record | Caveman | found | vtok | found |
+|---|---|---:|---|---:|---|
+| CSV | rare status | 620 | yes | 281 | yes |
+| CSV | negative amount | 597 | yes | 281 | yes |
+| CSV | account id of another shape | 619 | yes | 282 | yes |
+| CSV | blank amount | 557 | **no** | 283 | yes |
+| CSV | text in a numeric column | 619 | yes | 281 | yes |
+| CSV | duplicate id | 557 | yes | 350 | yes |
+| CSV | timestamp out of order | 557 | **no** | 290 | yes |
+| CSV | odd word in free text | 557 | **no** | 288 | yes |
+| JSON | flag flipped | 318 | yes | 186 | yes |
+| JSON | extra key | 427 | yes | 200 | yes |
+| JSON | image from another registry | 425 | yes | 196 | yes |
+| JSON | number written as text | 422 | yes | 189 | yes |
+| NDJSON | rare status | 322 | yes | 389 | yes |
+| NDJSON | huge amount | 328 | **no** | 390 | yes |
+
+Read both tables with these limits. The payloads and the hidden records were written by the vtok author, the 14 in the
+second table after the detectors existed (they are other kinds of record than the five the detectors were first written
+around, but treat them as a regression suite, not an independent score), one file per case, one run. A record that is
+wrong but looks like its neighbours (41.12 instead of 41.21), or odd only as a combination of common values (a country
+with a currency it never has), is not found. At most eight records are listed (the rest are counted), and a free-text
+column with hundreds of different shapes is not examined. Caveman's engine is a general compressor and also covers inputs
+vtok has no view for.
+
+`python benchmarks/bigfiles.py OUTDIR` times `vtok run -- cat FILE` on files up to 34 MB with one amount of 48213.77
+hidden in each. Seconds and peak memory of the whole process, the previous binary (vtok d9ce945) and this one on the same
+files, one Windows machine, one run each (the previous binary's view had the record in none of them):
+
+| file | size | previous: seconds / MB | now: seconds / MB | record in view |
+|---|---:|---|---|---|
+| CSV, 150k rows | 9.6 MB | 4.5 / 212 | 3.7 / 282 | yes |
+| CSV, 250k rows | 16.0 MB | 7.4 / 290 | 6.0 / 410 | yes |
+| JSON, 18k records, pretty (216k lines) | 4.3 MB | 2.7 / 139 | 2.9 / 154 | yes |
+| JSON, 150k records, one line | 27.1 MB | 6.0 / 406 | 5.9 / 528 | yes |
+| NDJSON, 190k rows | 34.4 MB | 10.2 / 465 | 9.0 / 669 | yes |
+| YAML, 15k records (150k lines) | 2.7 MB | 1.9 / 111 | 2.1 / 130 | yes |
+
+The new view is not slower than the generic summary it replaces (faster on CSV, within 0.2 s on the rest) and uses 10-45%
+more memory. Most of the time is `vtok run` itself, about 0.3-0.5 s per MB of output before any view. Input over 40 MB is
+left to the generic summary.
+
+Real files, not look-alikes: the view was also run over 1,089 files from the three cloned repositories and this one
+(121 JSON, 48 YAML, one CSV, 563 markdown, source files, HTML, SQL, TOML, lockfiles and text) next to the previous binary.
+It changed the output of 40: 31 JSON files, 8 of the 16 `.yaml` files (provider catalogs) and the CSV. The other 1,049,
+including all 919 markdown, source, HTML, SQL, TOML, lock and text files, came out byte for byte as before. A first version
+took 10 more and made them worse: three GitHub workflows (their triggers and scripts disappeared behind "outliers" that
+were only different steps), five JSON Schema files, a fixtures file and a pnpm lockfile. Their objects share almost no
+fields, so they are parts of a document and not rows of one table; the rule that turns them away is `Table::shared` (at
+least three fields that nine in ten records have). It is a heuristic with a gray zone: an npm lockfile of 114 packages and a
+registry of 29 graders still get a table, with more tokens than the old outline (about 0.8k and 1.1k against 0.4k and 0.1k).
 
 ## Graph accuracy (`graph_eval.py`)
 

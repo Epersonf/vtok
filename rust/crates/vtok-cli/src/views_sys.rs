@@ -14,6 +14,13 @@ mod net;
 mod psql;
 mod misc;
 
+const FILE_PRINTERS: [&str; 6] = ["cat", "type", "bat", "head", "tail", "less"];
+
+/// True when `cmd` prints a named file (`cat`, `head`, `bat`...): what the file is was decided from its name already.
+pub fn prints_file(cmd: &str) -> bool {
+    util::parse(cmd).is_some_and(|(tool, args)| FILE_PRINTERS.contains(&tool.as_str()) && !util::positional(&args).is_empty())
+}
+
 pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
     let (tool, args) = util::parse(cmd)?;
     let logfile = args.iter().any(|a| a.ends_with(".log"));
@@ -37,8 +44,10 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
         "psql" => psql::view(lines),
         "ast-grep" | "sg" | "sgrep" => misc::astgrep(lines),
         "cat" | "type" | "bat" | "head" | "tail" | "less" => {
+            let ext = util::positional(&args).last().and_then(|f| f.rsplit_once('.')).map(|x| x.1);
             let json = args.iter().any(|a| a.ends_with(".json"));
-            if json { jsonv::json_text(lines) } else { misc::file_dump(&args, lines) }
+            // a long list of similar records (CSV, JSON, YAML) first; otherwise the structure or the source-file cut
+            crate::data::view(lines, ext).or_else(|| if json { jsonv::json_text(lines) } else { misc::file_dump(&args, lines) })
         }
         _ => None,
     };

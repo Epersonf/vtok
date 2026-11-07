@@ -27,7 +27,7 @@ pub fn run(args: &[String]) -> i32 {
     let lines = crate::shell::clean(&raw);
     let via = if crate::cmdviews::view(&cmd, &lines).is_some() { "dedicated" }
         else if crate::tomlfilters::apply(&cmd, &lines).is_some() { "toml" }
-        else if crate::filters::view(&lines).is_some() { "shape" } else { "generic" };
+        else if crate::filters::view(&lines).is_some() || crate::data::sniffed(&cmd, &lines).is_some() { "shape" } else { "generic" };
     let out = crate::shell::preview(&cmd, &raw, code, 700);
     if explain { eprintln!("via={via} raw={} shown={}", ntok(&raw), ntok(&out)); }
     print!("{out}");

@@ -106,7 +106,7 @@ fn pick(cmd: &str, views_in: &[String], base: &[String], lines: &[String], budge
     if let Some(v) = crate::cmdviews::view(cmd, views_in) { return Some(summary_or_partial(v)); }
     if tiny { return None; }
     if let Some(v) = crate::gitfmt::diff_view(base, budget).or_else(|| crate::gitfmt::log_view(base, budget)) { return Some((v, Kind::Partial)); }
-    if let Some(v) = crate::filters::view(base) { return Some(summary_or_partial(v)); }
+    if let Some(v) = crate::filters::view(base).or_else(|| crate::data::sniffed(cmd, base)) { return Some(summary_or_partial(v)); }
     let test_report = base.iter().any(|l| l.starts_with('=') && l.contains(" FAILURES "));
     let failure = failure_view(base).filter(|v| ntok(v) <= budget);
     if let Some(v) = failure.clone().filter(|_| test_report) { return Some((v, Kind::Partial)); }

@@ -173,7 +173,10 @@ const LINE_CAP: usize = 300;
 pub fn state_dir() -> Option<PathBuf> {
     if let Some(p) = std::env::var_os("VTOK_STATE") { return Some(PathBuf::from(p)); }
     if let Some(x) = std::env::var_os("XDG_STATE_HOME") { return Some(PathBuf::from(x).join("vtok")); }
-    std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".local/state/vtok"))
+    if let Some(h) = std::env::var_os("HOME") { return Some(PathBuf::from(h).join(".local/state/vtok")); }
+    // Windows has no HOME by default.
+    if let Some(a) = std::env::var_os("LOCALAPPDATA") { return Some(PathBuf::from(a).join("vtok")); }
+    std::env::var_os("USERPROFILE").map(|h| PathBuf::from(h).join(".local/state/vtok"))
 }
 
 fn out_dir() -> Option<PathBuf> { state_dir().map(|d| d.join("out")) }

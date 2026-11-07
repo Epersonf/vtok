@@ -4,14 +4,11 @@ use std::path::{Path, PathBuf};
 
 pub static ALLOW_RUN: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
-pub const DEFAULT_MAX_LINES: usize = 150;
-pub const MAX_LINES_LIMIT: usize = 100_000;
-pub(super) const KEY: &str = "max_lines";
-
 pub fn user_config_path() -> Option<PathBuf> {
     if let Some(p) = std::env::var_os("VTOK_CONFIG") { return Some(PathBuf::from(p)); }
     if let Some(x) = std::env::var_os("XDG_CONFIG_HOME") { return Some(PathBuf::from(x).join("vtok/config.json")); }
-    std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config/vtok/config.json"))
+    // Windows shells do not set HOME
+    std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE")).map(|h| PathBuf::from(h).join(".config/vtok/config.json"))
 }
 
 /// Nearest `.vtok.json` at or above `start` (a file or a directory); bounded to 64 ancestors.
@@ -31,23 +28,9 @@ pub(super) fn read_json(path: &Path) -> Value {
     std::fs::read_to_string(path).ok().and_then(|s| serde_json::from_str(&s).ok()).unwrap_or_else(|| json!({}))
 }
 
-pub(super) fn max_lines_in(path: &Path) -> Option<usize> {
-    read_json(path).get(KEY).and_then(|v| v.as_u64()).map(|n| n as usize).filter(|n| (1..=MAX_LINES_LIMIT).contains(n))
-}
-
 /// Effective max-lines and where it came from. `near` is the file being worked on (for `.vtok.json` lookup).
 pub fn max_lines(near: Option<&Path>) -> (usize, String) {
-    if let Some(n) = std::env::var("VTOK_MAX_LINES").ok().and_then(|s| s.trim().parse::<usize>().ok()).filter(|n| (1..=MAX_LINES_LIMIT).contains(n)) {
-        return (n, "VTOK_MAX_LINES".into());
-    }
-    let start = near.map(Path::to_path_buf).or_else(|| std::env::current_dir().ok());
-    if let Some(p) = start.as_deref().and_then(local_config_path) {
-        if let Some(n) = max_lines_in(&p) { return (n, p.display().to_string()); }
-    }
-    if let Some(p) = user_config_path() {
-        if let Some(n) = max_lines_in(&p) { return (n, p.display().to_string()); }
-    }
-    (DEFAULT_MAX_LINES, "default".into())
+    super::settings::MAX_LINES.get(near)
 }
 
 /// Whether the MCP server may run commands (`vtok_run`). Off by default. Only the command line (`vtok mcp

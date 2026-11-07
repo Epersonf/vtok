@@ -11,8 +11,6 @@ use super::summary::summarize;
 use super::table::squeeze_table;
 use vtok_api::ntok;
 
-/// Output at most this long is shown as is.
-const RAW_BELOW_TOKENS: usize = 250;
 /// A clean run (exit 0, a summary line) is worth a dedicated view from this size on; the generic summariser from the next.
 const CLEAN_MIN_TOKENS: usize = 24;
 const CLEAN_GENERIC_TOKENS: usize = 60;
@@ -53,8 +51,6 @@ impl Compacted {
 
 fn with_newline(text: String) -> String { if text.is_empty() { text } else { text + "\n" } }
 
-pub fn compact(raw: &str, code: i32, budget: usize) -> String { preview("", raw, code, budget) }
-
 /// What `vtok run` prints for a finished command; the full output is stored.
 pub fn compact_cmd(cmd: &str, raw: &str, code: i32, budget: usize) -> String { build(cmd, raw, code, budget, true).render(code) }
 
@@ -83,7 +79,7 @@ pub fn build(cmd: &str, raw: &str, code: i32, budget: usize, persist: bool) -> C
     // a clean run (exit 0, no error lines) needs only its summary, not a full head/tail
     let clean_run = code == 0 && !lines.iter().any(|l| score(l) >= 3 && !is_pass_line(l));
     let runner = lines.iter().any(|l| score(l) == 2);
-    let small = if clean_run && runner { CLEAN_MIN_TOKENS } else { RAW_BELOW_TOKENS };
+    let small = if clean_run && runner { CLEAN_MIN_TOKENS.min(crate::config::run_tiny()) } else { crate::config::run_tiny() };
     if raw_tok <= small { return verbatim(text, id); }
     let tiny = clean_run && runner && raw_tok <= CLEAN_GENERIC_TOKENS;
     let picked = if verdict { Some(summary_or_partial(with_newline(base.join("\n")))) } else { pick(cmd, &views_in, &base, &lines, budget, clean_run && runner, tiny) };

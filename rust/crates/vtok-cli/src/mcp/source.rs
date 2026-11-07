@@ -1,11 +1,13 @@
 //! Tools that read or change one source file: read, chunk, outline, edit, stats.
 use super::args::{arg_str, fnv, max_lines, read_source};
+use super::plain;
 use serde_json::Value;
 use std::collections::BTreeMap;
 use vtok_api::*;
 
 pub(super) fn tool_read(a: &Value) -> std::result::Result<String, String> {
     let path = arg_str(a, "path")?;
+    if !plain::is_source(path) { return plain::read(path); }
     let (src, lang, _) = read_source(path)?;
     let view = a.get("view").and_then(|v| v.as_str()).unwrap_or("full");
     let rev = fnv(&src);
@@ -21,12 +23,16 @@ pub(super) fn tool_read(a: &Value) -> std::result::Result<String, String> {
     };
     let tbl = render_table(&table);
     let total = ntok(&body) + ntok(&tbl);
-    if view == "full" && (total + 30) * 10 >= raw_tokens * 9 {
-        crate::usage::record("read", raw_tokens, raw_tokens, path);
-        return Ok(format!("# {path} rev={rev}: Vtok would not be smaller ({total} vs {raw_tokens} tokens); raw file below. Edit it with the normal edit tool.\n---\n{src}"));
+    let compact = format!("# {path} lang={} rev={rev} {note}; {raw_tokens} raw tokens -> {total}\n# aliases (alias=original)\n{tbl}\n---\n{body}", lang.name());
+    if view == "full" {
+        let plain_out = plain::plain_read(path, &src);
+        if !plain::pays(&compact, &plain_out, plain::gain_near(path)) {
+            crate::usage::record("read", raw_tokens, ntok(&plain_out), path);
+            return Ok(plain_out);
+        }
     }
     crate::usage::record("read", raw_tokens, total, path);
-    Ok(format!("# {path} lang={} rev={rev} {note}; {raw_tokens} raw tokens -> {total}\n# aliases (alias=original)\n{tbl}\n---\n{body}", lang.name()))
+    Ok(compact)
 }
 
 pub(super) fn tool_chunk(a: &Value) -> std::result::Result<String, String> {
@@ -36,6 +42,13 @@ pub(super) fn tool_chunk(a: &Value) -> std::result::Result<String, String> {
     let (v, used) = chunk_with_aliases(lang.name(), &src, id, max_lines(a)).map_err(|e| e.to_string())?;
     let aliases = if used.is_empty() { String::new() } else { format!("# aliases used (alias=original)\n{}\n", render_table(&used)) };
     let out = format!("# {path} chunk {id} rev={}\n{aliases}---\n{v}", fnv(&src));
+    if let Some((text, from, to)) = plain::symbol_text(lang.name(), &src, id) {
+        let plain_out = plain::plain_chunk(path, id, &src, &text, (from, to));
+        if !plain::pays(&out, &plain_out, plain::gain_near(path)) {
+            crate::usage::record("chunk", ntok(&src), ntok(&plain_out), &format!("{path} {id}"));
+            return Ok(plain_out);
+        }
+    }
     crate::usage::record("chunk", ntok(&src), ntok(&out), &format!("{path} {id}"));
     Ok(out)
 }
@@ -50,26 +63,19 @@ pub(super) fn tool_outline(a: &Value) -> std::result::Result<String, String> {
 }
 
 pub(super) fn tool_edit(a: &Value) -> std::result::Result<String, String> {
+    if a.get("replace").is_some() { return plain::replace(a); }
     let path = arg_str(a, "path")?;
     let rev = arg_str(a, "rev")?;
     let (src, lang, crlf) = read_source(path)?;
     if fnv(&src) != rev {
         return Err(format!("{path} changed since it was read (rev {rev} != {}); read it again before editing", fnv(&src)));
     }
-    let chunks = a.get("chunks").and_then(|v| v.as_object()).ok_or("missing object argument \"chunks\"")?;
+    let chunks = a.get("chunks").and_then(|v| v.as_object()).ok_or("missing \"chunks\" (or \"replace\")")?;
     let mut edits: BTreeMap<String, String> = BTreeMap::new();
     for (k, v) in chunks { edits.insert(k.clone(), v.as_str().ok_or("chunk values must be strings")?.to_string()); }
     let out = apply_chunks(lang.name(), &src, &edits, max_lines(a), false).map_err(|e| e.to_string())?;
-    let changed = out != src;
-    let delta = (out.lines().count() as i64) - (src.lines().count() as i64);
-    if changed && !a.get("dry_run").and_then(|v| v.as_bool()).unwrap_or(false) {
-        let text = if crlf { out.replace('\n', "\r\n") } else { out.clone() };
-        let tmp = format!("{path}.vtok.tmp");
-        std::fs::write(&tmp, &text).map_err(|e| format!("cannot write {tmp}: {e}"))?;
-        std::fs::rename(&tmp, path).map_err(|e| format!("cannot replace {path}: {e}"))?;
-    }
-    Ok(if !changed { format!("{path}: no change (the edited chunks are equivalent to the original)") }
-       else { format!("{path}: {} ({:+} lines); new rev={}", if a.get("dry_run").and_then(|v| v.as_bool()).unwrap_or(false) { "dry run, not written" } else { "written" }, delta, fnv(&out)) })
+    if out == src { return Ok(format!("{path}: no change (the edited chunks are equivalent to the original)")); }
+    plain::save(path, &src, &out, crlf, a.get("dry_run").and_then(|v| v.as_bool()).unwrap_or(false))
 }
 
 pub(super) fn tool_stats(a: &Value) -> std::result::Result<String, String> {

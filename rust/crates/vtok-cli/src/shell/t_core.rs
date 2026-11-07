@@ -1,6 +1,6 @@
 use super::clean::clean;
 use super::clean_run::{sum_test_results, without_passes};
-use super::compact::compact;
+use super::compact::preview;
 use super::listing::summarize_listing;
 use super::score::score;
 use super::store::valid_id;
@@ -38,7 +38,7 @@ fn zero_counters_are_not_failures() {
 
 #[test]
 fn short_output_is_untouched() {
-    assert_eq!(compact("hello\nworld\n", 0, 700), "hello\nworld\n");
+    assert_eq!(preview("", "hello\nworld\n", 0, 700), "hello\nworld\n");
 }
 
 #[test]

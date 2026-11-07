@@ -30,7 +30,7 @@ mod table;
 #[cfg(test)] mod t_store;
 
 pub use clean::clean;
-pub use compact::{compact, preview};
+pub use compact::preview;
 pub use output::{fetch, output_cmd, parse_range, Query};
 pub use run::{run, run_for_mcp};
 pub use store::{latest, load, state_dir};

@@ -123,7 +123,7 @@ fresh model, then `python check.py <task> vtok <reply-file>`.
     vtok output ID --grep "FAILED|panic" --context 3     # read back part of the full output (also --lines A-B, --tail N)
 
 `vtok run` stores the whole (ANSI-stripped) output under `~/.local/state/vtok/out` (`$VTOK_STATE`; the newest 100 files for 7
-days) and prints a compact view. A closing line appears only when something was cut (`# more: vtok output ID`) or the command failed (`# exit=N; more: vtok output ID`); a fully summarised success prints just the summary, e.g. `cargo test: 233 passed (3 suites), 3 warnings`. Output under ~250 tokens, or a compact view that is not smaller, is printed as is.
+days) and prints a compact view. A closing line appears only when something was cut (`# more: vtok output ID`) or the command failed (`# exit=N; more: vtok output ID`); a fully summarised success prints just the summary, e.g. `cargo test: 233 passed (3 suites), 3 warnings`. Output under ~250 tokens (the `run-tiny` setting), or a compact view that is not smaller, is printed as is.
 The command's exit code is preserved. `vtok output [ID] [--grep A|B] [--lines A-B] [--tail N] [--head N]` reads part of a stored run (no ID: the most recent one), `vtok output [ID] --file PATH` prints one file's section of a stored diff, and `vtok filter [--explain] [--code N] -- CMD < output` previews the view of captured output.
 
 Works with any agent that speaks MCP; nothing is Claude-specific. The MCP server exposes `vtok_outline`, `vtok_output`, `vtok_gain`
@@ -139,7 +139,7 @@ permission rules apply. For clients that ignore MCP instructions, `vtok init --w
 
 **Status bar and answer style.** `vtok gain --line` prints one short line (`vtok saved 12.3k tok (41%) / 30d`) for a status bar. `vtok init --terse` prints an optional answer-style note (about 280 tokens: direct answer first, no preamble or closing offer, exact code and numbers, the user's language, one-line review comments, short commit subjects); add `--terse` to `init --write FILE` or `init --agent NAME` to install it inside the vtok block (running again without `--terse` removes it). Measured with Caveman's own method (`benchmarks/style_eval.py`: isolated `claude -p` calls against a plain "Answer concisely." control), it cut output tokens by a median 36-42% on prompts held out of tuning, in English and Portuguese, with no fidelity failures on those cases; Caveman's skill measured -14% on Sonnet and +10% to +26% on Haiku (its long prompt raises thinking tokens), at +1716 input tokens per call instead of +283. Those runs used Haiku and Sonnet (not Caveman's published Opus snapshot) and are single-turn. Over a full agent loop an earlier, longer terse prompt cut output by 20% but raised total cost by 7% (`bench/loop/RESULTS.md`), and the new note has not been re-measured there, so it stays off by default.
 
-**Where would it help?** `vtok discover` reads your local Claude Code transcripts, takes every shell command whose output was large, runs Vtok's compactor on the output that command really returned, and ranks command kinds by tokens saved (and whether the hook would wrap them). Read-only. The figure is an upper bound: it counts compaction of the whole output, including `sed` and `cat` file dumps that the hook does not touch (it wraps only a plain `cat` of a large data file).
+**Where would it help?** `vtok discover [--days N] [--min-tokens N] [--dir PATH]` reads your local Claude Code transcripts (each tool call counted once, even when a resumed session repeats it), takes every shell command whose output was large, runs Vtok's compactor on the output that command really returned, and asks the hook, with the directory the command ran in, whether it would have wrapped it. It prints two figures: what the hook would really have saved, and the upper bound if every one of those commands went through `vtok run`; then a table by command kind (calls, raw tokens, tokens after Vtok, saved, how many of the calls the hook wraps) and the large file reads split into prose, code and data files. Read-only. The upper bound counts compaction of the whole output, including `sed` and `cat` file dumps that the hook leaves alone; the hook itself decides before the command runs, so it can only act on commands it recognises (the built-in list plus the filters in `~/.config/vtok/filters.toml`).
 
 **Native hooks for other agents.** `vtok init --hook AGENT [--global]` registers the hook (or writes the plugin file) for claude, copilot (VS Code), droid, trae, vibe, cursor, codex, gemini, antigravity, opencode, pi, omp and hermes; `vtok hook --agent NAME` speaks each agent's protocol. Cursor, Codex, Gemini CLI and Antigravity only apply a rewrite when the hook answers "allow", so for those agents only read-only and build/test commands (`git status`, `cargo test`, `pytest`, `kubectl get`, ...) are rewritten and everything that installs, pushes, deploys or deletes is left to the agent's own approval. The others (claude, copilot, droid, trae, vibe) rewrite without granting any permission. The opencode, pi/omp and hermes plugins are thin adapters over `vtok rewrite`.
 
@@ -188,17 +188,27 @@ want the symbol too. See `bench/map/RESULTS.md`. `vtok find` ranks symbols by ho
 
 ## Configuration
 
-The size above which a file is split into chunks (default 150 lines) is configurable:
+Three settings, each with a default:
 
-    vtok config                       # show the effective value and where it comes from
+| name | default | range | what it does |
+|---|---|---|---|
+| `max-lines` | 150 | 1-100000 | a file longer than this is split into chunks |
+| `min-gain` | 10 | 0-90 | percent of tokens the compact form must save before `vtok_read` / `vtok_chunk` return it instead of the plain text |
+| `run-tiny` | 250 | 0-20000 | `vtok run` prints an output of up to this many tokens unchanged |
+
+    vtok config                       # every setting with its value, where it comes from, and what it does
+    vtok config get min-gain
     vtok config set max-lines 300     # for your user (~/.config/vtok/config.json, or $VTOK_CONFIG)
-    vtok config set max-lines 80 --local   # for this repo (.vtok.json, found by walking up from the file)
-    vtok config unset max-lines [--local]
+    vtok config set min-gain 25 --local    # for this repo (.vtok.json, found by walking up from the file)
+    vtok config unset min-gain [--local]
 
-Order of precedence: `--max-lines` / the MCP `max_lines` argument, `VTOK_MAX_LINES`, nearest `.vtok.json`, the user file, 150.
+Order of precedence: the command-line / MCP argument (`--max-lines`, `max_lines`), the environment (`VTOK_MAX_LINES`, `VTOK_MIN_GAIN`, `VTOK_RUN_TINY`), the nearest `.vtok.json`, the user file, the default. A value outside its range is ignored.
+
+**Vtok checks that it pays.** The read tools build the compact answer and the plain one and return the compact one only when it is at least `min-gain` percent smaller; otherwise the plain text comes back, with the same `rev`, so `vtok_edit` keeps working. A file with no Vtok notation (Markdown, TOML, JSON, ...) comes back as plain text with a `rev` (a large CSV or JSON gets its table view). `vtok_edit` also takes `replace: [{old, new, all?}]` for exact-text edits of any text file: each `old` must occur once unless `all` is set, nothing is written unless every item applies, and the file's line endings are kept. `vtok run` prints the raw output when it is tiny or when the view would not be smaller. The one decision that cannot wait for the result is the shell hook's, because it rewrites the command before it runs: it uses the built-in list of chatty commands and your own filters, and `vtok discover` shows from your transcripts which commands that list misses.
 
 ## Known limits
 
+- The hook reaches few of the tokens that matter. On the author's own 30 days of Claude Code transcripts (`vtok discover --min-tokens 1000`: 781 transcripts, 23,494 shell calls) 4,947 calls returned 1,000 tokens or more (13.0M tokens) and the hook would have wrapped 44 of them, 0.6% of those tokens, because most of the volume is commands it cannot recognise beforehand (`cat`, `sed`, `grep`, ad-hoc scripts, loops, pipes). Running every one through `vtok run` would save 93% of them, an upper bound. The compaction itself is a different matter: on the 18 captured outputs in `benchmarks/` it cuts 70%. Large file reads are a similar volume (2,905 reads, 11.1M tokens): 86% of their tokens were prose files (txt, md) and 13% source code, and the code notation does not apply to prose.
 - Docstrings and comments are dropped in the Vtok view; `apply` preserves them for untouched chunks, and
   Python docstrings are re-attached inside edited chunks (comments inside an edited chunk are lost).
 - TypeScript/JavaScript: semicolon-less (ASI) sources are supported; JSX/TSX supported (JSX text whitespace is normalized per JSX semantics), no Flow; multi-line template literals become `

@@ -1,5 +1,6 @@
 //! Writing the settings: `.vtok.json` in the working directory (`--local`) or the user config file.
-use super::lookup::{read_json, user_config_path, KEY, MAX_LINES_LIMIT};
+use super::lookup::{read_json, user_config_path};
+use super::settings::Setting;
 use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
 
@@ -23,20 +24,20 @@ pub fn set_mcp_run(on: bool) -> Result<PathBuf, String> {
     Ok(path)
 }
 
-pub fn set_max_lines(n: usize, local: bool) -> Result<PathBuf, String> {
-    if !(1..=MAX_LINES_LIMIT).contains(&n) { return Err(format!("max-lines must be between 1 and {MAX_LINES_LIMIT}")); }
+pub fn set_number(s: &Setting, n: usize, local: bool) -> Result<PathBuf, String> {
+    if !(s.min..=s.max).contains(&n) { return Err(format!("{} must be between {} and {}", s.name, s.min, s.max)); }
     let path = target(local)?;
     let mut v = read_json(&path);
     if !v.is_object() { v = json!({}); }
-    v[KEY] = json!(n);
+    v[s.key] = json!(n);
     write(&path, &v)?;
     Ok(path)
 }
 
-pub fn unset_max_lines(local: bool) -> Result<PathBuf, String> {
+pub fn unset_number(s: &Setting, local: bool) -> Result<PathBuf, String> {
     let path = target(local)?;
     let mut v = read_json(&path);
-    if let Some(o) = v.as_object_mut() { o.remove(KEY); }
+    if let Some(o) = v.as_object_mut() { o.remove(s.key); }
     if path.exists() { write(&path, &v)?; }
     Ok(path)
 }

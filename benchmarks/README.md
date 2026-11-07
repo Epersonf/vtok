@@ -10,9 +10,12 @@ FIXTURES=/tmp/fx RTK_BIN=.../rtk VTOK_BIN=.../vtok CAVEMAN_BIN=.../caveman-engin
 Tokens are `(chars + 3) / 4`, the metric RTK's own benchmark uses. `keep N/M` counts key strings (failing test names,
 error codes) that survive in each tool's output. It is a crude retention check, not a quality score.
 
-## Results (one Windows machine, 18 scenarios, vtok 59e3825, RTK 0.49.0)
+## Results (one Windows machine, 18 scenarios, vtok main on 2026-11-07, RTK 0.49.0)
 
-Command output, raw 36,025 tokens: RTK 25,242 (-30%), vtok 11,122 (-69%). Caveman's engine left these outputs
+Command output, raw 37,134 tokens: RTK 25,243 (-32%), vtok 11,122 (-70%). (`bench.py` itself prints `//`-rounded
+percentages, up to a point higher; the figures here are exact.) The `cargo test (all pass)` scenario runs this repo's own
+test suite, so its raw size grows with the suite (4,739 tokens in the previous table, 5,847 now): compare columns within
+one run, not totals across commits. Caveman's engine left these outputs
 unchanged in the earlier run (0%: they are small and not repetitive, see "Large data files") and was not re-run. The git
 scenarios use fixed revisions and the `cat`/`grep` scenarios a pinned file (`fixtures.py` writes it from git history), so
 the numbers do not move with every commit. `keep` counts a scenario's key strings in the output (crude).
@@ -27,7 +30,7 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 | cat of a 727-line source file | 9,861 | 9,861 | 2,599 | vtok elides the middle (it lost `fn compact_cmd`); use `vtok_read` to read code |
 | cargo build (errors) | 395 | 352 | 71 | |
 | cargo test (3 fail) | 403 | 156 | 105 | |
-| cargo test (all pass) | 4,739 | 11 | 9 | crate without compiler warnings; with 4 warnings (scratch copy, same harness) it is RTK 11, vtok 12: vtok keeps the warning count, RTK's line has none |
+| cargo test (all pass) | 5,847 | 11 | 9 | crate without compiler warnings; with 4 warnings (scratch copy, same harness) it is RTK 11, vtok 12: vtok keeps the warning count, RTK's line has none |
 | pytest (3 fail, same message) | 328 | 104 | 55 | |
 | pytest (11 fail, mixed errors) | 1,140 | 419 | 301 | RTK drops one failing test |
 | mypy | 64 | 64 | 64 | below the 250-token pass-through threshold |
@@ -40,7 +43,7 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 
 Where RTK is ahead: `vitest` in size (37 against 59), at the cost of both failing test names, and a green `cargo test` by
 one token when the crate has compiler warnings (vtok prints their count, RTK's line has none). Nothing else in this set.
-Between the previous binary and this one only the vitest row changed (11,197 -> 11,122 in total, same machine and day).
+The vtok column is identical to the previous run (11,122 in total): the `min-gain` and `run-tiny` settings did not change any of these views.
 Every view was also audited for silently dropped error classes: with 70 distinct rules or codes fed to each of 16
 lint/compiler views, 10 of them lost classes before (oxlint, biome, rubocop, sqlfluff, phpstan, make/gcc, dotnet, go
 build, eslint) and none do now (`bench/run/audit_retention.py`, `src/t_retention.rs`).

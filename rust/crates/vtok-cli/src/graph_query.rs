@@ -38,8 +38,15 @@ impl Graph {
         let mut rels = [0usize; 16];
         for &r in &self.rel { rels[r as usize] += 1; }
         let rs: Vec<String> = RELS.iter().enumerate().filter(|(i, _)| rels[*i] > 0).map(|(i, r)| format!("{r} {}", rels[i])).collect();
-        format!("graph: {} nodes ({} files), {} edges, {} communities with 2+ members\nedges: {} EXTRACTED, {inferred} INFERRED; {}\nnodes: {}\n",
-            self.nodes.len(), self.files, self.edges.len(), multi, self.edges.len() - inferred, rs.join(", "), ks.join(", "))
+        format!("graph: {} nodes ({} files), {} edges, {} communities with 2+ members\nedges: {} EXTRACTED, {inferred} INFERRED; {}\nnodes: {}\n{}",
+            self.nodes.len(), self.files, self.edges.len(), multi, self.edges.len() - inferred, rs.join(", "), ks.join(", "), self.bulk_note())
+    }
+
+    /// The files kept as file nodes only (generated bindings, constant tables), or nothing when there are none.
+    fn bulk_note(&self) -> String {
+        let (Some(big), Some(small)) = (self.bulk.iter().max_by_key(|b| b.1), self.bulk.iter().map(|b| b.1).min()) else { return String::new() };
+        format!("left out: {} files of {small}+ symbols ({} in all; generated bindings or tables), the largest {} with {}; VTOK_GRAPH_MAX_FILE_SYMBOLS=0 graphs them\n",
+            self.bulk.len(), self.bulk.iter().map(|b| b.1).sum::<usize>(), big.0, big.1)
     }
 
     pub fn hubs(&self, n: usize) -> String {

@@ -79,7 +79,25 @@ on unknown receivers, variant patterns shadowing functions). Measured on the sam
 report about 920 tokens; Graphify 9.1 MB, 11-14 s, report about 24,600 tokens. On vtok's own tree: 135 KB and 1.1 s
 against 1.15 MB. Only Rust has a ground truth; the other languages' resolution is covered by fixture tests, not measured.
 Known: nested items (a `const` inside a function) have no node, so references to them are credited to the enclosing
-function; `windows-sys`-style generated binding crates take about 17 s and write a 20 MB graph.
+function.
+
+Bulk files: a file with more than 1,000 symbols (generated bindings, constant tables) is kept as a file node and its
+symbols, and the references inside it, are not graphed. `vtok graph build` and `report` print how many files were left
+out, their symbol total and the largest (`graph.json` lists them all); `VTOK_GRAPH_MAX_FILE_SYMBOLS=0` graphs them.
+The limit comes from 10,370 source files of a cargo registry (outside `windows-*`), where the largest file that is not
+a binding, a generated file or a constants table had 630 symbols and every file above 1,000 was one of those.
+Measured here on a copy of `windows-sys` 0.61.2 (249 files, 18 MB; it has no generated-code header to detect):
+
+| | build | graph.json | nodes | edges | files graphed with symbols |
+|---|---:|---:|---:|---:|---|
+| before | 18.5 s | 20.3 MB | 157,800 | 266,658 | 249 |
+| after | 4.1 s (3 runs: 4.11 / 4.17 / 4.13) | 4.1 MB | 32,085 | 55,777 | 192 (57 left out, 79% of the symbols) |
+
+No accuracy change where the guard does not apply: on vtok's own tree `graph_eval.py` gives calls precision / recall
+100.0 / 95.5 both before and after (this tree has no file near the limit), and the stored graphs of seven other code
+bases (RTK `src/`, syn, clap_builder, regex-syntax, hashbrown, indexmap, aho-corasick) are identical before and after.
+What is lost on a bulk file is real: no node, edge or `explain` for its constants and types, and a document that names
+one of them gets no link.
 
 ## Answer style (`style_eval.py`)
 

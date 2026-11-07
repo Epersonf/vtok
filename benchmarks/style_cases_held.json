@@ -1,0 +1,15 @@
+{"note": "vtok's own dev-task prompts, HELD-OUT split: never inspected while tuning the terse note; report separately.",
+ "cases": [
+  {"id": "jest-remove-item-pt", "lang": "pt",
+   "prompt": "Por que esse teste falha?\n\n FAIL  src/cart.test.ts\n  ● removeItem › removes one unit\n    expect(received).toBe(expected)\n    Expected: 2\n    Received: 0\n      at Object.<anonymous> (src/cart.test.ts:42:29)\n\n// src/cart.ts\nexport function removeItem(cart: Cart, sku: string) {\n  cart.lines = cart.lines.filter(l => l.sku !== sku)\n}",
+   "checks": {"must_include": ["filter", "qty|quantidade|unidade|decrement|-= ?1|- ?1", "\\b2\\b", "\\b0\\b"], "must_not_include": ["\\b(the|should|because|which)\\b"]}},
+  {"id": "commit-pagination", "lang": "en",
+   "prompt": "Write a commit message for this diff:\n\n--- a/api/list.go\n+++ b/api/list.go\n@@ -40,3 +40,3 @@ func List(page, size int) []Item {\n-\toffset := page * size\n+\toffset := (page - 1) * size\n \treturn store.Items(offset, size)",
+   "checks": {"must_include": ["offset|off-by-one|pagina", "page|pagina"], "must_not_include": ["(?m)^.*\\bthis commit\\b"]}},
+  {"id": "git-commits-missing-pt", "lang": "pt",
+   "prompt": "qual comando git mostra os commits que estão na main mas não estão na minha branch feature/x?",
+   "checks": {"must_include": ["git log", "feature/x\\.\\.\\.?(origin/)?main|\\^feature/x|--not feature/x|git cherry"], "must_not_include": ["\\b(the|shows|which|because)\\b"]}},
+  {"id": "react-undefined-map", "lang": "en",
+   "prompt": "React throws `TypeError: Cannot read properties of undefined (reading 'map')` on the first render of my list component, which loads items with fetch in useEffect. Why?",
+   "checks": {"must_include": ["undefined", "map", "initial|default|useState\\(\\[\\]\\)|\\[\\]|\\?\\.|optional chaining", "first render|before|async|not (yet )?(loaded|arrived)|has(n't| not) (loaded|returned|resolved)"]}}
+ ]}

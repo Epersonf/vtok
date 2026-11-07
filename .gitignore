@@ -5,3 +5,6 @@ __pycache__/
 *.egg-info/
 
 .claude/
+
+# raw claude -p results of benchmarks/style_eval.py (answers, session ids); the committed evidence is style_snapshot.json
+benchmarks/style_cache/

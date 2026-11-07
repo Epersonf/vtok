@@ -161,7 +161,7 @@ def one(task, cfg, rep, model, tmp):
     only = cfg == "vtok-only"
     mcp.write_text(json.dumps({"mcpServers": {"vtok": {"command": VTOK, "args": ["mcp"]}} if vt else {}}))
     if cfg in ("vtok+hint", "vtok-only"): prompt = subprocess.run([VTOK, "init"], capture_output=True, text=True).stdout + "\n" + prompt
-    cmd = ["claude", "-p", prompt + ("" if SUITE == "explain" else " Be brief."), "--output-format", "stream-json", "--verbose", "--model", model, "--max-turns", "30", "--no-session-persistence", "--strict-mcp-config",
+    cmd = [os.environ.get("CLAUDE_BIN") or os.environ.get("CLAUDE_CODE_EXECPATH") or "claude", "-p", prompt + ("" if SUITE == "explain" else " Be brief."), "--output-format", "stream-json", "--verbose", "--model", model, "--max-turns", "30", "--no-session-persistence", "--strict-mcp-config",
            "--mcp-config", str(mcp), "--allowedTools", VTOK_ONLY + ",ToolSearch" if only else (VTOK_TOOLS if vt else BASE_TOOLS), "--permission-mode", "acceptEdits"] + (["--disallowedTools", "Read,Grep,Glob,Edit,Write,Bash,NotebookEdit"] if only else []) + (["--append-system-prompt", CAVEMAN] if cave else [])
     env = dict(os.environ, VTOK_NO_USAGE="1", PATH="/usr/local/bin:" + str(REPO / ".venv/bin") + ":" + os.environ["PATH"])
     if cfg == "hook":

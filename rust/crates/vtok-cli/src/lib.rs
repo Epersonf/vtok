@@ -7,6 +7,7 @@ mod hook;
 mod mcp;
 mod refs;
 mod shell;
+mod squeeze;
 mod usage;
 
 const USAGE: &str = "usage: vtok <command> ...
@@ -22,6 +23,7 @@ const USAGE: &str = "usage: vtok <command> ...
   run [--max-tokens N] -- COMMAND [ARGS...]      run a command, show a compact view of its output (full output kept)
   output ID [--grep A|B] [--lines A-B] [--tail N] [--head N]   read back part of a stored output
   find WORDS... [--dir DIR] [--max-tokens N]     symbols whose names match the words of a question\n  map [DIR] [--max-tokens N]                     project overview: most used symbols per file, with signatures\n  refs NAME [DIR] [--max-tokens N]               where a symbol is defined and used (by name, whole project)
+  squeeze FILE [--write] | --rewrite FILE | --check A B   shrink a CLAUDE.md / AGENTS.md style file (prose only, code untouched)
   init [--write FILE]                            usage note for any agent (AGENTS.md etc.), as a fenced block
   gain [--days N] [--json]                       tokens saved by Vtok's tools (local usage log)
   outline FILE [--lang L]                        names and line ranges of a file (cheapest overview)
@@ -158,6 +160,7 @@ pub fn run(args: &[String]) -> i32 {
         "run" => shell::run(rest),
         "gain" => usage::gain(rest),
         "hook" => hook::run(rest),
+        "squeeze" => squeeze::run(rest),
         "init" => init::run(rest),
         "refs" => refs::run(rest),
         "map" => refs::run_map(rest),

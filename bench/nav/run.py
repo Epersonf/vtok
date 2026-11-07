@@ -16,35 +16,14 @@ tokenizer). Raw baselines carry NO line-number prefixes (a real Read tool adds s
 Vtok drops comments/docstrings, so it also shows less information - see the 'comments' note in the report.
 
 usage: python bench/nav/run.py OUT.json --corpus LANG=DIR[,DIR] ... [--per-bucket N] [--seed S] [--vtok PATH]
+The sample is measured in `measure.py`; `mcp_client.py` talks to `vtok mcp`.
 """
-import argparse, json, pathlib, random, re, subprocess, sys
-import tiktoken
+import argparse, json, pathlib, random, sys
+from mcp_client import Mcp
+from measure import measure, summarize
 
-ENC = tiktoken.get_encoding("o200k_base")
 EXT = {"python": (".py",), "rust": (".rs",), "typescript": (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs")}
 BUCKETS = [("150-399", 150, 399), ("400-999", 400, 999), ("1000+", 1000, 10**9)]
-SKIP_ID = re.compile(r"^(use|import|imports|IDENT|__)")
-
-
-def ntok(s):
-    return len(ENC.encode(s, disallowed_special=()))
-
-
-class Mcp:
-    def __init__(self, binpath):
-        self.p = subprocess.Popen([binpath, "mcp"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-        self.n = 0
-        self.rpc("initialize", {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "bench", "version": "0"}})
-
-    def rpc(self, method, params):
-        self.n += 1
-        self.p.stdin.write(json.dumps({"jsonrpc": "2.0", "id": self.n, "method": method, "params": params}) + "\n")
-        self.p.stdin.flush()
-        return json.loads(self.p.stdout.readline())
-
-    def tool(self, name, **args):
-        r = self.rpc("tools/call", {"name": name, "arguments": args})["result"]
-        return r["content"][0]["text"], bool(r.get("isError"))
 
 
 def files_of(dirs, lang):
@@ -53,72 +32,6 @@ def files_of(dirs, lang):
         for p in sorted(pathlib.Path(d).rglob("*")):
             if p.suffix in EXT[lang] and p.is_file() and not p.name.endswith(".d.ts") and ".min." not in p.name:
                 out.append(p)
-    return out
-
-
-def symbols(vbin, path):
-    r = subprocess.run([vbin, "symbols", str(path)], capture_output=True, text=True)
-    if r.returncode:
-        return None
-    out = []
-    for line in r.stdout.splitlines():
-        parts = line.rsplit("\t", 2)
-        if len(parts) == 3 and parts[1].isdigit() and parts[2].isdigit():
-            out.append((parts[0], int(parts[1]), int(parts[2])))
-    return out
-
-
-def grep_cost(lines, name):
-    hits = [f"{i + 1}:{l}" for i, l in enumerate(lines) if name in l]
-    return ntok("\n".join(hits)), len(hits)
-
-
-def measure(mcp, vbin, path, lang, rng):
-    text = path.read_text(errors="replace")
-    lines = text.split("\n")
-    syms = symbols(vbin, path)
-    if not syms:
-        return None
-    cand = [(i, a, b) for i, a, b in syms if b - a + 1 >= 5 and not SKIP_ID.match(i) and "#" not in i]
-    if not cand:
-        return None
-    sid, a, b = rng.choice(cand)
-    name = re.split(r"[.]", sid)[-1]
-    body = "\n".join(lines[a - 1:b])
-    g_tok, g_hits = grep_cost(lines, name)
-    n = b - a + 1
-    window = 80
-    win_lines = min(len(lines), -(-n // window) * window)
-    read_idx, e1 = mcp.tool("vtok_read", path=str(path))
-    read_skel, e2 = mcp.tool("vtok_read", path=str(path), view="skeleton")
-    chunk, e3 = mcp.tool("vtok_chunk", path=str(path), id=sid)
-    if e1 or e2 or e3:
-        return {"error": [read_idx[:100] if e1 else "", chunk[:100] if e3 else ""], "file": str(path), "symbol": sid}
-    raw_fallback = read_idx.startswith("#") and "would not be smaller" in read_idx.split("\n", 1)[0]
-    t = {
-        "full": ntok(text),
-        "grep+exact": g_tok + ntok(body),
-        "grep+window": g_tok + ntok("\n".join(lines[a - 1:a - 1 + win_lines])),
-        "vtok index": ntok(read_idx) + ntok(chunk),
-        "vtok skel": ntok(read_skel) + ntok(chunk),
-        "grep+vtok": g_tok + ntok(chunk),
-        "vtok exact": ntok(chunk),
-    }
-    return {"file": str(path), "lang": lang, "lines": len(lines), "symbol": sid, "sym_lines": n, "grep_hits": g_hits,
-            "raw_fallback": raw_fallback, "tokens": t, "body_tokens": ntok(body)}
-
-
-def summarize(rows):
-    arms = list(rows[0]["tokens"].keys())
-    out = {"n": len(rows)}
-    for a in arms:
-        v = sorted(r["tokens"][a] for r in rows)
-        out[a] = {"median": v[len(v) // 2], "mean": round(sum(v) / len(v))}
-    for base in ("full", "grep+exact", "grep+window"):
-        for a in ("vtok index", "vtok skel", "grep+vtok", "vtok exact"):
-            wins = sum(1 for r in rows if r["tokens"][a] < r["tokens"][base])
-            ratio = sorted(r["tokens"][a] / max(1, r["tokens"][base]) for r in rows)
-            out[f"{a} vs {base}"] = {"wins": f"{wins}/{len(rows)}", "median_ratio": round(ratio[len(ratio) // 2], 2)}
     return out
 
 

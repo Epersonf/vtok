@@ -17,11 +17,3 @@ pub fn ansi(s: &str) -> String {
 pub fn first_lines(s: &str, n: usize, w: usize) -> String {
     s.lines().map(str::trim_end).filter(|l| !l.trim().is_empty()).take(n).map(|l| super::util::short(l, w)).collect::<Vec<_>>().join("\n")
 }
-
-/// Strip the directory prefix shared by all paths.
-pub fn trim_common(paths: &[&str]) -> usize {
-    let first = match paths.first() { Some(p) => *p, None => return 0 };
-    let mut end = first.rfind('/').map_or(0, |i| i + 1);
-    for p in paths { while end > 0 && !p.starts_with(&first[..end]) { end = first[..end - 1].rfind('/').map_or(0, |i| i + 1); } }
-    if paths.len() < 2 { 0 } else { end }
-}

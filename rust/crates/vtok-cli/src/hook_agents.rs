@@ -23,7 +23,7 @@ pub fn answer(agent: &str, input: &str) -> Option<String> {
         ("gemini", Some(n)) => json!({"decision": "allow", "hookSpecificOutput": {"tool_input": {"command": n}}}),
         ("gemini", None) | ("antigravity", None) => json!({"decision": "allow"}),
         ("antigravity", Some(n)) => json!({"decision": "allow", "reason": "Rewritten by vtok to save tokens.", "overwrite": {"CommandLine": n}}),
-        ("vibe", Some(n)) => json!({"hook_specific_output": {"tool_input": {"command": n}}, "system_message": "vtok: long output is compacted (vtok output ID shows the rest)"}),
+        ("vibe", Some(n)) => json!({"hook_specific_output": {"tool_input": {"command": n}}, "system_message": "vtok: long output is compacted (vtok output [ID] shows the rest; no ID = the last run)"}),
         (a, Some(n)) => {
             let mut ti = v.get("tool_input")?.clone();
             ti["command"] = json!(n);

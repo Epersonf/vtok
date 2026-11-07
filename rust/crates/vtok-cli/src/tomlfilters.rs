@@ -40,6 +40,8 @@ pub struct Filter {
     outputs: Vec<(Regex, String, Option<Regex>)>,
     strip: Option<RegexSet>,
     keep: Option<RegexSet>,
+    /// From the user's own filters file (the built-in ones can be bypassed by a dedicated view, these never are).
+    user: bool,
 }
 
 fn compile(name: &str, raw: Raw) -> Option<Filter> {
@@ -48,7 +50,7 @@ fn compile(name: &str, raw: Raw) -> Option<Filter> {
     let outputs = raw.match_output.iter().map(|r| Some((Regex::new(&r.pattern).ok()?, r.message.clone().unwrap_or_default(), match &r.unless { Some(u) => Some(Regex::new(u).ok()?), None => None }))).collect::<Option<Vec<_>>>()?;
     let set = |v: &Vec<String>| if v.is_empty() { Some(None) } else { RegexSet::new(v).ok().map(Some) };
     let (strip, keep) = (set(&raw.strip_lines_matching)?, set(&raw.keep_lines_matching)?);
-    Some(Filter { name: name.to_string(), cmd, raw, replace, outputs, strip, keep })
+    Some(Filter { name: name.to_string(), cmd, raw, replace, outputs, strip, keep, user: false })
 }
 
 fn parse(text: &str) -> (Vec<Filter>, BTreeMap<String, Vec<Case>>) {
@@ -62,7 +64,7 @@ fn user() -> &'static Vec<Filter> {
     static U: OnceLock<Vec<Filter>> = OnceLock::new();
     U.get_or_init(|| {
         let p = crate::userfilters::path().map(|p| p.with_extension("toml"));
-        p.and_then(|p| std::fs::read_to_string(p).ok()).map(|t| parse(&t).0).unwrap_or_default()
+        p.and_then(|p| std::fs::read_to_string(p).ok()).map(|t| parse(&t).0.into_iter().map(|f| Filter { user: true, ..f }).collect()).unwrap_or_default()
     })
 }
 
@@ -106,10 +108,10 @@ fn find(cmd: &str) -> Option<&'static Filter> {
 /// True when a declarative filter exists for this command line (the hook and shims use it to decide what to wrap).
 pub fn matches(cmd: &str) -> bool { find(cmd).is_some() }
 
-/// The filtered lines for `cmd`, or None when no filter matches.
-pub fn apply(cmd: &str, lines: &[String]) -> Option<Vec<String>> {
+/// The filtered lines for `cmd` and whether the filter is the user's own, or None when no filter matches.
+pub fn apply(cmd: &str, lines: &[String]) -> Option<(Vec<String>, bool)> {
     let f = find(cmd)?;
-    Some(f.apply(&lines.join("\n")).lines().map(String::from).collect())
+    Some((f.apply(&lines.join("\n")).lines().map(String::from).collect(), f.user))
 }
 
 #[cfg(test)]

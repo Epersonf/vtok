@@ -2,6 +2,8 @@
 //! `view(cmd, lines)` decides the tool from the command line and returns None when the output is not
 //! what that tool prints.
 mod js_build;
+mod js_eslint;
+#[cfg(test)] mod t_eslint;
 mod json_lint;
 mod json_test;
 mod json_util;
@@ -13,10 +15,23 @@ mod js_test;
 mod js_tsc;
 mod php;
 mod php_static;
+mod ts_tsc;
+#[cfg(test)] mod t_tsc;
 mod py;
 mod py_pkg;
+mod py_pytest;
+mod py_pytest_fmt;
+mod py_pytest_items;
+#[cfg(test)] mod t_pytest;
+#[cfg(test)] mod t_pytest_modes;
 mod rb;
 mod util;
+
+/// pytest's FAILURES report by shape, for runs whose command line does not name pytest (`make test`, CI scripts).
+pub fn pytest_view(lines: &[String]) -> Option<String> { py::pytest(lines) }
+
+/// eslint's text formats by shape, for runs whose command line does not name eslint (`make lint`); `min` problems or more.
+pub fn eslint_text(lines: &[String], min: usize) -> Option<String> { js_eslint::text(lines, min) }
 
 pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
     let c = util::parse(cmd)?;
@@ -29,8 +44,8 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
         "jest" => js_test::jest(l),
         "playwright" => json_test::playwright(l).or_else(|| js_playwright::playwright(l)),
         "prettier" => js_tsc::prettier(l),
-        "tsc" | "vue-tsc" => js_tsc::tsc(l),
-        "eslint" => json_lint::eslint(l).or_else(|| js_lint::eslint(l)),
+        "tsc" | "vue-tsc" => ts_tsc::tsc(l),
+        "eslint" => js_eslint::json(l).or_else(|| js_eslint::text(l, 1)),
         "oxlint" => js_lint::oxlint(l),
         "biome" => js_lint::biome(l),
         "next" if first == "build" => js_build::next(l),

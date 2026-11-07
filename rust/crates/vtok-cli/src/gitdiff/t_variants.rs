@@ -26,7 +26,7 @@ fn show_and_log_p_keep_commit_headers_between_files() {
 #[test]
 fn indentation_survives_the_pipeline() {
     // padded `+    code` lines must not be taken for a column-aligned table and squeezed
-    let out = crate::shell::compact_cmd("git diff", &filler(), 0, 700);
+    let out = crate::shell::preview("git diff", &filler(), 0, 700);
     assert!(out.contains("+    let value_0 = compute_something_new(0, \"argument\");"), "{out}");
 }
 

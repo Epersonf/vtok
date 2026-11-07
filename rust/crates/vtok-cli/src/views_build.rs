@@ -3,6 +3,8 @@
 //! Contract: `view(cmd, lines)` returns Some(compact text) only when the output looks like what that tool prints
 //! and the result is smaller than the input; otherwise None so the generic summariser runs.
 mod cargo;
+mod cargo_green;
+mod cargo_parse;
 mod cc;
 mod ctest;
 mod dotnet;
@@ -14,6 +16,8 @@ mod gradle;
 mod mvn;
 mod sbt;
 #[cfg(test)] mod t_cargo;
+#[cfg(test)] mod t_cargo_fail;
+#[cfg(test)] mod t_cargo_green;
 #[cfg(test)] mod t_dotnet;
 #[cfg(test)] mod t_json;
 #[cfg(test)] mod t_go;

@@ -37,11 +37,11 @@ fn rubocop_json_offenses() {
 }
 
 #[test]
-fn eslint_json_trims_common_dir() {
+fn eslint_json_report_is_grouped_and_ignores_the_source_echo() {
     let m = r#"{"ruleId":"no-unused-vars","severity":2,"message":"'x' is defined but never used.","line":3,"column":7}"#;
     let s = format!(r#"[{{"filePath":"/home/me/proj/src/a.ts","messages":[{m}],"errorCount":1,"warningCount":0,"source":"const x = 1;"}},{{"filePath":"/home/me/proj/src/b/c.ts","messages":[],"errorCount":0,"warningCount":0}}]"#);
     let o = run("npx eslint -f json src", &s);
-    assert!(o.contains("a.ts:3:7 E no-unused-vars") && !o.contains("/home/me") && o.contains("1 errors, 0 warnings in 2 files"), "{o}");
+    assert!(o.contains("/home/me/proj/src/a.ts:3 no-unused-vars 'x' is defined but never used.") && !o.contains("const x") && o.contains("1 errors, 0 warnings in 2 files"), "{o}");
 }
 
 #[test]

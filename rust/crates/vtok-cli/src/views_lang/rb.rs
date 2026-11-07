@@ -1,5 +1,6 @@
 //! rspec, rubocop and minitest (rake test / rails test): failures with locations, offenses, summaries.
 use super::util::*;
+use crate::diag::cap_classes;
 
 pub fn rspec(lines: &[String]) -> Option<String> {
     if !has(lines, r"^\d+ examples?, \d+ failures?|^No examples found|error occurred while loading") { return None; }
@@ -18,16 +19,16 @@ pub fn rspec(lines: &[String]) -> Option<String> {
 
 pub fn rubocop(lines: &[String]) -> Option<String> {
     let off = re(r"^(\S+?:\d+:\d+): ([CWEFR]): (?:\[Correctable\] )?([\w/]+): (.*)$");
-    let (mut out, mut cops) = (vec![], vec![]);
+    let (mut out, mut cops): (Vec<(String, String)>, Vec<String>) = (vec![], vec![]);
     for l in lines {
         if let Some(c) = off.captures(l) {
             cops.push(c[3].to_string());
-            out.push(format!("{} {} {}: {}", &c[1], &c[2], &c[3], short(&c[4], 140)));
+            out.push((c[3].to_string(), format!("{} {} {}: {}", &c[1], &c[2], &c[3], short(&c[4], 140))));
         }
     }
     let tail = grep(lines, r"files? inspected|no offenses detected");
     if out.is_empty() && tail.is_empty() { return None; }
-    let mut v = cap(out, 60);
+    let mut v = cap_classes(out, 60);
     if cops.len() > 8 { v.push(format!("by cop: {}", short(&tally(&cops), 300))); }
     v.extend(tail);
     finish(v)

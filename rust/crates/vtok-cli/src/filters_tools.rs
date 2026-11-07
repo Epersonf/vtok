@@ -1,29 +1,10 @@
 //! More per-tool views, chosen by output shape like `filters`: eslint (stylish), jest/vitest, npm/pip installs, cargo
 //! builds, terraform plans, go test and Maven/Gradle. Each returns None unless the output clearly is that tool's.
-use crate::filters::{render_diags, Diag};
-
 fn count_prefix(lines: &[String], pre: &[&str]) -> usize { lines.iter().filter(|l| pre.iter().any(|p| l.trim_start().starts_with(p))).count() }
 fn tail_with(lines: &[String], pre: &[&str]) -> Vec<String> { lines.iter().filter(|l| pre.iter().any(|p| l.trim_start().starts_with(p))).cloned().collect() }
 
-/// eslint's default "stylish" format: a path line, then `  12:5  error  message  rule` lines.
-pub fn eslint(lines: &[String]) -> Option<String> {
-    let mut ds = vec![];
-    let mut file = String::new();
-    for l in lines {
-        if !l.starts_with(' ') && !l.trim().is_empty() && !l.starts_with('✖') && (l.contains('/') || l.contains('\\') || l.contains('.')) && !l.contains("  ") { file = l.trim().to_string(); continue; }
-        let t = l.trim();
-        let mut it = t.split_whitespace();
-        let (Some(pos), Some(sev)) = (it.next(), it.next()) else { continue };
-        let Some((ln, col)) = pos.split_once(':') else { continue };
-        if !(ln.bytes().all(|b| b.is_ascii_digit()) && col.bytes().all(|b| b.is_ascii_digit()) && !ln.is_empty()) || !matches!(sev, "error" | "warning") || file.is_empty() { continue; }
-        let rest: Vec<&str> = it.collect();
-        let rule = rest.last().filter(|r| r.contains('-') || r.contains('/') || r.chars().all(|c| c.is_ascii_lowercase())).map(|r| r.to_string()).unwrap_or_else(|| sev.to_string());
-        let msg = rest[..rest.len().saturating_sub(1)].join(" ");
-        ds.push(Diag { file: file.clone(), line: ln.to_string(), code: format!("{sev}:{rule}"), msg });
-    }
-    if ds.len() < 6 { return None; }
-    Some(render_diags(&ds, lines))
-}
+/// eslint's default "stylish" format (or compact / unix) by shape, when the command was not recognised: six problems or more.
+pub fn eslint(lines: &[String]) -> Option<String> { crate::views_lang::eslint_text(lines, 6) }
 
 /// jest / vitest: failures with their first lines, then the summary; passing noise is dropped.
 pub fn jest(lines: &[String]) -> Option<String> {
@@ -104,7 +85,8 @@ mod tests {
         for i in 1..=7 { s += &format!("  {i}:5  error  'x' is defined but never used  no-unused-vars\n"); }
         s += "\n✖ 7 problems (7 errors, 0 warnings)\n";
         let v = eslint(&l(&s)).unwrap();
-        assert!(v.contains("error:no-unused-vars x7") && v.contains("/p/src/a.js:1,2,3,4,5,6,7") && v.contains("7 problems"), "{v}");
+        assert!(v.contains("no-unused-vars x7: 'x' is defined but never used") && v.contains("/p/src/a.js:1,2,3,4,5,6,7") && v.contains("7 problems"), "{v}");
+        assert!(eslint(&l("/p/src/a.js\n  1:5  error  'x' is defined but never used  no-unused-vars\n")).is_none(), "a handful stays with the generic path");
     }
 
     #[test]

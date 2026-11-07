@@ -1,42 +1,22 @@
-//! eslint (stylish), oxlint and biome: every error location kept, warnings collapsed per rule.
+//! oxlint and biome: every error location kept, warnings collapsed per rule (eslint has its own module, `js_eslint`).
 use super::util::*;
-
-pub fn eslint(lines: &[String]) -> Option<String> {
-    let item = re(r"^\s+(\d+):(\d+)\s+(error|warning)\s+(.*?)\s{2,}(\S+)\s*$");
-    let (mut file, mut errs, mut warns) = (String::new(), vec![], vec![]);
-    let mut shown = String::new();
-    for l in lines {
-        if let Some(c) = item.captures(l) {
-            if &c[3] == "error" {
-                if shown != file { errs.push(file.clone()); shown = file.clone(); }
-                errs.push(format!("  {}:{} {} [{}]", &c[1], &c[2], short(&c[4], 160), &c[5]));
-            } else { warns.push(c[5].to_string()); }
-        } else if !l.starts_with(' ') && !l.trim().is_empty() && !l.starts_with('✖') && !l.starts_with("0 errors") { file = l.trim().to_string(); }
-    }
-    let summary = grep(lines, r"^✖ \d+ problems?|^\d+ problems?");
-    if errs.is_empty() && warns.is_empty() && summary.is_empty() { return None; }
-    let mut out = cap(errs, 80);
-    if !warns.is_empty() { out.push(format!("{} warning(s): {}", warns.len(), tally(&warns))); }
-    out.extend(summary);
-    out.extend(grep(lines, r"potentially fixable with the `--fix`"));
-    finish(out)
-}
+use crate::diag::cap_classes;
 
 pub fn oxlint(lines: &[String]) -> Option<String> {
     let head = re(r"^\s*([x!×⚠]) (\S+?): (.*)$");
     let loc = re(r"^\s*[,╭]-\[(.+?)\]");
     let (mut out, mut warns) = (vec![], vec![]);
-    let mut pending: Option<(bool, String)> = None;
+    let mut pending: Option<(bool, String, String)> = None;
     for l in lines {
-        if let Some(c) = head.captures(l) { pending = Some((matches!(&c[1], "x" | "×"), format!("{}: {}", &c[2], short(&c[3], 160)))); }
-        else if let (Some(c), Some((err, msg))) = (loc.captures(l), pending.as_ref()) {
-            if *err { out.push(format!("{} {}", &c[1], msg)); } else { warns.push(msg.split(':').next().unwrap_or("").to_string()); }
+        if let Some(c) = head.captures(l) { pending = Some((matches!(&c[1], "x" | "×"), c[2].to_string(), format!("{}: {}", &c[2], short(&c[3], 160)))); }
+        else if let (Some(c), Some((err, rule, msg))) = (loc.captures(l), pending.as_ref()) {
+            if *err { out.push((rule.clone(), format!("{} {}", &c[1], msg))); } else { warns.push(rule.clone()); }
             pending = None;
         }
     }
     let tail = grep(lines, r"^(Found \d+|Finished in)");
     if out.is_empty() && warns.is_empty() && tail.is_empty() { return None; }
-    let mut v = cap(out, 80);
+    let mut v = cap_classes(out, 80);
     if !warns.is_empty() { v.push(format!("{} warning(s): {}", warns.len(), tally(&warns))); }
     v.extend(tail);
     finish(v)
@@ -50,13 +30,13 @@ pub fn biome(lines: &[String]) -> Option<String> {
     for l in lines {
         if let Some(c) = head.captures(l) { pending = Some((c[1].to_string(), c[2].to_string())); }
         else if let (Some(c), Some((loc, rule))) = (msg.captures(l), pending.as_ref()) {
-            if matches!(&c[1], "×" | "✖") { out.push(format!("{loc} {rule}: {}", short(&c[2], 160))); } else { warns.push(rule.clone()); }
+            if matches!(&c[1], "×" | "✖") { out.push((rule.clone(), format!("{loc} {rule}: {}", short(&c[2], 160)))); } else { warns.push(rule.clone()); }
             pending = None;
         }
     }
     let tail = grep(lines, r"^(Checked \d+|Found \d+|Formatted \d+|Fixed \d+)");
     if out.is_empty() && warns.is_empty() && tail.is_empty() { return None; }
-    let mut v = cap(out, 80);
+    let mut v = cap_classes(out, 80);
     if !warns.is_empty() { v.push(format!("{} warning(s): {}", warns.len(), tally(&warns))); }
     v.extend(tail);
     finish(v)
@@ -66,18 +46,6 @@ pub fn biome(lines: &[String]) -> Option<String> {
 mod tests {
     use super::*;
     use super::super::util::t::*;
-
-    #[test]
-    fn eslint_errors_kept_warnings_collapsed() {
-        let mut s = String::from("/app/src/a.js\n  10:5  error  'x' is defined but never used  no-unused-vars\n");
-        for i in 0..6 { s += &format!("  {}:1  warning  Unexpected console statement  no-console\n", 20 + i); }
-        s += "\n/app/src/b.js\n  3:9  warning  Missing semicolon  semi\n\n✖ 8 problems (1 error, 7 warnings)\n  0 errors and 1 warning potentially fixable with the `--fix` option.\n";
-        let l = lines(&s);
-        let o = small(eslint(&l), &l);
-        assert!(o.contains("/app/src/a.js") && o.contains("10:5 'x' is defined but never used [no-unused-vars]"));
-        assert!(o.contains("7 warning(s): no-console x6, semi x1") && o.contains("✖ 8 problems"));
-        assert!(!o.contains("20:1") && !o.contains("/app/src/b.js"));
-    }
 
     #[test]
     fn oxlint_keeps_error_locations() {

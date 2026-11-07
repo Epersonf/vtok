@@ -46,7 +46,8 @@ pub fn output_file(args: &[String]) -> i32 {
         }
         i += 1;
     }
-    let (Some(id), Some(path)) = (id, path) else { eprintln!("usage: vtok output ID --file PATH [--max-tokens N]"); return 2 };
+    let id = id.or_else(crate::shell::latest);
+    let (Some(id), Some(path)) = (id, path) else { eprintln!("usage: vtok output [ID] --file PATH [--max-tokens N]   (no ID: the latest run)"); return 2 };
     let res = crate::shell::load(&id).and_then(|lines| file_sections(&lines, &path));
     match res {
         Ok(s) if ntok(&s) <= max => { print!("# output {id}: {path}\n{s}"); 0 }

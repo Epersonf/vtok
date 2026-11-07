@@ -5,6 +5,7 @@ mod agents;
 mod auto;
 mod browse;
 mod config;
+mod diag;
 mod discover;
 mod filter_cmd;
 mod filters;
@@ -28,6 +29,7 @@ mod rewrite;
 mod shell;
 mod squeeze;
 mod terse;
+#[cfg(test)] mod t_retention;
 mod tomlfilters;
 mod usage;
 mod cmdviews;
@@ -47,13 +49,13 @@ const USAGE: &str = "usage: vtok <command> ...
   apply FILE -e ID=FILE... [-o OUT] [--force] [--lang L] [--max-lines N]
   config [get max-lines | set max-lines N [--local] | unset max-lines [--local]]   persistent split threshold
   run [--max-tokens N] -- COMMAND [ARGS...]      run a command, show a compact view of its output (full output kept)
-  output ID [--grep A|B] [--lines A-B] [--tail N] [--head N]   read back part of a stored output
+  output [ID] [--grep A|B] [--lines A-B] [--tail N] [--head N]   read back part of a stored output (no ID: the most recent run)
   find WORDS... [--dir DIR] [--max-tokens N]     symbols whose names match the words of a question\n  map [DIR] [--max-tokens N]                     project overview: most used symbols per file, with signatures\n  refs NAME [DIR] [--max-tokens N]               where a symbol is defined and used (by name, whole project)
   squeeze FILE [--write] | --rewrite FILE | --check A B   shrink a CLAUDE.md / AGENTS.md style file (prose only, code untouched)
   discover [--days N] [--min-tokens N] [--dir D]  find shell commands in past Claude Code sessions that vtok run would have shrunk
   graph build|explain N|path A B|hubs|communities|report|html|hook [--dir D]   persistent relation graph (calls, types, implements, ...) with scores and communities
   rewrite COMMAND...                             print the vtok run form of a long-output command (exit 1 when unchanged), for any agent hook
-  filter [--explain] -- COMMAND...               show what vtok run would print for output read from stdin (testing filters)
+  filter [--explain] [--code N] -- COMMAND...    show what vtok run would print for output read from stdin (testing filters)
   browse URL [--max-tokens N] [--no-links] [--allow-private]   web page as compact text (full text kept under an id)
   route REQUEST [--files N] [--json]             pick a model tier and effort for a request (small / medium / large)
   proxy [--port N] [--upstream URL]              local API proxy: model auto is routed to the model route picks

@@ -1,5 +1,6 @@
 //! go test (text and -json), go build/vet/run: failures with messages and locations, package counts.
 use super::{cap, finish, uniq};
+use crate::diag::cap_classes;
 use regex::Regex;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -15,6 +16,21 @@ pub fn view(sub: &str, args: &[String], lines: &[String]) -> Option<String> {
 
 fn is_go_err(t: &str) -> bool {
     Regex::new(r"^[^\s:][^:]*\.go:\d+(:\d+)?: ").unwrap().is_match(t)
+}
+
+/// The kind of a kept line, for `cap_classes`: a compiler error is its message up to the first argument (`undefined: x` is
+/// `undefined`); failing tests, panics and packages are each their own; indented detail lines have none.
+fn class_of(l: &str) -> String {
+    if l.starts_with(' ') || l.starts_with('\t') { return String::new(); }
+    match l.split_once(": ").filter(|_| is_go_err(l)) {
+        Some((_, msg)) => msg.split([':', '(']).next().unwrap_or(msg).split_whitespace().take(3).collect::<Vec<_>>().join(" "),
+        None => l.to_string(),
+    }
+}
+
+/// At most `n` rows, keeping at least one of every kind and counting the rest by kind.
+fn cap_kinds(out: &mut Vec<String>, rows: Vec<String>, n: usize) {
+    out.extend(cap_classes(rows.into_iter().map(|l| (class_of(&l), l)).collect(), n));
 }
 
 fn test_text(lines: &[String]) -> Option<String> {
@@ -51,7 +67,7 @@ fn test_text(lines: &[String]) -> Option<String> {
     if ok + nofiles + failed + keep.len() == 0 { return None; }
     uniq(&mut keep);
     let mut out = Vec::new();
-    cap(&mut out, &keep, 40);
+    cap_kinds(&mut out, keep, 40);
     out.push(format!("go test: {ok} ok, {failed} FAIL, {nofiles} no test files"));
     finish(out, lines)
 }
@@ -113,7 +129,7 @@ fn diag(sub: &str, lines: &[String]) -> Option<String> {
     }
     uniq(&mut kept);
     let mut out = Vec::new();
-    cap(&mut out, &kept, 40);
     if kept.is_empty() { out.push(format!("go {sub}: ok ({downloads} modules downloaded)")); }
+    cap_kinds(&mut out, kept, 40);
     finish(out, lines)
 }

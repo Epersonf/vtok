@@ -9,7 +9,7 @@ impl Graph {
     /// Versions 1 and 2 ([from, to] and [from, to, 0|1]) still load, with the relation guessed from the target kind;
     /// `load_or_build` rebuilds them anyway.
     pub(crate) fn to_json(&self) -> Value {
-        json!({"v": 3, "files": self.files, "rels": RELS,
+        json!({"v": 3, "files": self.files, "rels": RELS, "bulk": self.bulk,
                "nodes": self.nodes.iter().map(|n| json!([n.file, n.name, n.a, n.b, n.kind])).collect::<Vec<_>>(),
                "edges": self.edges.iter().zip(&self.rel).zip(&self.score).map(|((e, r), s)| json!([e.0, e.1, r, s])).collect::<Vec<_>>()})
     }
@@ -33,7 +33,8 @@ impl Graph {
             };
             m.insert((x, y, rel), score);
         }
-        let mut g = Graph { files: v.get("files")?.as_u64()? as usize, nodes, ..Default::default() };
+        let bulk = v.get("bulk").and_then(|b| b.as_array()).map(|b| b.iter().filter_map(|x| Some((x.get(0)?.as_str()?.to_string(), x.get(1)?.as_u64()? as usize))).collect()).unwrap_or_default();
+        let mut g = Graph { files: v.get("files")?.as_u64()? as usize, nodes, bulk, ..Default::default() };
         g.finish(m);
         Some(g)
     }

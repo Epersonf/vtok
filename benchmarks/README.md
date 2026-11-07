@@ -10,9 +10,10 @@ FIXTURES=/tmp/fx RTK_BIN=.../rtk VTOK_BIN=.../vtok CAVEMAN_BIN=.../caveman-engin
 Tokens are `(chars + 3) / 4`, the metric RTK's own benchmark uses. `keep N/M` counts key strings (failing test names,
 error codes) that survive in each tool's output. It is a crude retention check, not a quality score.
 
-## Results (one Windows machine, 18 scenarios, vtok 2c4fc3b, RTK 0.49.0)
+## Results (one Windows machine, 18 scenarios, vtok 59e3825, RTK 0.49.0)
 
-Command output, raw 36,076 tokens: RTK 25,243 (-31%), vtok 11,200 (-69%), Caveman's engine 36,076 (0%: these outputs are small and not repetitive, see "Large data files"). The git
+Command output, raw 36,025 tokens: RTK 25,242 (-30%), vtok 11,122 (-69%). Caveman's engine left these outputs
+unchanged in the earlier run (0%: they are small and not repetitive, see "Large data files") and was not re-run. The git
 scenarios use fixed revisions and the `cat`/`grep` scenarios a pinned file (`fixtures.py` writes it from git history), so
 the numbers do not move with every commit. `keep` counts a scenario's key strings in the output (crude).
 
@@ -26,7 +27,7 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 | cat of a 727-line source file | 9,861 | 9,861 | 2,599 | vtok elides the middle (it lost `fn compact_cmd`); use `vtok_read` to read code |
 | cargo build (errors) | 395 | 352 | 71 | |
 | cargo test (3 fail) | 403 | 156 | 105 | |
-| cargo test (all pass) | 4,789 | 11 | 12 | RTK 1 token smaller (vtok keeps the warning count) |
+| cargo test (all pass) | 4,739 | 11 | 9 | crate without compiler warnings; with 4 warnings (scratch copy, same harness) it is RTK 11, vtok 12: vtok keeps the warning count, RTK's line has none |
 | pytest (3 fail, same message) | 328 | 104 | 55 | |
 | pytest (11 fail, mixed errors) | 1,140 | 419 | 301 | RTK drops one failing test |
 | mypy | 64 | 64 | 64 | below the 250-token pass-through threshold |
@@ -34,13 +35,15 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 | tsc (34 identical errors) | 653 | 672 | 57 | best case for grouping |
 | tsc (47 mixed errors) | 911 | 950 | 301 | realistic: mostly distinct messages |
 | eslint | 2,568 | 2,568 | 262 | RTK passes it through |
-| vitest (2 fail) | 332 | 37 | 134 | RTK is smaller but drops both failing test names (0/2); vtok keeps them |
+| vitest (2 fail) | 332 | 37 | 59 | RTK is smaller but keeps 0/2 failing test names (its parser fails on this vitest, 5.1.0, and it prints a pass-through notice); vtok keeps both names with expected vs received and the location (134 before) |
 | go test (2 fail) | 35 | 51 | 35 | |
 
-Where RTK is ahead: a green `cargo test` by one token, and `vitest` in size (at the cost of the failing test names).
-Nothing else in this set. Every view was also audited for silently dropped error classes: with 70 distinct rules or
-codes fed to each of 16 lint/compiler views, 10 of them lost classes before (oxlint, biome, rubocop, sqlfluff, phpstan,
-make/gcc, dotnet, go build, eslint) and none do now (`bench/run/audit_retention.py`, `src/t_retention.rs`).
+Where RTK is ahead: `vitest` in size (37 against 59), at the cost of both failing test names, and a green `cargo test` by
+one token when the crate has compiler warnings (vtok prints their count, RTK's line has none). Nothing else in this set.
+Between the previous binary and this one only the vitest row changed (11,197 -> 11,122 in total, same machine and day).
+Every view was also audited for silently dropped error classes: with 70 distinct rules or codes fed to each of 16
+lint/compiler views, 10 of them lost classes before (oxlint, biome, rubocop, sqlfluff, phpstan, make/gcc, dotnet, go
+build, eslint) and none do now (`bench/run/audit_retention.py`, `src/t_retention.rs`).
 
 Caveats, read before quoting any number:
 
@@ -106,7 +109,25 @@ on unknown receivers, variant patterns shadowing functions). Measured on the sam
 report about 920 tokens; Graphify 9.1 MB, 11-14 s, report about 24,600 tokens. On vtok's own tree: 135 KB and 1.1 s
 against 1.15 MB. Only Rust has a ground truth; the other languages' resolution is covered by fixture tests, not measured.
 Known: nested items (a `const` inside a function) have no node, so references to them are credited to the enclosing
-function; `windows-sys`-style generated binding crates take about 17 s and write a 20 MB graph.
+function.
+
+Bulk files: a file with more than 1,000 symbols (generated bindings, constant tables) is kept as a file node and its
+symbols, and the references inside it, are not graphed. `vtok graph build` and `report` print how many files were left
+out, their symbol total and the largest (`graph.json` lists them all); `VTOK_GRAPH_MAX_FILE_SYMBOLS=0` graphs them.
+The limit comes from 10,370 source files of a cargo registry (outside `windows-*`), where the largest file that is not
+a binding, a generated file or a constants table had 630 symbols and every file above 1,000 was one of those.
+Measured here on a copy of `windows-sys` 0.61.2 (249 files, 18 MB; it has no generated-code header to detect):
+
+| | build | graph.json | nodes | edges | files graphed with symbols |
+|---|---:|---:|---:|---:|---|
+| before | 18.5 s | 20.3 MB | 157,800 | 266,658 | 249 |
+| after | 4.1 s (3 runs: 4.11 / 4.17 / 4.13) | 4.1 MB | 32,085 | 55,777 | 192 (57 left out, 79% of the symbols) |
+
+No accuracy change where the guard does not apply: on vtok's own tree `graph_eval.py` gives calls precision / recall
+100.0 / 95.5 both before and after (this tree has no file near the limit), and the stored graphs of seven other code
+bases (RTK `src/`, syn, clap_builder, regex-syntax, hashbrown, indexmap, aho-corasick) are identical before and after.
+What is lost on a bulk file is real: no node, edge or `explain` for its constants and types, and a document that names
+one of them gets no link.
 
 ## Answer style (`style_eval.py`)
 

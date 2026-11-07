@@ -97,6 +97,8 @@ pub(crate) fn resolve(nodes: &[Node], parsed: &[Parsed], sc: &[Scope], by_base: 
     let cx = Ctx::new(nodes, parsed, sc, by_base);
     let mut m = EdgeMap::new();
     for (f, p) in parsed.iter().enumerate() {
+        // no symbol, no edge: nothing in the file has an enclosing symbol (also true of the bulk files left out)
+        if p.syms.is_empty() { continue; }
         let lines: Vec<&str> = p.src.lines().collect();
         let mut binds: HashMap<usize, Bindings> = HashMap::new();
         let mut own_seen: std::collections::HashSet<usize> = Default::default();

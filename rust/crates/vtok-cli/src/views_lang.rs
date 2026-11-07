@@ -12,6 +12,7 @@ mod js_lint;
 mod js_pkg;
 mod js_playwright;
 mod js_test;
+#[cfg(test)] mod t_vitest;
 mod js_tsc;
 mod php;
 mod php_static;

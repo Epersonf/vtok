@@ -48,10 +48,23 @@ fn kind_of(text: &str, id: &str) -> &'static str {
 
 pub(crate) fn rel_of(root: &Path, p: &Path) -> String { p.strip_prefix(root).unwrap_or(p).display().to_string().replace(std::path::MAIN_SEPARATOR, "/") }
 
+/// A file with more symbols than this is generated bindings or a constants table (windows-sys, winapi, libc's platform
+/// tables): thousands of one-line items whose resolution costs the square of their count (`windows-sys` 0.61.2:
+/// 18-19 s and a 20 MB graph). It stays a file node; its symbols and the references inside it are left out and listed
+/// in `Graph::bulk`. Among 10,370 source files of a cargo registry, the largest that is not a binding, a generated
+/// file or a table had 630 symbols.
+pub(crate) const BULK_SYMBOLS: usize = 1000;
+
+/// `VTOK_GRAPH_MAX_FILE_SYMBOLS`: a number replaces the limit, 0 turns the guard off, anything else keeps the default.
+pub(crate) fn limit_from(v: Option<&str>) -> usize {
+    match v.and_then(|s| s.trim().parse::<usize>().ok()) { Some(0) => usize::MAX, Some(n) => n, None => BULK_SYMBOLS }
+}
+
 /// Parse every source file and add its file node and symbol nodes.
 pub(crate) fn parse_files(root: &Path, g: &mut Graph) -> Vec<Parsed> {
     let mut files = vec![];
     crate::refs::walk(root, &mut files);
+    let limit = limit_from(std::env::var("VTOK_GRAPH_MAX_FILE_SYMBOLS").ok().as_deref());
     let mut parsed = vec![];
     for f in &files {
         let Ok(raw) = std::fs::read_to_string(f) else { continue };
@@ -59,6 +72,7 @@ pub(crate) fn parse_files(root: &Path, g: &mut Graph) -> Vec<Parsed> {
         let rel = rel_of(root, f);
         let Ok(l) = language_for_path(&rel) else { continue };
         let Ok(mut syms) = symbols(l.name(), &src) else { continue };
+        if syms.len() > limit { g.bulk.push((rel.clone(), syms.len())); syms.clear(); }
         let lines: Vec<&str> = src.lines().collect();
         let mut node_of = vec![];
         let mut traits = vec![];

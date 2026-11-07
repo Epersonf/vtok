@@ -3,7 +3,8 @@
 //! from the plugins' symbol and identifier data, stored in `.vtok/graph.json`, rebuilt when a file is newer.
 //! Every edge has a relation kind (calls, uses_type, references, implements, extends, contains, imports, tests,
 //! mentions) and a score: 1.0 is EXTRACTED (syntax and scope rules name exactly one definition), lower is INFERRED
-//! (the resolution heuristic's confidence, 0.3-0.95).
+//! (the resolution heuristic's confidence, 0.3-0.95). A file with more than 1,000 symbols (generated bindings, constant
+//! tables) is kept as a file node only, and `summary` names the files left out (graph_edges.rs, `BULK_SYMBOLS`).
 use std::path::Path;
 
 #[path = "graph_bind.rs"] mod bind;
@@ -27,6 +28,7 @@ use std::path::Path;
 #[path = "graph_text.rs"] mod text;
 #[cfg(test)] #[path = "graph_tests.rs"] mod tests;
 #[cfg(test)] #[path = "graph_tests_docs.rs"] mod tests_docs;
+#[cfg(test)] #[path = "graph_tests_bulk.rs"] mod tests_bulk;
 #[cfg(test)] #[path = "graph_tests_langs.rs"] mod tests_langs;
 #[cfg(test)] #[path = "graph_tests_rels.rs"] mod tests_rels;
 
@@ -96,6 +98,9 @@ pub struct Graph {
     pub score: Vec<u8>,
     pub files: usize,
     pub label: Vec<usize>,
+    /// files kept as file nodes only, for having more symbols than `edges::BULK_SYMBOLS` (generated bindings, constant
+    /// tables): (path, symbol count)
+    pub bulk: Vec<(String, usize)>,
 }
 
 impl Graph {

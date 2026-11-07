@@ -7,6 +7,7 @@ and a built vtok (`cargo build --release -p vtok-cli`, or VTOK). Python 3.10+ st
 
 Environment (all optional):
   EVAL_SRC      Cargo workspace to evaluate (default: <repo>/rust); EVAL_SUB the graphed subdirectory (default crates)
+  EVAL_EXTRA    comma list of other top-level entries the workspace needs to load (members, build.rs), copied unmeasured
   EVAL_WORK     scratch directory for the copies and outputs (default: <tmp>/vtok-graph-eval)
   VTOK          vtok binary (default: <repo>/rust/target/release/vtok[.exe], else `vtok` on PATH)
   GRAPHIFY      graphify binary (default `graphify`); set GRAPHIFY=skip to leave it out
@@ -38,10 +39,14 @@ def copy_workspace(src, dst, sub):
     if os.path.isdir(dst):
         shutil.rmtree(dst)
     os.makedirs(dst)
-    for f in ("Cargo.toml", "Cargo.lock"):
-        if os.path.exists(os.path.join(src, f)):
-            shutil.copy(os.path.join(src, f), dst)
     ignore = shutil.ignore_patterns("target", ".vtok", "graphify-out", "node_modules", ".git")
+    # EVAL_EXTRA: other workspace members or files the manifest needs (e.g. "engine,text,plugin,build.rs").
+    for f in ["Cargo.toml", "Cargo.lock"] + [x for x in os.environ.get("EVAL_EXTRA", "").split(",") if x]:
+        p = os.path.join(src, f)
+        if os.path.isdir(p):
+            shutil.copytree(p, os.path.join(dst, f), ignore=ignore)
+        elif os.path.exists(p):
+            shutil.copy(p, dst)
     shutil.copytree(os.path.join(src, sub), os.path.join(dst, sub), ignore=ignore)
 
 

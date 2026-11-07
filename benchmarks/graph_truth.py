@@ -41,6 +41,8 @@ def load(index_path, src_root, sub="crates"):
     """Returns (defs: {symbol: def dict}, edges: {(symA, symB): kind}, implements: {(type symbol, trait symbol)})."""
     docs = read_index(index_path)
     kinds = {s["symbol"]: s["kind"] for d in docs for s in d["symbols"]}
+    # Only the graphed subdirectory counts: other workspace members are indexed but no tool is asked to read them.
+    docs = [d for d in docs if not sub or d["path"].replace("\\", "/").startswith(sub + "/")]
     defs, per_doc, impls = {}, {}, set()
     for d in docs:
         path = norm_path(d["path"], sub)

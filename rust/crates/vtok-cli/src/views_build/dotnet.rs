@@ -5,6 +5,7 @@ use regex::Regex;
 use std::collections::HashSet;
 
 pub fn view(sub: &str, lines: &[String]) -> Option<String> {
+    if let Some(o) = super::dotnet_trx::view(lines) { return Some(o); }
     if !matches!(sub, "build" | "test" | "restore" | "format" | "publish" | "pack" | "msbuild" | "clean" | "run") { return None; }
     let diag = Regex::new(r"^\s*(?:(.+?)(?:\((\d+)(?:,(\d+))?\))?\s*: )?(error|warning) ([A-Za-z][A-Za-z0-9_]*): (.*?)(?: \[[^\]]+\])?$").unwrap();
     let total = Regex::new(r"^(Passed|Failed)!\s+-\s+").unwrap();

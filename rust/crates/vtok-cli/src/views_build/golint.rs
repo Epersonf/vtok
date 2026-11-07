@@ -3,6 +3,7 @@ use super::{cap, finish, uniq};
 use regex::Regex;
 
 pub fn view(lines: &[String]) -> Option<String> {
+    if let Some(o) = super::golint_json::view(lines) { return Some(o); }
     let issue = Regex::new(r"^(\S+\.go:\d+(?::\d+)?:) (.*) \(([\w-]+)\)$").unwrap();
     let (mut issues, mut linters, mut extra) = (Vec::<String>::new(), Vec::<(String, usize)>::new(), Vec::<String>::new());
     for l in lines {

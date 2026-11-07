@@ -60,8 +60,13 @@ fn test_json(lines: &[String]) -> Option<String> {
     let mut outs: HashMap<(String, String), Vec<String>> = HashMap::new();
     let (mut tp, mut tf, mut ts, mut pp, mut pf, mut ps, mut parsed) = (0, 0, 0, 0, 0, 0, 0);
     let (mut failed_tests, mut failed_pkgs) = (Vec::<(String, String)>::new(), Vec::<String>::new());
+    let mut stray = Vec::<String>::new();
     for l in lines {
-        let Ok(v) = serde_json::from_str::<Value>(l) else { continue };
+        let Ok(v) = serde_json::from_str::<Value>(l) else {
+            // build errors and toolchain chatter that go prints outside the event stream
+            if !l.trim().is_empty() && !l.starts_with("go: ") { stray.push(l.trim_end().to_string()); }
+            continue;
+        };
         let Some(act) = v["Action"].as_str() else { continue };
         parsed += 1;
         let key = (v["Package"].as_str().unwrap_or("").to_string(), v["Test"].as_str().unwrap_or("").to_string());
@@ -92,6 +97,8 @@ fn test_json(lines: &[String]) -> Option<String> {
         let body: Vec<String> = outs.get(&(pkg.clone(), String::new())).map(|o| o.iter().filter(noise).map(|s| format!("  {s}")).collect()).unwrap_or_default();
         cap(&mut out, &body, 15);
     }
+    uniq(&mut stray);
+    cap(&mut out, &stray, 20);
     out.push(format!("go test: packages {pp} ok, {pf} failed, {ps} no tests; tests {tp} passed, {tf} failed, {ts} skipped"));
     finish(out, lines)
 }

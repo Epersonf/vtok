@@ -2,6 +2,10 @@
 //! `view(cmd, lines)` decides the tool from the command line and returns None when the output is not
 //! what that tool prints.
 mod js_build;
+mod json_lint;
+mod json_test;
+mod json_util;
+#[cfg(test)] mod t_json;
 mod js_lint;
 mod js_pkg;
 mod js_playwright;
@@ -23,10 +27,10 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
     match c.tool.as_str() {
         "vitest" => js_test::vitest(l),
         "jest" => js_test::jest(l),
-        "playwright" => js_playwright::playwright(l),
+        "playwright" => json_test::playwright(l).or_else(|| js_playwright::playwright(l)),
         "prettier" => js_tsc::prettier(l),
         "tsc" | "vue-tsc" => js_tsc::tsc(l),
-        "eslint" => js_lint::eslint(l),
+        "eslint" => json_lint::eslint(l).or_else(|| js_lint::eslint(l)),
         "oxlint" => js_lint::oxlint(l),
         "biome" => js_lint::biome(l),
         "next" if first == "build" => js_build::next(l),
@@ -39,13 +43,13 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
         "pytest" | "py.test" => py::pytest(l),
         "pip" | "pip3" => py_pkg::pip(a, l),
         "uv" => py_pkg::uv(a, l),
-        "sqlfluff" => py_pkg::sqlfluff(l),
-        "rspec" => rb::rspec(l),
-        "rubocop" => rb::rubocop(l),
+        "sqlfluff" => json_lint::sqlfluff(l).or_else(|| py_pkg::sqlfluff(l)),
+        "rspec" => json_test::rspec(l).or_else(|| rb::rspec(l)),
+        "rubocop" => json_lint::rubocop(l).or_else(|| rb::rubocop(l)),
         "rake" | "rails" | "ruby" => rb::minitest(l),
         "phpunit" | "pest" | "paratest" => php::tests(l),
         "artisan" | "sail" if has("test") => php::tests(l),
-        "phpstan" => php_static::table(l, false),
+        "phpstan" => json_lint::phpstan(l).or_else(|| php_static::table(l, false)),
         "ecs" => php_static::table(l, true),
         "pint" => php_static::pint(l),
         _ => None,

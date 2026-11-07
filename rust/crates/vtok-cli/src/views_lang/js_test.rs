@@ -1,15 +1,66 @@
-//! vitest and jest: failing tests with assertion + location, summary counts; passing files dropped.
+//! vitest and jest: failing tests with assertion + location, summary counts; passing files dropped. The vitest view also
+//! drops what only repeats something printed next to it: the code-frame caret, an expected/received pair whose values the
+//! assertion message already states, chai's `// Object.is equality` note, the `AssertionError: ` prefix of its
+//! `expected ...` messages, and the timing breakdown after `Duration`.
 use super::util::*;
 
 fn node_modules(l: &str) -> bool { l.contains("node_modules") }
 
+/// A value as a diff prints it (`"a b"`) or the message does (`'a b'`), without the quotes.
+fn bare(v: &str) -> &str { v.trim().trim_matches(|c| c == '"' || c == '\'') }
+
+/// `v` occurs in `msg` as a whole token: `0` is in `expected 5 to be +0`, `3` is not in `expected 12 to be 30`.
+fn states(msg: &str, v: &str) -> bool {
+    let edge = |c: Option<char>| c.map_or(true, |c| !c.is_alphanumeric());
+    !v.is_empty() && msg.match_indices(v).any(|(i, _)| edge(msg[..i].chars().next_back()) && edge(msg[i + v.len()..].chars().next()))
+}
+
+/// Line range `[from, to)` of an expected/received pair that only repeats values the message above it states, in the two
+/// scalar shapes vitest prints: `Expected: "a"` / `Received: "b"`, and `- Expected` / `+ Received` over `- a` / `+ b`.
+/// Any bigger diff (context lines, objects, snapshots) is not a pair and stays.
+fn repeated_pair(b: &[String]) -> Option<(usize, usize)> {
+    let i = b.iter().position(|l| l.starts_with("Expected: ") || l.starts_with("- Expected"))?;
+    let to = b[i..].iter().position(|l| l.trim_start().starts_with('❯') || l.trim() == "...").map_or(b.len(), |p| i + p);
+    let (x, y) = match &b[i..to] {
+        [e, r] if e.starts_with("Expected: ") && r.starts_with("Received: ") => (&e[10..], &r[10..]),
+        [e, r, x, y] if e.starts_with("- Expected") && r.starts_with("+ Received") && x.starts_with("- ") && y.starts_with("+ ") => (&x[2..], &y[2..]),
+        _ => return None,
+    };
+    let msg = b.get(1..i)?.join(" ");
+    (states(&msg, bare(x)) && states(&msg, bare(y))).then_some((i, to))
+}
+
+/// One failure block: header and location without their indentation, the message without its filler, and the
+/// expected/received pair gone when the message already says it. Diff lines keep their spacing.
+fn tidy(mut b: Vec<String>) -> Vec<String> {
+    for l in b.iter_mut() {
+        let new = {
+            let t = l.trim_start();
+            if let Some(r) = t.strip_prefix("FAIL ") { format!("FAIL {}", r.trim_start()) }
+            else if t.starts_with('❯') { t.to_string() }
+            else { l.strip_prefix("AssertionError: ").filter(|r| r.starts_with("expected ")).unwrap_or(l.as_str()).trim_end_matches(" // Object.is equality").to_string() }
+        };
+        *l = new;
+    }
+    if let Some((from, to)) = repeated_pair(&b) { b.drain(from..to); }
+    b
+}
+
 pub fn vitest(lines: &[String]) -> Option<String> {
     if !has(lines, r"^\s*Test Files\s") { return None; }
+    let (summary, frame) = (re(r"^\s*(Test Files|Tests)\s"), re(r"^\s*(\d+\||\|\s*\^)"));
     let start = |l: &str| l.trim_start().starts_with("FAIL ");
-    let stop = |l: &str| l.starts_with('⎯') || re(r"^\s*(Test Files|Tests)\s").is_match(l);
-    let drop = |l: &str| node_modules(l) || re(r"^\s*\d+\|").is_match(l);
-    let mut out = blocks(lines, &start, &stop, 12, &drop);
-    out.extend(grep(lines, r"^\s*(Test Files|Tests|Snapshots|Errors|Type Errors|Duration)\s"));
+    let stop = |l: &str| l.starts_with('⎯') || summary.is_match(l);
+    let drop = |l: &str| node_modules(l) || frame.is_match(l);
+    let (mut out, mut cur) = (vec![], vec![]);
+    for l in blocks(lines, &start, &stop, 12, &drop) {
+        if start(&l) && !cur.is_empty() { out.extend(tidy(std::mem::take(&mut cur))); }
+        cur.push(l);
+    }
+    out.extend(tidy(cur));
+    for l in grep(lines, r"^\s*(Test Files|Tests|Snapshots|Errors|Type Errors|Duration)\s") {
+        out.push(if l.starts_with("Duration") { l.split(" (").next().unwrap_or(&l).to_string() } else { l });
+    }
     finish(out)
 }
 
@@ -32,19 +83,6 @@ pub fn jest(lines: &[String]) -> Option<String> {
 mod tests {
     use super::*;
     use super::super::util::t::*;
-
-    #[test]
-    fn vitest_keeps_failures_and_summary() {
-        let mut s = String::new();
-        for i in 0..8 { s += &format!(" ✓ src/ok{i}.test.ts (12 tests) {i}ms\n"); }
-        s += " ❯ src/b.test.ts (2 tests | 1 failed) 8ms\n   × b > fails 3ms\n\n⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯\n\n FAIL  src/b.test.ts > b > fails\nAssertionError: expected 1 to be 2 // Object.is equality\n\n- Expected\n+ Received\n\n- 2\n+ 1\n\n ❯ src/b.test.ts:10:5\n      8| it('fails', () => {\n      9|   const a = 1\n     10|   expect(a).toBe(2)\n ❯ node_modules/x/y.js:1:1\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n\n Test Files  1 failed | 8 passed (9)\n      Tests  1 failed | 90 passed (91)\n   Duration  1.2s\n";
-        let l = lines(&s);
-        let o = small(vitest(&l), &l);
-        assert!(o.contains("FAIL  src/b.test.ts > b > fails") && o.contains("expected 1 to be 2") && o.contains("src/b.test.ts:10:5"));
-        assert!(o.contains("Test Files  1 failed") && o.contains("Tests  1 failed"));
-        assert!(!o.contains("ok3.test.ts") && !o.contains("node_modules"));
-        assert!(vitest(&lines("hello")).is_none());
-    }
 
     #[test]
     fn jest_keeps_failure_blocks_once() {

@@ -34,7 +34,7 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 | tsc (34 identical errors) | 653 | 672 | 57 | best case for grouping |
 | tsc (47 mixed errors) | 911 | 950 | 301 | realistic: mostly distinct messages |
 | eslint | 2,568 | 2,568 | 262 | RTK passes it through |
-| vitest (2 fail) | 332 | 37 | 134 | RTK is smaller but drops both failing test names (0/2); vtok keeps them |
+| vitest (2 fail) | 328 | 37 | 59 | RTK is smaller but keeps 0/2 failing test names (its parser fails on this vitest, 5.1.0, and it prints a pass-through notice); vtok keeps both names with expected vs received and the location (was 134) |
 | go test (2 fail) | 35 | 51 | 35 | |
 
 Where RTK is ahead: a green `cargo test` by one token, and `vitest` in size (at the cost of the failing test names).

@@ -4,6 +4,7 @@ use vtok_api::*;
 mod config;
 mod discover;
 mod init;
+mod gitfmt;
 mod hook;
 mod mcp;
 mod refs;

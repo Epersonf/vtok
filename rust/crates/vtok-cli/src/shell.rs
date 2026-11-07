@@ -468,8 +468,10 @@ pub fn compact(raw: &str, code: i32, budget: usize) -> String {
     let clean_run = code == 0 && !lines.iter().any(|l| score(l) >= 3 && !is_pass_line(l));
     let runner = lines.iter().any(|l| score(l) == 2);
     if raw_tok <= RAW_BELOW_TOKENS && !(clean_run && runner && raw_tok > 60) { return if text.is_empty() { text } else { text + "\n" }; }
+    let git = crate::gitfmt::diff_view(&lines, budget).or_else(|| crate::gitfmt::log_view(&lines, budget));
     let test_report = lines.iter().any(|l| l.starts_with('=') && l.contains(" FAILURES "));
-    let body = if let Some(v) = failure_view(&lines).filter(|v| test_report && ntok(v) <= budget) { v }
+    let body = if let Some(g) = git { g }
+        else if let Some(v) = failure_view(&lines).filter(|v| test_report && ntok(v) <= budget) { v }
         else if let Some(l) = summarize_listing(&lines, budget.min(150)) { l }
         else if clean_run && runner { summarize_clean(&without_noise(&lines), budget.min(CLEAN_BUDGET)) }
         else if let Some(v) = failure_view(&lines).filter(|v| ntok(v) <= budget) { v }

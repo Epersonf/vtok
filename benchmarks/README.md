@@ -10,9 +10,9 @@ FIXTURES=/tmp/fx RTK_BIN=.../rtk VTOK_BIN=.../vtok CAVEMAN_BIN=.../caveman-engin
 Tokens are `(chars + 3) / 4`, the metric RTK's own benchmark uses. `keep N/M` counts key strings (failing test names,
 error codes) that survive in each tool's output. It is a crude retention check, not a quality score.
 
-## Results (one Windows machine, 19 scenarios, vtok 2c4fc3b, RTK 0.49.0)
+## Results (one Windows machine, 18 scenarios, vtok 2c4fc3b, RTK 0.49.0)
 
-Command output, raw 36,076 tokens: RTK 25,243 (-31%), vtok 11,200 (-69%), Caveman `compress` 36,076 (0%). The git
+Command output, raw 36,076 tokens: RTK 25,243 (-31%), vtok 11,200 (-69%), Caveman's engine 36,076 (0%: these outputs are small and not repetitive, see "Large data files"). The git
 scenarios use fixed revisions and the `cat`/`grep` scenarios a pinned file (`fixtures.py` writes it from git history), so
 the numbers do not move with every commit. `keep` counts a scenario's key strings in the output (crude).
 
@@ -46,9 +46,36 @@ Caveats, read before quoting any number:
 
 - vtok's totals include views that cut content (`cat`, `grep`, large `git diff`). The full output is stored under an id
   and `vtok output ID` returns any part, but the agent sees less on the first read.
-- Caveman's value is the terse response style (model side), which `bench.py` does not measure (see "Answer style"
-  below); its `compress` engine does not change tool output.
+- Caveman's terse response style is not measured by `bench.py` (see "Answer style" below). Its engine
+  (`caveman-engine compress`) left every output in this table unchanged because they are small and not repetitive. It
+  is built for large repetitive files; "Large data files" below is where it does well and vtok does not.
 - Small corpus, one machine, no repeat runs, no agent in the loop. It says nothing about task success.
+
+## Large data files (`blobs.py`)
+
+Caveman's own benchmark (`docs/WRAP-BENCHMARK.md` in its repository) compresses 18-28k-token CSV, log, YAML, JSON and
+test-output files that hide one record among thousands of near-identical ones, and reports 98-99% smaller. Its corpus
+generator is not public, so `python benchmarks/blobs.py OUTDIR` builds five look-alikes (1,800-row CSV with one outlier
+amount, 900-line log with one `OOMKilled`, 45 near-identical YAML services with one drifted image tag, a 900-test pytest
+run with one failure, 130 JSON deployments with one `4000m` limit) and gives the same bytes to `caveman-engine compress`
+and to `vtok run -- cat FILE` (env `CAVEMAN_BIN`, `VTOK_BIN`). "needle" is whether the hidden record is in the output;
+"retrieve" is the size of `vtok output --grep NEEDLE`, which an agent can only run when it already knows what to look for.
+
+| payload | raw | Caveman | needle | vtok | needle | vtok retrieve |
+|---|---:|---:|---|---:|---|---:|
+| CSV, 1,800 rows | 35,264 | 658 | yes | 29 | **no** | 113 |
+| log, 900 lines | 31,760 | 291 | yes | 180 | yes | |
+| YAML, 45 services | 5,123 | 302 | yes | 1,365 | **no** | 51 |
+| pytest -v, 900 tests | 14,797 | 14,797 (unchanged) | yes | 35 | yes | |
+| JSON, 130 deployments | 24,413 | 711 | yes | 132 | **no** | 39 |
+
+Caveman is ahead on CSV, YAML and JSON. Its engine replaces runs of similar rows with a per-column summary and keeps the
+odd record. vtok's generic view prints one row for the CSV (a 40-row CSV also prints only its last row, with no header
+and no row count: a defect, not a design choice), the first services of the YAML, and a type outline of the JSON; only a
+`grep` for a value the agent already knows finds the record. vtok is ahead on the log (level counts and the error line)
+and on the pytest run (this engine leaves that format unchanged; its own benchmark's test-output file may use another
+format). These are look-alikes written by the vtok author, one per shape, one run each: they show where the gaps are, not
+by how much.
 
 ## Graph accuracy (`graph_eval.py`)
 

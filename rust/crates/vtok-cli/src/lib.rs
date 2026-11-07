@@ -62,6 +62,7 @@ pub fn run(args: &[String]) -> i32 {
         "run" => shell::run(rest),
         "gain" => usage::gain(rest),
         "session" => session::run(rest),
+        "statusline" => session::statusline(rest),
         "hook" => hook::run(rest),
         "rewrite" => rewrite::run(rest),
         "browse" => browse::run(rest),

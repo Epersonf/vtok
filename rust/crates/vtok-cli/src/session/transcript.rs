@@ -5,6 +5,8 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
+const PROMPT_CHARS: usize = 60;
+
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Usage { pub input: u64, pub cache_read: u64, pub cache_write: u64, pub output: u64 }
 
@@ -14,7 +16,7 @@ pub struct Turn { pub t: f64, pub usage: Usage }
 
 /// One thing the user typed.
 #[derive(Clone, Debug)]
-pub struct Prompt { pub t: f64 }
+pub struct Prompt { pub t: f64, pub text: String }
 
 #[derive(Clone, Debug, Default)]
 pub struct Transcript { pub turns: Vec<Turn>, pub prompts: Vec<Prompt>, pub compactions: Vec<f64>, pub model: Option<String> }
@@ -59,12 +61,13 @@ pub fn find(session: &str) -> Option<PathBuf> {
 
 pub fn load(path: &std::path::Path) -> Transcript { parse(&String::from_utf8_lossy(&std::fs::read(path).unwrap_or_default())) }
 
-/// Typed by the user: a plain string, or blocks with no tool result (a tool result also arrives as a user line).
-fn typed_by_user(content: &Value) -> bool {
+/// What the user typed: a plain string, or the text blocks of a message with no tool result (a tool result also arrives
+/// as a user line).
+fn typed_text(content: &Value) -> Option<String> {
     match content {
-        Value::String(_) => true,
-        Value::Array(blocks) => !blocks.iter().any(|b| b["type"] == "tool_result"),
-        _ => false,
+        Value::String(s) => Some(s.clone()),
+        Value::Array(blocks) if !blocks.iter().any(|b| b["type"] == "tool_result") => Some(blocks.iter().filter_map(|b| b["text"].as_str()).collect::<Vec<_>>().join(" ")),
+        _ => None,
     }
 }
 
@@ -91,8 +94,9 @@ pub fn parse(text: &str) -> Transcript {
             let e = by_id.entry(id.to_string()).or_insert(Turn { t, usage: now });
             e.t = e.t.min(t);
             e.usage = Usage { input: e.usage.input.max(now.input), cache_read: e.usage.cache_read.max(now.cache_read), cache_write: e.usage.cache_write.max(now.cache_write), output: e.usage.output.max(now.output) };
-        } else if typed_by_user(&v["message"]["content"]) {
-            tr.prompts.push(Prompt { t });
+        } else if let Some(txt) = typed_text(&v["message"]["content"]) {
+            let one_line = txt.split_whitespace().collect::<Vec<_>>().join(" ");
+            tr.prompts.push(Prompt { t, text: one_line.chars().take(PROMPT_CHARS).collect() });
         }
     }
     tr.turns = by_id.into_values().collect();

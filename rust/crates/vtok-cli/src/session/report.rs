@@ -21,10 +21,10 @@ pub struct Target {
 
 /// How to print it.
 #[derive(Clone, Debug)]
-pub struct Opts { pub price_in: f64, pub per_call: bool, pub json: bool, pub limit: usize }
+pub struct Opts { pub price_in: f64, pub per_call: bool, pub by_prompt: bool, pub json: bool, pub limit: Option<usize> }
 
 impl Default for Opts {
-    fn default() -> Opts { Opts { price_in: DEFAULT_PRICE_IN, per_call: false, json: false, limit: 40 } }
+    fn default() -> Opts { Opts { price_in: DEFAULT_PRICE_IN, per_call: false, by_prompt: false, json: false, limit: None } }
 }
 
 pub struct Report {

@@ -51,6 +51,7 @@ pub fn run(args: &[String]) -> i32 {
         let Some(name) = args.get(i + 1) else { eprintln!("usage: vtok init --agent NAME [--terse]   (one of: {})", crate::agents::names()); return 2 };
         return match crate::agents::install(name, std::path::Path::new("."), extra) { Ok(Some(p)) => { println!("{p}: vtok block written"); 0 } Ok(None) => { println!("{name}: already up to date"); 0 } Err(e) => { eprintln!("{e}"); 2 } };
     }
+    if let Some(i) = args.iter().position(|a| a == "--claude-statusline") { return crate::session::init_statusline(args.get(i + 1)); }
     if let Some(i) = args.iter().position(|a| a == "--claude-hook") {
         let Some(path) = args.get(i + 1) else { eprintln!("usage: vtok init --claude-hook SETTINGS.json   (e.g. ~/.claude/settings.json or .claude/settings.json)"); return 2 };
         return match crate::hook::install(path) { Ok(true) => { println!("{path}: vtok hook added as `{} hook` (long shell output is wrapped in `vtok run`)", crate::hook::binary()); 0 } Ok(false) => { println!("{path}: already up to date"); 0 } Err(e) => { eprintln!("{e}"); 1 } };

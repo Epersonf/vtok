@@ -1,4 +1,5 @@
 //! The text of a report.
+use super::by_prompt;
 use super::calls::{did_not_pay, list};
 use super::cost::{usd, READ, STANDING_TOKENS};
 use super::report::{Opts, Report};
@@ -33,12 +34,18 @@ pub fn text(r: &Report, o: &Opts) -> String {
         let shown: Vec<String> = bad.iter().take(5).map(|x| format!("{} {} {} -> {}", x.kind, x.detail, num(x.raw as i64), num(x.shown as i64))).collect();
         out.push_str(&format!("did not pay ({} of {} counted calls): {}\n", bad.len(), counted, shown.join(" · ")));
     }
-    if o.per_call { out.push('\n'); out.push_str(&list(&refs, r.from, o.limit)); }
+    if o.per_call { out.push('\n'); out.push_str(&list(&refs, r.from, o.limit.unwrap_or(40))); }
     out.push('\n');
     out.push_str(&chat_section(r, o));
+    if o.by_prompt { out.push('\n'); out.push_str(&prompts(r, o)); }
     out.push('\n');
     out.push_str(FOOTER);
     out
+}
+
+fn prompts(r: &Report, o: &Opts) -> String {
+    let lines = by_prompt::of(r);
+    if lines.is_empty() { "No prompts to group by: that needs the chat's transcript.\n".into() } else { by_prompt::table(lines, r.from as f64, o) }
 }
 
 fn chat_section(r: &Report, o: &Opts) -> String {

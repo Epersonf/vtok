@@ -37,9 +37,11 @@ fn fixture(state: &Path, claude: &Path) {
     std::fs::write(state.join("marks.jsonl"), [mark(100, "start"), mark(400, "stop")].join("\n") + "\n").unwrap();
     let turns: Vec<String> = [60u64, 120, 200, 300, 380, 450].iter().enumerate().map(|(i, s)| format!(
         r#"{{"type":"assistant","timestamp":"{}","message":{{"id":"m{i}","model":"claude-x","usage":{{"input_tokens":0,"cache_read_input_tokens":1000,"cache_creation_input_tokens":0,"output_tokens":10}}}}}}"#, iso(BASE + s))).collect();
+    let prompt = |t: u64, text: &str| format!(r#"{{"type":"user","timestamp":"{}","origin":{{"kind":"human"}},"message":{{"role":"user","content":"{text}"}}}}"#, iso(BASE + t));
+    let lines = [turns, vec![prompt(55, "fix the login"), prompt(340, "and the logout")]].concat();
     let dir = claude.join("projects").join("-p");
     std::fs::create_dir_all(&dir).unwrap();
-    std::fs::write(dir.join("chat-one.jsonl"), turns.join("\n") + "\n").unwrap();
+    std::fs::write(dir.join("chat-one.jsonl"), lines.join("\n") + "\n").unwrap();
 }
 
 #[test]
@@ -54,7 +56,11 @@ fn a_named_stretch_is_reported_against_the_turns_of_its_transcript() {
     assert_eq!((c["net_exact_units"].as_f64(), c["net_all_units"].as_f64()), (Some(26_084.0), Some(32_834.0)), "{v}");
     let whole: Value = serde_json::from_str(&text(&vtok(&state, &claude, Some("chat-one"), None, &["session", "report", "--whole", "--json"]))).unwrap();
     assert_eq!((whole["calls"].as_u64(), whole["cost"]["turns"].as_u64()), (Some(4), Some(6)), "{whole}");
-    let t = text(&vtok(&state, &claude, Some("chat-one"), None, &["session", "report", "login", "--per-call"]));
+    let by: Value = serde_json::from_str(&text(&vtok(&state, &claude, Some("chat-one"), None, &["session", "report", "login", "--by-prompt", "--json"]))).unwrap();
+    let p = by["prompts"].as_array().unwrap();
+    assert_eq!((p.len(), p[0]["prompt"].as_str(), p[0]["turns"].as_u64(), p[0]["calls"].as_u64(), p[1]["turns"].as_u64()), (2, Some("fix the login"), Some(3), Some(2), Some(1)), "{by}");
+    let t = text(&vtok(&state, &claude, Some("chat-one"), None, &["session", "report", "login", "--by-prompt", "--per-call"]));
+    assert!(t.contains("by prompt, dearest first (2 of 2)") && t.contains("and the logout"), "{t}");
     assert!(t.contains("session \"login\"") && t.contains("2 calls") && t.contains("chat transcript chat-one.jsonl") && t.contains("net:"), "{t}");
     let _ = (std::fs::remove_dir_all(&state), std::fs::remove_dir_all(&claude));
 }

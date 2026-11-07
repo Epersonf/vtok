@@ -41,6 +41,7 @@ fn prompts_are_what_a_human_typed_and_compactions_are_marked() {
     let summary = r#"{"type":"user","isCompactSummary":true,"timestamp":"2026-11-07T03:00:40.000Z","message":{"role":"user","content":"summary"}}"#;
     let tr = parse(&[typed, blocks, tool, summary].join("\n"));
     assert_eq!(tr.prompts.len(), 2, "a tool result is not a prompt");
+    assert_eq!((tr.prompts[0].text.as_str(), tr.prompts[1].text.as_str()), ("fix the login", "and the logout"));
     assert_eq!(tr.compactions, vec![iso_secs("2026-11-07T03:00:40.000Z").unwrap()]);
 }
 

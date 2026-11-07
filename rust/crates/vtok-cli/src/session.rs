@@ -7,8 +7,10 @@
 //! negative. The CLI and the `vtok_session` MCP tool share `execute`.
 //!
 //! Files: `ask` (the arguments), `marks` (named stretches), `transcript` (Claude Code's file), `cost` (units), `chat`
-//! (the transcript side), `report` (building), `render` and `json` (printing), `calls` (call by call).
+//! (the transcript side), `report` (building), `render` and `json` (printing), `calls` (call by call), `by_prompt` (the
+//! report grouped by what the user typed), `statusline` (the one-line view for a status bar).
 mod ask;
+mod by_prompt;
 mod calls;
 mod chat;
 mod cost;
@@ -16,10 +18,15 @@ mod json;
 mod marks;
 mod render;
 mod report;
+mod statusline;
 mod transcript;
+#[cfg(test)] mod t_by_prompt;
 #[cfg(test)] mod t_marks;
 #[cfg(test)] mod t_report;
+#[cfg(test)] mod t_statusline;
 #[cfg(test)] mod t_transcript;
+
+pub use statusline::{init as init_statusline, run as statusline};
 
 use crate::usage::fmt::{dur, now_secs, short, utc};
 use crate::usage::filter::Filter;

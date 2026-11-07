@@ -30,7 +30,11 @@ impl Chat {
 
 /// `from` and `to` bound the window (epoch seconds); `recs` are the vtok calls inside it; `mcp` says the chat has the MCP
 /// server (it was used at some point), so its instructions were in every turn of the window.
-pub fn measure(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, mcp: bool) -> Chat {
+pub fn measure(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, mcp: bool) -> Chat { measure_in(tr, recs, from, to, to, mcp) }
+
+/// Like `measure`, but a call's saving rides the turns up to `ride_to`, which may be later than the end of the window whose
+/// cost is counted (a prompt's calls pay off in the prompts that follow).
+pub fn measure_in(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, ride_to: f64, mcp: bool) -> Chat {
     let window: Vec<_> = tr.turns.iter().filter(|t| t.t >= from && t.t <= to).collect();
     let mut usage = Usage::default();
     for t in &window {
@@ -44,7 +48,7 @@ pub fn measure(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, mcp: bool) ->
         let first = tr.turns.partition_point(|t| t.t <= at);
         // a saved token is worth a read per turn it would have ridden, up to the next compaction or the end of the window
         let compaction = tr.compactions.iter().copied().find(|&c| c > at).unwrap_or(f64::INFINITY);
-        let last = tr.turns.partition_point(|t| t.t < compaction).min(tr.turns.partition_point(|t| t.t <= to));
+        let last = tr.turns.partition_point(|t| t.t < compaction).min(tr.turns.partition_point(|t| t.t <= ride_to));
         let gain = worth as f64 * ride(last.saturating_sub(first));
         match class(&r.kind) { Class::Exact => chat.gain_exact += gain, Class::Upper => chat.gain_upper += gain, Class::NotCounted => {} }
     }

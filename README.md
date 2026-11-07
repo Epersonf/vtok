@@ -8,6 +8,7 @@ generation of the answer does (and invalid output is caught and can be retried).
     source code --encode--> Vtok (+ alias table) --> LLM --> Vtok --decode--> source code
 
 Status: **early prototype** (Python implementation). Languages: Python, TypeScript/JavaScript (`.js .mjs .cjs .jsx .tsx` via the TS grammar), Rust (Rust: native binary only, `vtok-rs` crate).
+Generic tree-sitter plugins (native binary only, crate `vtok-gen`): Java, Go, C, C++, C#, Dart, CSS, HTML, SQL. One implementation driven by a per-grammar spec: comments dropped, whitespace minimal, identifiers aliased (not in HTML/CSS/SQL), line breaks kept only where the grammar needs them (Go statements, C/C++ `#` lines). `encode` always re-parses its own output and compares the tree with the original; if that fails it retries keeping the source spacing, then without aliases, and otherwise refuses the file. Files tree-sitter cannot parse are refused too. Measured on real code (tiktoken, incl. alias table): Java -48%, C++ -53%, C -31%, Go -30%, CSS -26%, C# -23% (tiny sample); HTML about 0% on text-heavy docs, so use it for markup-heavy pages only. Round trip on 369 Java, 666 Go, 6 CSS and 8 C# files: no failures; C/C++ failures are almost all files that tree-sitter itself cannot parse (macros).
 
 ## Layout (core + optional language plugins)
 

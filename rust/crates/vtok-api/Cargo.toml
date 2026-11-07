@@ -9,3 +9,4 @@ vtok-core = { path = "../vtok-core" }
 vtok-ts = { path = "../vtok-ts" }
 vtok-py = { path = "../vtok-py" }
 vtok-rs = { path = "../vtok-rs" }
+vtok-gen = { path = "../vtok-gen" }

@@ -1,0 +1,18 @@
+[package]
+name = "vtok-gen"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+vtok-core = { path = "../vtok-core" }
+tree-sitter = "0.25"
+tree-sitter-html = "0.23"
+tree-sitter-css = "0.25"
+tree-sitter-sequel = "0.3"
+tree-sitter-java = "0.23"
+tree-sitter-dart = "0.3"
+tree-sitter-cpp = "0.23"
+tree-sitter-c-sharp = "0.23"
+tree-sitter-go = "0.25"
+tree-sitter-c = "0.24"

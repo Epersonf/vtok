@@ -23,7 +23,7 @@ fn instructions() -> String {
 fn tools() -> Value {
     let all = json!([
       {"name": "vtok_read",
-       "description": "Compact Vtok of a Python/TypeScript/JavaScript/Rust file: rev, alias table, code. Big files return an index + chunk map. view: full, skeleton or lean.",
+       "description": "Compact Vtok of a Python/TypeScript/JavaScript/Rust/Java/Go/C/C++/C#/Dart/CSS/HTML/SQL file: rev, alias table, code. Big files return an index + chunk map. view: full, skeleton or lean.",
        "inputSchema": {"type": "object", "properties": {
           "path": {"type": "string"}, "view": {"type": "string", "enum": ["full", "skeleton", "lean"]},
           "max_lines": {"type": "integer", "description": "split files longer than this (default: `vtok config` max-lines, else 150)"}}, "required": ["path"]}},
@@ -46,7 +46,7 @@ fn tools() -> Value {
        "description": "Find symbols from the words of a question (matches names, path, signature words): file, symbol, line range. show=N also returns the compact code of the top N matches.",
        "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 400"}, "show": {"type": "integer", "description": "also return the compact code (with rev and aliases, ready for vtok_edit) of the top N matches, 0-3, default 0"}}, "required": ["query"]}},
       {"name": "vtok_map",
-       "description": "Overview of a project directory within a token budget: every Python/TypeScript/JavaScript/Rust file with its size and its most used symbols (line range, x N = uses in other files, ~ = several definitions share the name), plus signatures for the top few. Use it to decide where to look; then vtok_outline / vtok_chunk. A plain file listing is cheaper when file names already tell you where to look.",
+       "description": "Overview of a project directory within a token budget: every Python/TypeScript/JavaScript/Rust/Java/Go/C/C++/C#/Dart/CSS/HTML/SQL file with its size and its most used symbols (line range, x N = uses in other files, ~ = several definitions share the name), plus signatures for the top few. Use it to decide where to look; then vtok_outline / vtok_chunk. A plain file listing is cheaper when file names already tell you where to look.",
        "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 700"}}}},
       {"name": "vtok_graph",
        "description": "Call graph of the project (by name): action explain (callers and callees of a symbol), path (shortest chain between two symbols), hubs (most connected), communities (groups of related symbols). Built once into .vtok/graph.json and refreshed when sources change.",

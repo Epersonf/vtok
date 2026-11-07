@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/vtok-core", "crates/vtok-ts", "crates/vtok-py", "crates/vtok-rs", "crates/vtok-api", "crates/vtok-cli"]
+members = ["crates/vtok-core", "crates/vtok-ts", "crates/vtok-py", "crates/vtok-rs", "crates/vtok-gen", "crates/vtok-api", "crates/vtok-cli"]
 
 [workspace.package]
 version = "0.1.0"

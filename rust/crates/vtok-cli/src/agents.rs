@@ -19,12 +19,12 @@ const AGENTS: &[(&str, &str, &str)] = &[
 
 pub fn names() -> String { AGENTS.iter().map(|a| a.0).collect::<Vec<_>>().join(", ") }
 
-/// Write or update the vtok block for `agent` under `root`. Ok(Some(path)) when the file changed, Ok(None) when already current.
-pub fn install(agent: &str, root: &Path) -> Result<Option<String>, String> {
+/// Write or update the vtok block (plus `extra`, the optional terse note) for `agent` under `root`. Ok(Some(path)) when the file changed, Ok(None) when already current.
+pub fn install(agent: &str, root: &Path, extra: &str) -> Result<Option<String>, String> {
     let Some(&(_, rel, header)) = AGENTS.iter().find(|a| a.0 == agent) else { return Err(format!("unknown agent {agent:?}; known: {}", names())) };
     let path = root.join(rel);
     let existing = std::fs::read_to_string(&path).unwrap_or_else(|_| header.to_string());
-    let merged = crate::init::merge(&existing);
+    let merged = crate::init::merge(&existing, extra);
     if merged == existing && path.exists() { return Ok(None); }
     if let Some(d) = path.parent() { std::fs::create_dir_all(d).map_err(|e| format!("{}: {e}", d.display()))?; }
     std::fs::write(&path, merged).map_err(|e| format!("{}: {e}", path.display()))?;
@@ -40,14 +40,14 @@ mod tests {
         let d = std::env::temp_dir().join(format!("vtok-agents-{}", std::process::id()));
         std::fs::create_dir_all(&d).unwrap();
         std::fs::write(d.join("GEMINI.md"), "# mine\n").unwrap();
-        assert!(install("gemini", &d).unwrap().is_some());
-        assert!(install("gemini", &d).unwrap().is_none());
+        assert!(install("gemini", &d, "").unwrap().is_some());
+        assert!(install("gemini", &d, "").unwrap().is_none());
         let g = std::fs::read_to_string(d.join("GEMINI.md")).unwrap();
         assert!(g.starts_with("# mine\n") && g.contains("vtok:begin"));
-        install("cursor", &d).unwrap();
+        install("cursor", &d, crate::terse::NOTE).unwrap();
         let c = std::fs::read_to_string(d.join(".cursor/rules/vtok.mdc")).unwrap();
-        assert!(c.starts_with("---\n") && c.contains("alwaysApply: true") && c.contains("vtok:end"));
-        assert!(install("nope", &d).is_err());
+        assert!(c.starts_with("---\n") && c.contains("alwaysApply: true") && c.contains("vtok:end") && c.contains(crate::terse::NOTE.trim_end()));
+        assert!(install("nope", &d, "").is_err());
         std::fs::remove_dir_all(&d).ok();
     }
 }

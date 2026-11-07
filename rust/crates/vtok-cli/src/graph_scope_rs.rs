@@ -8,21 +8,6 @@ use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::sync::OnceLock;
 
-struct Crate { name: String, deps: Vec<String>, lib: Option<usize> }
-
-fn cargo(root: &Path, dir: &str) -> Option<(String, Vec<String>)> {
-    let t = std::fs::read_to_string(root.join(dir).join("Cargo.toml")).ok()?;
-    let (mut name, mut deps, mut sect) = (String::new(), vec![], String::new());
-    for l in t.lines().map(str::trim) {
-        if l.starts_with('[') { sect = l.trim_matches(|c| c == '[' || c == ']').to_string(); continue; }
-        let Some((k, v)) = l.split_once('=') else { continue };
-        let k = k.trim().split('.').next().unwrap_or("").trim().trim_matches('"');
-        if sect == "package" && k == "name" { name = v.trim().trim_matches('"').replace('-', "_"); }
-        if sect.ends_with("dependencies") { deps.push(k.replace('-', "_")); }
-    }
-    Some((name, deps))
-}
-
 /// `a::{b, c::d as e, self}` -> [(["a","b"], None), (["a","c","d"], Some("e")), (["a","self"], None)]; `*` stays a segment.
 fn flatten(s: &str, prefix: &[String], out: &mut Vec<(Vec<String>, Option<String>)>) {
     let s = s.trim().trim_start_matches("::").trim();
@@ -69,25 +54,7 @@ pub(crate) fn build(root: &Path, parsed: &[Parsed], fs: &Files, sc: &mut [Scope]
     let modre = MOD.get_or_init(|| Regex::new(r#"(?m)^[ \t]*((?:#\[[^\]]*\][ \t]*\n?[ \t]*)*)(?:pub(?:\([^)]*\))?\s+)?mod\s+(\w+)\s*;"#).unwrap());
     let usere = USE.get_or_init(|| Regex::new(r"(?m)^[ \t]*(pub(?:\([^)]*\))?\s+)?use\s+([^;]+);").unwrap());
     let rs: Vec<usize> = (0..parsed.len()).filter(|&i| parsed[i].lang == "rust").collect();
-    // crates
-    let mut crates: Vec<Crate> = vec![];
-    let mut crate_of_dir: HashMap<String, Option<usize>> = HashMap::new();
-    for &i in &rs {
-        let mut d = dir_of(&parsed[i].rel).to_string();
-        let k = loop {
-            if let Some(&k) = crate_of_dir.get(&d) { break k; }
-            if let Some((name, deps)) = cargo(root, &d) {
-                let lib = ["src/lib.rs", "src/main.rs"].iter().find_map(|f| fs.by_path.get(&normalize(&format!("{d}/{f}"))).copied());
-                crates.push(Crate { name, deps, lib });
-                crate_of_dir.insert(d.clone(), Some(crates.len() - 1));
-                break Some(crates.len() - 1);
-            }
-            if d.is_empty() { crate_of_dir.insert(d.clone(), None); break None; }
-            d = dir_of(&d).to_string();
-        };
-        sc[i].krate = k;
-        sc[i].strict = k.is_some();
-    }
+    let crates = super::scope_crates::crates(root, parsed, fs, sc, &rs);
     let by_name: HashMap<&str, usize> = crates.iter().enumerate().map(|(i, c)| (c.name.as_str(), i)).collect();
     // module tree
     for &i in &rs {

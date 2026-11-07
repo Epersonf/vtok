@@ -62,3 +62,21 @@ fn version_2_files_load_and_are_rebuilt() {
     assert!(g.nodes.len() > 2, "a stale-format file is rebuilt transparently");
     std::fs::remove_dir_all(&d).ok();
 }
+
+#[test]
+fn graphing_src_finds_the_manifest_above_and_resolves_strictly() {
+    let d = tmp("srcdir");
+    put(&d, "Cargo.toml", "[package]\nname = \"b\"\n");
+    put(&d, "src/lib.rs", "mod ext;\nmod other;\nuse ext::Ext;\n\npub enum Out { Full(u8), Part(u8) }\n\npub fn data() -> u8 { 1 }\n\npub fn show(o: Out, v: &mut Vec<u8>) -> u8 {\n    v.push_one(1);\n    match o { Out::Full(data) => data, Out::Part(data) => data + 1 }\n}\n");
+    put(&d, "src/ext.rs", "pub trait Ext {\n    fn push_one(&mut self, x: u8);\n}\nimpl Ext for Vec<u8> {\n    fn push_one(&mut self, x: u8) { self.push(x) }\n}\n");
+    put(&d, "src/other.rs", "pub fn helper() -> u8 { 2 }\npub fn caller() -> u8 { helper() }\n");
+    put(&d, "src/lone.rs", "pub fn helper() -> u8 { 3 }\n");
+    let g = build(&d.join("src"));
+    let show = node(&g, "show");
+    assert!(rel(&g, show, node(&g, "data"), REFERENCES).is_none(), "`data` is bound by the variant patterns");
+    assert_eq!(rel(&g, show, node(&g, "Ext for Vec.push_one"), CALLS), Some(80), "one impl of an imported extension trait");
+    let caller = node(&g, "caller");
+    let out: Vec<&str> = g.semantic().filter(|e| e.0 == caller).map(|e| g.nodes[e.1].file.as_str()).collect();
+    assert_eq!(out, vec!["other.rs"], "strict: the same-file helper, never the one in lone.rs");
+    std::fs::remove_dir_all(&d).ok();
+}

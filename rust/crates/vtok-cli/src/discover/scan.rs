@@ -10,13 +10,14 @@ use vtok_api::{language_for_path, ntok};
 const PROSE: [&str; 6] = ["txt", "md", "rst", "adoc", "tex", "org"];
 const DATA: [&str; 10] = ["json", "jsonl", "ndjson", "csv", "tsv", "yaml", "yml", "toml", "xml", "log"];
 
-/// A shell call whose output was large: its group, what it returned, what `vtok run` shows instead, and whether the hook
-/// (`vtok init --claude-hook`) would have wrapped the command.
+/// A shell call whose output was large: its group, what it returned, what `vtok run` shows instead, whether the hook
+/// (`vtok init --claude-hook`) would have wrapped the command, and whether it would with the `hook-wide` setting on.
 pub struct Call {
     pub key: String,
     pub raw: u64,
     pub shown: u64,
     pub hooked: bool,
+    pub wide: bool,
 }
 
 /// Tokens of large Read results by kind of file.
@@ -80,8 +81,11 @@ fn record(s: &mut Scan, p: Pending, out: &str, min_tokens: usize) {
             let code = if out.starts_with("Exit code ") { 1 } else { 0 };
             // the view the command would get from `vtok run`, nothing stored
             let shown = (ntok(&crate::shell::preview(&cmd, out, code, 700)) as u64).min(raw);
-            let hooked = crate::rewrite::rewrite_in(&cmd, false, cwd.as_deref()).is_some();
-            s.big.push(Call { key: key(&cmd), raw, shown, hooked });
+            // the main command of the line decides: the recorded output does not say which segment printed what
+            let on = crate::config::hook_wide(cwd.as_deref().map(std::path::Path::new));
+            let hooked = crate::rewrite::wraps_main(&cmd, cwd.as_deref(), on);
+            let wide = hooked || crate::rewrite::wraps_main(&cmd, cwd.as_deref(), true);
+            s.big.push(Call { key: key(&cmd), raw, shown, hooked, wide });
         }
         Pending::Read { path } => {
             if (raw as usize) >= min_tokens { add_read(&mut s.reads, &path, raw); }

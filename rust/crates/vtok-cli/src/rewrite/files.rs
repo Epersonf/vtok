@@ -5,7 +5,7 @@
 use std::path::{Path, PathBuf};
 
 /// The shell tool's default output limit: a file this large is cut by the tool itself.
-const BIG: u64 = 30_000;
+pub(super) const BIG: u64 = 30_000;
 
 /// A file name as the shell wrote it, on this system (Git Bash writes `C:\x` as `/c/x`).
 fn native(name: &str) -> PathBuf {
@@ -18,16 +18,20 @@ fn native(name: &str) -> PathBuf {
 
 fn plain(word: &str) -> &str { word.trim_matches(['"', '\'']) }
 
-/// True when `args` (what follows `cat`) is one file name, no flags, of a data file at least `BIG` bytes long. Relative
-/// names are read from `base`, the directory the shell is in when it is known.
-pub fn big_data_file(args: &[&str], base: Option<&Path>) -> bool {
-    let [name] = args else { return false };
+/// The one file a plain `cat` prints, with its size in bytes: `args` (what follows `cat`) is a single name with no flag, no
+/// `~` and no `$`, and the file exists. Relative names are read from `base`, the directory the shell is in when it is known.
+pub(super) fn sole_file(args: &[&str], base: Option<&Path>) -> Option<(String, u64)> {
+    let [name] = args else { return None };
     let name = plain(name);
-    let data = name.rsplit_once('.').is_some_and(|(_, ext)| crate::data::is_data_ext(ext));
-    if !data || name.starts_with(['-', '~']) || name.contains('$') { return false; }
+    if name.starts_with(['-', '~']) || name.contains('$') { return None; }
     let p = native(name);
-    let Some(path) = (if p.is_absolute() { Some(p) } else { base.map(|b| b.join(p)) }) else { return false };
-    std::fs::metadata(path).is_ok_and(|m| m.is_file() && m.len() >= BIG)
+    let path = if p.is_absolute() { Some(p) } else { base.map(|b| b.join(p)) }?;
+    std::fs::metadata(path).ok().filter(|m| m.is_file()).map(|m| (name.to_string(), m.len()))
+}
+
+/// True when `args` (what follows `cat`) is one data file of at least `BIG` bytes.
+pub fn big_data_file(args: &[&str], base: Option<&Path>) -> bool {
+    sole_file(args, base).is_some_and(|(name, len)| len >= BIG && name.rsplit_once('.').is_some_and(|(_, ext)| crate::data::is_data_ext(ext)))
 }
 
 /// Where the shell is after `seg`: moved by a plain `cd DIR`, unchanged by anything else, unknown (None) after a `cd`

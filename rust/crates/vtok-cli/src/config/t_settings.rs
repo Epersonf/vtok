@@ -1,5 +1,6 @@
 //! The numeric settings: environment beats the nearest `.vtok.json`; a value outside its range is ignored.
-use super::settings::{find, ALL, MAX_LINES, MIN_GAIN, RUN_TINY};
+use super::settings::{find, ALL, HOOK_WIDE, MAX_LINES, MIN_GAIN, RUN_TINY};
+use super::{flag_or_number, shown};
 
 fn project(tag: &str) -> std::path::PathBuf {
     let d = std::env::temp_dir().join(format!("vtok-set-{tag}-{}", std::process::id()));
@@ -34,6 +35,16 @@ fn the_environment_beats_the_nearest_file_and_a_bad_one_falls_through() {
     std::fs::write(d.join(".vtok.json"), r#"{"min_gain": 95}"#).unwrap();
     assert_ne!(MIN_GAIN.get_with(None, Some(&f)).1, d.join(".vtok.json").display().to_string());
     std::fs::remove_dir_all(&d).ok();
+}
+
+#[test]
+fn the_wide_hook_setting_is_off_by_default_and_reads_on_and_off() {
+    assert_eq!((HOOK_WIDE.default, HOOK_WIDE.parse("1"), HOOK_WIDE.parse("2")), (0, Some(1), None));
+    assert_eq!(find("hook-wide").map(|s| s.env), Some("VTOK_HOOK_WIDE"));
+    assert_eq!([flag_or_number(&HOOK_WIDE, "on"), flag_or_number(&HOOK_WIDE, "off"), flag_or_number(&HOOK_WIDE, "1")], [Some(1), Some(0), Some(1)]);
+    assert_eq!(flag_or_number(&MIN_GAIN, "on"), None, "only a two-valued setting reads words");
+    assert_eq!((shown(&HOOK_WIDE, 1), shown(&HOOK_WIDE, 0), shown(&MIN_GAIN, 10)), ("on".to_string(), "off".to_string(), "10".to_string()));
+    assert_eq!(HOOK_WIDE.get_with(Some("1"), None), (1, "VTOK_HOOK_WIDE".to_string()));
 }
 
 #[test]

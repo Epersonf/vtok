@@ -29,7 +29,12 @@ pub static RUN_TINY: Setting = Setting {
     about: "`vtok run` prints an output of up to this many tokens unchanged",
 };
 
-pub static ALL: [&Setting; 3] = [&MAX_LINES, &MIN_GAIN, &RUN_TINY];
+pub static HOOK_WIDE: Setting = Setting {
+    name: "hook-wide", key: "hook_wide", env: "VTOK_HOOK_WIDE", default: 0, min: 0, max: 1,
+    about: "on: the hook also wraps grep, ls, wc, more read-only git subcommands and a cat of a big log",
+};
+
+pub static ALL: [&Setting; 4] = [&MAX_LINES, &MIN_GAIN, &RUN_TINY, &HOOK_WIDE];
 
 /// A setting by its command-line name (`min-gain`) or its JSON key (`min_gain`).
 pub fn find(name: &str) -> Option<&'static Setting> {

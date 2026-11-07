@@ -61,6 +61,24 @@ fn the_recorded_directory_decides_whether_the_hook_wraps_a_cat_of_a_big_data_fil
 }
 
 #[test]
+fn a_command_only_the_wide_rules_wrap_is_marked_apart() {
+    let d = dir("wide");
+    std::fs::write(d.join(".vtok.json"), r#"{"hook_wide": 0}"#).unwrap(); // the recorded directory decides, not this machine
+    let cwd = d.to_str().unwrap();
+    let mut lines = vec![];
+    // the last two: the line is credited to its main command, the first one that is not a `cd` or `export`
+    let cmds = ["cargo test", "grep -n line src/a.rs", "python make_report.py", "sed -n 1,50p notes.md && ls -la", "cd sub && export A=1 && ls -la"];
+    for (i, cmd) in cmds.iter().enumerate() {
+        lines.extend(call(&format!("w{i}"), "Bash", json!({"command": cmd}), &output(300), cwd));
+    }
+    let f = d.join("t.jsonl");
+    std::fs::write(&f, lines.join("\n")).unwrap();
+    let flags: Vec<(bool, bool)> = scan(&[f], 400).big.iter().map(|c| (c.hooked, c.wide)).collect();
+    assert_eq!(flags, [(true, true), (false, true), (false, false), (false, false), (false, true)]);
+    std::fs::remove_dir_all(&d).ok();
+}
+
+#[test]
 fn a_leading_cd_does_not_name_the_command() {
     let d = dir("cd");
     let cwd = d.to_str().unwrap();

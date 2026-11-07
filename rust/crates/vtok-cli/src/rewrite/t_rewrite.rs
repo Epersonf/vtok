@@ -1,6 +1,9 @@
 //! Which command lines are wrapped in `vtok run --`, and which are left exactly as typed.
 use super::*;
 
+/// The default rule set, whatever the `hook-wide` setting of the machine that runs the tests.
+fn rewrite(cmd: &str) -> Option<String> { rewrite_opt(cmd, false, None, false) }
+
 #[test]
 fn wraps_chatty_commands_only() {
     assert_eq!(rewrite("cargo test --release").as_deref(), Some("vtok run -- cargo test --release"));

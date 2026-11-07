@@ -14,7 +14,7 @@ fn flatten(s: &str, prefix: &[String], out: &mut Vec<(Vec<String>, Option<String
     if let Some(k) = s.find('{') {
         let mut p = prefix.to_vec();
         p.extend(s[..k].split("::").map(str::trim).filter(|x| !x.is_empty()).map(String::from));
-        let inner = &s[k + 1..s.rfind('}').unwrap_or(s.len())];
+        let inner = &s[k + 1..s.rfind('}').filter(|&e| e > k).unwrap_or(s.len())];
         let (mut depth, mut from) = (0, 0);
         for (i, c) in inner.char_indices() {
             match c { '{' => depth += 1, '}' => depth -= 1, ',' if depth == 0 => { flatten(&inner[from..i], &p, out); from = i + 1; } _ => {} }

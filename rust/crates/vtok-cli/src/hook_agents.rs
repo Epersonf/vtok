@@ -3,8 +3,6 @@
 //! (see risk.rs); the others (claude, copilot, droid, trae, vibe) apply the rewrite without granting any permission.
 use serde_json::{json, Value};
 
-pub const AGENTS: &[&str] = &["claude", "copilot", "droid", "trae", "vibe", "cursor", "codex", "gemini", "antigravity"];
-
 fn needs_allow(agent: &str) -> bool { matches!(agent, "cursor" | "codex" | "gemini" | "antigravity") }
 
 fn command_of(agent: &str, v: &Value) -> Option<String> {

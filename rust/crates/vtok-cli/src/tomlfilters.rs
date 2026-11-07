@@ -29,9 +29,12 @@ struct Raw {
 
 #[derive(Deserialize)]
 struct File { #[serde(default)] filters: BTreeMap<String, Raw>, #[serde(default)] tests: BTreeMap<String, Vec<Case>> }
+// the built-in filters' own test cases and names are only read by the unit test below
 #[derive(Deserialize)]
+#[cfg_attr(not(test), allow(dead_code))]
 pub struct Case { pub name: String, pub input: String, pub expected: String }
 
+#[cfg_attr(not(test), allow(dead_code))]
 pub struct Filter {
     pub name: String,
     cmd: Regex,

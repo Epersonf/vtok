@@ -23,6 +23,7 @@ pub fn note(variant: Option<&str>) -> Option<&'static str> {
 }
 
 /// Conservative token estimate (about 3 characters per token): Claude Code reported +283 input tokens for this note.
+#[cfg(test)]
 pub fn approx_tokens(s: &str) -> usize { (s.chars().count() + 2) / 3 }
 
 #[cfg(test)]

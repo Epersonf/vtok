@@ -99,16 +99,18 @@ def main():
             r = subprocess.run([a.vtok, "run", "--max-tokens", str(a.max_tokens), "--", cmd], cwd=cwd, capture_output=True, text=True, env=env)
             shown = r.stdout
             shown_t = ntok(shown)
-            m = re.search(r"id=([0-9a-f]+)", shown)
+            # the closing line (`# more: vtok output ID`, with `exit=N;` when the command failed) appears only when the
+            # view left something out or the command failed; otherwise `vtok output` with no id reads this run
+            m = re.search(r"vtok output ([0-9a-f]{8})", shown)
             facts_raw = [f for f in facts if f in raw]
             bad_facts = [f for f in facts if f not in raw]
             facts = facts_raw
             hit = [f for f in facts if f in shown]
             recovered = None
-            if m and facts:
+            if facts:
                 got = 0
                 for f in facts:
-                    o = subprocess.run([a.vtok, "output", m.group(1), "--grep", f, "--max-tokens", "400"], capture_output=True, text=True, env=env).stdout
+                    o = subprocess.run([a.vtok, "output"] + ([m.group(1)] if m else []) + ["--grep", f, "--max-tokens", "400"], capture_output=True, text=True, env=env).stdout
                     got += f.lower() in o.lower()
                 recovered = f"{got}/{len(facts)}"
             rt = None

@@ -75,8 +75,7 @@ error: test failed, to rerun pass `--lib`
 #[test]
 fn test_keeps_failure_block_and_sums_results() {
     let o = run("cargo test", TEST);
-    assert!(o.contains("---- a::bad stdout ----") && o.contains("panicked at src/a.rs:20:9"));
-    assert!(o.contains("left: 1"));
+    assert!(o.contains("a::bad src/a.rs:20: assertion `left == right` failed left: 1 right: 2\n"), "{o}");
     assert!(o.contains("tests: 3 passed, 1 failed, 0 ignored (2 suites)"), "{o}");
     assert!(o.contains("error: test failed"));
     assert!(!o.contains("ok_one") && !o.contains("RUST_BACKTRACE") && !o.contains("Doc-tests"));

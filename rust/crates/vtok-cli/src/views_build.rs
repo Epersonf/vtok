@@ -16,6 +16,7 @@ mod gradle;
 mod mvn;
 mod sbt;
 #[cfg(test)] mod t_cargo;
+#[cfg(test)] mod t_cargo_fail;
 #[cfg(test)] mod t_cargo_green;
 #[cfg(test)] mod t_dotnet;
 #[cfg(test)] mod t_json;

@@ -15,6 +15,7 @@ pub fn view(sub: &str, lines: &[String]) -> Option<String> {
     let mut out = std::mem::take(&mut p.errors);
     p.warns.render(&mut out);
     for b in &p.blocks {
+        if let Some(one) = one_line(b) { out.push(one); continue; }
         out.push(b[0].clone());
         out.extend(b[1..].iter().take(11).cloned());
         if b.len() > 12 { out.push("  ...".into()); }
@@ -26,6 +27,19 @@ pub fn view(sub: &str, lines: &[String]) -> Option<String> {
     out.extend(std::mem::take(&mut p.tail));
     if let Some(fin) = p.finished.take() { out.push(if p.compiled > 0 { format!("{fin} ({} crates)", p.compiled) } else { fin }); }
     finish(out, lines)
+}
+
+/// A libtest failure as one line, `name file:line message`, when the test printed nothing before its panic and the
+/// message is short (an assertion's `left`/`right` included); anything else keeps its block.
+fn one_line(b: &[String]) -> Option<String> {
+    let name = b[0].strip_prefix("---- ")?.strip_suffix(" stdout ----")?;
+    let at = b.iter().position(|l| l.contains(" panicked at "))?;
+    let loc = b[at].split(" panicked at ").nth(1)?.trim().trim_end_matches(':');
+    // `file:line:col` -> `file:line`
+    let loc = match loc.rsplit_once(':') { Some((rest, col)) if rest.contains(':') && col.bytes().all(|c| c.is_ascii_digit()) => rest, _ => loc };
+    let msg: Vec<&str> = b[at + 1..].iter().map(|l| l.trim()).filter(|l| !l.is_empty()).collect();
+    if at > 1 || msg.is_empty() || msg.len() > 4 { return None; }
+    Some(format!("{name} {loc}: {}", msg.join(" ")))
 }
 
 /// The one-line summary, when it is smaller than the output it summarises.

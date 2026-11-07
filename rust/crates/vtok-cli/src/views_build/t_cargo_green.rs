@@ -70,5 +70,5 @@ fn printed_test_output_is_counted_not_dropped_silently() {
 fn failures_still_use_the_long_form() {
     let input = "   Compiling foo v0.1.0\n    Finished `test` profile in 1s\n     Running unittests src/lib.rs\n\nrunning 2 tests\ntest a ... ok\ntest b ... FAILED\n\nfailures:\n\n---- b stdout ----\nthread 'b' panicked at src/lib.rs:4:5:\nboom\n\nfailures:\n    b\n\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\nerror: test failed, to rerun pass `--lib`\n";
     let o = run("cargo test", input);
-    assert!(o.contains("---- b stdout ----") && o.contains("boom") && o.contains("tests: 1 passed, 1 failed") && !o.starts_with("cargo test: "), "{o}");
+    assert!(o.contains("b src/lib.rs:4: boom") && o.contains("tests: 1 passed, 1 failed") && !o.starts_with("cargo test: "), "{o}");
 }

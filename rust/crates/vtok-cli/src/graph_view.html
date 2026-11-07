@@ -79,9 +79,9 @@ cv.onmousemove = ev => { if (drag) { const [x, y] = toWorld(ev.clientX, ev.clien
 addEventListener('mouseup', () => { drag = null; pan = null; });
 cv.onwheel = ev => { ev.preventDefault(); const k = ev.deltaY < 0 ? 1.12 : .89; scale = Math.min(8, Math.max(.1, scale * k)); };
 function show(n) {
-  const cf = {}; E.forEach(e => { if (e[0] === n.i) cf[e[1]] = e[2]; if (e[1] === n.i) cf[e[0]] = e[2]; });
+  const cf = {}; const lab = e => (e[3] || CONF[e[2]]) + (e[4] !== undefined && e[4] < 100 ? ' ' + (e[4] / 100).toFixed(2) : ''); E.forEach(e => { if (e[0] === n.i) cf[e[1]] = lab(e); if (e[1] === n.i) cf[e[0]] = lab(e); });
   const where = m => CODE.includes(m.kind) ? m.file + ':' + m.a : m.file + ' (' + m.det + ')';
-  const nb = adj[n.i].map(j => N[j]).sort((a, b) => b.deg - a.deg).slice(0, 12).map(m => '  ' + m.name.split('#')[0] + '  ' + where(m) + '  [' + CONF[cf[m.i]] + ']').join('\n');
+  const nb = adj[n.i].map(j => N[j]).sort((a, b) => b.deg - a.deg).slice(0, 12).map(m => '  ' + m.name.split('#')[0] + '  ' + where(m) + '  [' + cf[m.i] + ']').join('\n');
   document.getElementById('info').textContent = n.name.split('#')[0] + ' [' + n.kind + ']\n' + where(n) + '\ncommunity: ' + (G.names[n.c] || 'C' + n.c) + '\nconnections: ' + n.deg + '\n' + nb;
 }
 </script>

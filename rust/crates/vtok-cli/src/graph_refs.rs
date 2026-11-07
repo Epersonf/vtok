@@ -49,20 +49,14 @@ pub(crate) fn text_docs(g: &mut Graph, items: &[Item], used: &HashSet<usize>, id
     }
 }
 
-/// Code files that mention an image or media file by name: linked from the enclosing symbol, or a file node otherwise.
+/// Code files that mention an image or media file by name: linked from the enclosing symbol, or the file node.
 pub(crate) fn code_refs(g: &mut Graph, parsed: &[Parsed], idx: &Idx, m: &mut EdgeMap) {
     if idx.is_empty() { return; }
-    let mut file_node: HashMap<String, usize> = HashMap::new();
     for f in parsed {
         if f.rel.ends_with(".html") || f.rel.ends_with(".htm") { continue; }
         for (to, c, off) in media_refs(&f.src, &f.rel, &g.nodes, idx) {
             let ln = f.src[..off].matches('\n').count() + 1;
-            let inner = f.syms.iter().enumerate().filter(|(i, (_, a, b))| f.node_of[*i].is_some() && *a <= ln && ln <= *b).min_by_key(|(_, (_, a, b))| b - a).and_then(|(i, _)| f.node_of[i]);
-            let from = match inner { Some(i) => i, None => *file_node.entry(f.rel.clone()).or_insert_with(|| {
-                g.nodes.push(Node { file: f.rel.clone(), name: f.rel.clone(), a: 1, b: f.src.lines().count().max(1), kind: "doc" });
-                g.nodes.len() - 1
-            }) };
-            put(m, (from, to), c);
+            put(m, (super::edges::enclosing(f, ln).unwrap_or(f.file_node), to), c);
         }
     }
 }

@@ -56,3 +56,17 @@ changed). Questions ask for explanations, no "be brief" suffix; correctness = re
 
 Output tokens fell **20%**, total cost rose **7%**: the instruction text (about 1.3k tokens) is carried on every turn while answers are a small share of the bill in these
 tasks. It is a different lever than Vtok's (what the model writes, not what it reads), the two could be combined, and neither paid for itself here.
+
+## Re-run with the lighter MCP (7 tools, `find show=N`), Sonnet, 2 runs per task
+
+`--cfgs base,vtok-only`, suites pip and requests. Correctness equal (28/28 both). Vtok did **not** pay for itself on these small lookups:
+
+| suite | config | cost | input tokens | turns |
+|---|---|---|---|---|
+| pip | base | $0.544 | 667k | 30 |
+| pip | vtok-only | $0.687 (+26%) | 1005k | 54 |
+| requests | base | $0.723 | 931k | 42 |
+| requests | vtok-only | $0.909 (+26%) | 1319k | 69 |
+
+Only "callers" tasks tie and one `json method` task wins (1 turn); edit tasks cost 2x the turns (read, then edit, plus the tool-discovery turn). Conclusion: on small
+tasks the built-in tools are cheaper in a turn-dominated agent; Vtok's per-call savings only matter on big files / long outputs, which this suite does not exercise.

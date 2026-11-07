@@ -52,6 +52,23 @@ pub fn view(lines: &[String], ext: Option<&str>) -> Option<String> {
     (text.len() * 2 <= raw).then_some(text)
 }
 
+/// Whether a file extension names a data format this module reads.
+pub fn is_data_ext(ext: &str) -> bool {
+    matches!(ext.to_ascii_lowercase().as_str(), "csv" | "tsv" | "psv" | "json" | "geojson" | "har" | "ndjson" | "jsonl" | "yaml" | "yml")
+}
+
+/// A data file that is not a table (quoted line breaks, mixed records): its first and last lines with a count between,
+/// where the generic summary would keep one line.
+pub fn cut(lines: &[String], ext: Option<&str>) -> Option<String> {
+    const HEAD: usize = 40;
+    const TAIL: usize = 10;
+    if !ext.is_some_and(is_data_ext) || lines.len() <= HEAD + TAIL + 20 { return None; }
+    let mut out: Vec<String> = lines[..HEAD].iter().map(|l| records::clip(l, 200)).collect();
+    out.push(format!("… {} lines omitted …", lines.len() - HEAD - TAIL));
+    out.extend(lines[lines.len() - TAIL..].iter().map(|l| records::clip(l, 200)));
+    Some(out.join("\n") + "\n")
+}
+
 /// The view of what a command printed that no dedicated view claimed, recognised from the text alone. A command that
 /// prints a named file is not asked: `views_sys` judged that file by its name, and a source file is not a table.
 pub fn sniffed(cmd: &str, lines: &[String]) -> Option<String> {

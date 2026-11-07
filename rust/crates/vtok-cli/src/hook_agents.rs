@@ -14,7 +14,7 @@ fn command_of(agent: &str, v: &Value) -> Option<String> {
 pub fn answer(agent: &str, input: &str) -> Option<String> {
     let v: Value = serde_json::from_str(input).ok()?;
     let cmd = command_of(agent, &v)?;
-    let new = crate::rewrite::rewrite_with(&cmd, needs_allow(agent));
+    let new = crate::rewrite::rewrite_in(&cmd, needs_allow(agent), v.get("cwd").and_then(|x| x.as_str()));
     if new.is_none() && agent != "gemini" && agent != "antigravity" { return None; }
     let out = match (agent, new) {
         ("cursor", Some(n)) => json!({"continue": true, "permission": "allow", "updated_input": {"command": n}}),

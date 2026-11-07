@@ -33,6 +33,16 @@ fn json_and_yaml_files() {
 }
 
 #[test]
+fn a_data_file_that_is_no_table_keeps_its_first_and_last_lines() {
+    // quoted fields with line breaks: most lines have the wrong number of fields, so there is no table to describe
+    let mut rows = vec!["id,note,when".to_string()];
+    for i in 0..120 { rows.extend([format!("{i},\"first line of {i}"), "second line".to_string(), "third, still the note\",2026-01-01".to_string()]); }
+    let o = preview("cat notes.csv", &rows.join("\n"), 0, 700);
+    assert!(o.starts_with("id,note,when\n") && o.contains("lines omitted") && o.contains("third, still the note"), "{o}");
+    assert!(super::cut(&rows, Some("rs")).is_none() && super::cut(&rows[..40], Some("csv")).is_none());
+}
+
+#[test]
 fn only_files_of_unknown_layout_are_judged_by_their_text() {
     let table = csv(300, Some(150)).join("\n");
     // the same text is a table when the file is a plain-text dump or the command names no file at all

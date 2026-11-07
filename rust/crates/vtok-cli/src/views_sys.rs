@@ -46,8 +46,11 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
         "cat" | "type" | "bat" | "head" | "tail" | "less" => {
             let ext = util::positional(&args).last().and_then(|f| f.rsplit_once('.')).map(|x| x.1);
             let json = args.iter().any(|a| a.ends_with(".json"));
-            // a long list of similar records (CSV, JSON, YAML) first; otherwise the structure or the source-file cut
-            crate::data::view(lines, ext).or_else(|| if json { jsonv::json_text(lines) } else { misc::file_dump(&args, lines) })
+            // a long list of similar records (CSV, JSON, YAML) first; otherwise the structure, the source-file cut, or for a
+            // data file that is no table its first and last lines
+            crate::data::view(lines, ext)
+                .or_else(|| if json { jsonv::json_text(lines) } else { misc::file_dump(&args, lines) })
+                .or_else(|| crate::data::cut(lines, ext))
         }
         _ => None,
     };

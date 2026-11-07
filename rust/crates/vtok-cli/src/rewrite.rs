@@ -1,6 +1,12 @@
 //! Command rewriting shared by `vtok hook` and `vtok rewrite`: decide which shell commands print a lot and wrap them in
 //! `vtok run --`. Compound lines (`a && b`, `a; b`, `a || b`) are rewritten segment by segment; a segment with a pipe,
 //! redirect, substitution or subshell is left alone, and so is any line with a background `&`, heredoc or newline.
+//! A bare `cat` of a large CSV, JSON or YAML file is wrapped too (see `files`).
+use std::path::{Path, PathBuf};
+
+mod files;
+#[cfg(test)] mod t_files;
+#[cfg(test)] mod t_rewrite;
 
 fn words(cmd: &str) -> Vec<&str> {
     // skip leading VAR=value assignments
@@ -8,7 +14,10 @@ fn words(cmd: &str) -> Vec<&str> {
 }
 
 /// True for commands whose output is usually long and mostly noise.
-pub fn is_chatty(cmd: &str) -> bool {
+pub fn is_chatty(cmd: &str) -> bool { is_chatty_in(cmd, None) }
+
+/// `base`: the directory the shell is in, when it is known (a `cat` of a relative file name depends on it).
+fn is_chatty_in(cmd: &str, base: Option<&Path>) -> bool {
     if crate::tomlfilters::matches(cmd.trim()) { return true; }
     let w = words(cmd);
     let Some(&prog) = w.first() else { return false };
@@ -32,6 +41,7 @@ pub fn is_chatty(cmd: &str) -> bool {
         "aws" | "gcloud" | "az" => w.len() > 2,
         "git" => matches!(sub, "log" | "diff" | "show" | "status" | "blame") && !has("--oneline") && !has("-1") && !has("-n1") && !w.iter().any(|a| a.starts_with("--format") || a.starts_with("--pretty") || *a == "--quiet" || *a == "-q"),
         "find" | "tree" => true,
+        "cat" => files::big_data_file(&w[1..], base),
         "ls" => w.iter().skip(1).any(|a| a.starts_with('-') && a.contains('R')),
         "grep" | "rg" => w.iter().skip(1).any(|a| a.starts_with('-') && (a.contains('r') || a.contains('R'))) || prog == "rg",
         _ => false,
@@ -102,9 +112,9 @@ pub fn split_prefix(cmd: &str) -> (&str, &str) {
     (&cmd[..off.min(cmd.len())], cmd[off.min(cmd.len())..].trim_start())
 }
 
-fn wrap(seg: &str, low_risk_only: bool) -> Option<String> {
+fn wrap(seg: &str, low_risk_only: bool, base: Option<&Path>) -> Option<String> {
     let t = seg.trim();
-    if t.is_empty() || t.starts_with("vtok ") || has_shell_meta(t) || !is_chatty(t) || (low_risk_only && !crate::risk::low_risk(t)) { return None; }
+    if t.is_empty() || t.starts_with("vtok ") || has_shell_meta(t) || !is_chatty_in(t, base) || (low_risk_only && !crate::risk::low_risk(t)) { return None; }
     Some(seg.replacen(t, &format!("vtok run -- {t}"), 1))
 }
 
@@ -112,12 +122,18 @@ fn wrap(seg: &str, low_risk_only: bool) -> Option<String> {
 pub fn rewrite(cmd: &str) -> Option<String> { rewrite_with(cmd, false) }
 
 /// `low_risk_only`: wrap only read-only / build-and-test segments (for hooks whose protocol implies "allow").
-pub fn rewrite_with(cmd: &str, low_risk_only: bool) -> Option<String> {
+pub fn rewrite_with(cmd: &str, low_risk_only: bool) -> Option<String> { rewrite_in(cmd, low_risk_only, None) }
+
+/// Like `rewrite_with`, for a shell that is in `cwd` (the hook input says where); without it, this process's directory.
+/// A `cd DIR` segment moves the directory that later segments read their files from.
+pub fn rewrite_in(cmd: &str, low_risk_only: bool, cwd: Option<&str>) -> Option<String> {
     let segs = segments(cmd)?;
+    let mut base: Option<PathBuf> = cwd.map(PathBuf::from).or_else(|| std::env::current_dir().ok());
     let mut changed = false;
     let mut out = String::new();
     for (s, sep) in &segs {
-        match wrap(s, low_risk_only) { Some(w) => { changed = true; out.push_str(&w); } None => out.push_str(s) }
+        base = files::after_cd(base, s);
+        match wrap(s, low_risk_only, base.as_deref()) { Some(w) => { changed = true; out.push_str(&w); } None => out.push_str(s) }
         out.push_str(sep);
     }
     changed.then_some(out)
@@ -127,36 +143,4 @@ pub fn rewrite_with(cmd: &str, low_risk_only: bool) -> Option<String> {
 /// Agent-neutral entry point for hook systems other than Claude Code's.
 pub fn run(args: &[String]) -> i32 {
     match rewrite(&args.join(" ")) { Some(r) => { println!("{r}"); 0 } None => 1 }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn wraps_chatty_commands_only() {
-        assert_eq!(rewrite("cargo test --release").as_deref(), Some("vtok run -- cargo test --release"));
-        assert_eq!(rewrite("FOO=1 python -m pytest -v tests").as_deref(), Some("vtok run -- FOO=1 python -m pytest -v tests"));
-        assert!(rewrite("npm install").is_some() && rewrite("git log --stat").is_some() && rewrite("grep -rn foo src").is_some());
-        for no in ["ls", "cat a.txt", "git log --oneline", "git status -q", "cargo test | head", "vtok run -- cargo test", "python script.py", "cd x\ncargo test", "grep foo file", "cargo run", "cargo test &", "cargo test > out.txt"] {
-            assert!(rewrite(no).is_none(), "{no}");
-        }
-    }
-
-    #[test]
-    fn compound_lines_are_rewritten_per_segment() {
-        assert_eq!(rewrite("cd app && cargo build && cargo test").as_deref(), Some("cd app && vtok run -- cargo build && vtok run -- cargo test"));
-        assert_eq!(rewrite("npm ci; npm test").as_deref(), Some("vtok run -- npm ci; vtok run -- npm test"));
-        assert_eq!(rewrite("cargo build && cargo test | tail").as_deref(), Some("vtok run -- cargo build && cargo test | tail"));
-        assert_eq!(rewrite("grep -rn \"a|b\" src").as_deref(), Some("vtok run -- grep -rn \"a|b\" src"));
-        assert_eq!(rewrite("echo 'a && cargo test'"), None);
-        assert_eq!(rewrite("cargo test \"unbalanced"), None);
-        assert_eq!(rewrite("cargo test && echo $(date)"), Some("vtok run -- cargo test && echo $(date)".into()));
-    }
-
-    #[test]
-    fn newer_tools_are_known() {
-        for yes in ["gh pr checks 12", "terraform plan", "docker compose logs web", "npx vitest run", "cargo nextest run", "aws s3 ls"] { assert!(rewrite(yes).is_some(), "{yes}"); }
-        for no in ["gh auth status", "docker compose down", "npx create-app", "aws"] { assert!(rewrite(no).is_none(), "{no}"); }
-    }
 }

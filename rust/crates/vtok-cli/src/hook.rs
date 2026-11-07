@@ -5,14 +5,14 @@
 //! normal rules: the hook never grants approval by itself.
 use serde_json::{json, Value};
 
-use crate::rewrite::rewrite;
+use crate::rewrite::rewrite_in;
 
 pub fn answer(input: &str) -> Option<String> {
     let v: Value = serde_json::from_str(input).ok()?;
     if v.get("tool_name").and_then(|x| x.as_str()) != Some("Bash") { return None; }
     let mut ti = v.get("tool_input")?.clone();
     let cmd = ti.get("command")?.as_str()?.to_string();
-    let new = rewrite(&cmd)?;
+    let new = rewrite_in(&cmd, false, v.get("cwd").and_then(|x| x.as_str()))?;
     ti["command"] = json!(new);
     Some(json!({"hookSpecificOutput": {"hookEventName": "PreToolUse", "updatedInput": ti}}).to_string())
 }

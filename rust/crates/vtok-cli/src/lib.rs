@@ -19,6 +19,10 @@ mod shell;
 mod squeeze;
 mod tomlfilters;
 mod usage;
+mod cmdviews;
+mod views_build;
+mod views_lang;
+mod views_sys;
 mod userfilters;
 
 const USAGE: &str = "usage: vtok <command> ...

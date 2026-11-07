@@ -471,7 +471,7 @@ pub fn compact_cmd(cmd: &str, raw: &str, code: i32, budget: usize) -> String {
     let clean_run = code == 0 && !lines.iter().any(|l| score(l) >= 3 && !is_pass_line(l));
     let runner = lines.iter().any(|l| score(l) == 2);
     if raw_tok <= RAW_BELOW_TOKENS && !(clean_run && runner && raw_tok > 60) { return if text.is_empty() { text } else { text + "\n" }; }
-    let git = crate::gitfmt::diff_view(&lines, budget).or_else(|| crate::gitfmt::log_view(&lines, budget)).or_else(|| crate::filters::view(&lines));
+    let git = crate::cmdviews::view(cmd, &lines).or_else(|| crate::gitfmt::diff_view(&lines, budget)).or_else(|| crate::gitfmt::log_view(&lines, budget)).or_else(|| crate::filters::view(&lines));
     let test_report = lines.iter().any(|l| l.starts_with('=') && l.contains(" FAILURES "));
     let body = if let Some(g) = git { g }
         else if let Some(v) = failure_view(&lines).filter(|v| test_report && ntok(v) <= budget) { v }

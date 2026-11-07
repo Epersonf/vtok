@@ -66,6 +66,9 @@ pub(super) fn tools() -> Value {
       {"name": "vtok_gain",
        "description": "Tokens saved by Vtok's tools on this machine (local usage log): calls, raw vs shown tokens per tool. Only run (exact) and read/chunk/outline (upper bound: the whole file) are counted; session=current limits it to this chat.",
        "inputSchema": {"type": "object", "properties": {"days": {"type": "integer", "description": "default 30"}, "session": {"type": "string", "description": "\"current\" or a chat session id"}, "since": {"type": "string", "description": "90s, 30m, 2h, 7d"}, "legacy": {"type": "boolean", "description": "include records from before session tags"}}}},
+      {"name": "vtok_session",
+       "description": "Name a stretch of work and see what Vtok saved in it. action: start (name) | stop (ends it and prints its report) | status | list | report (newest named stretch, or whole=true for the whole chat). Counts tokens not sent (exact for run, an upper bound for whole-file reads) and, for Claude Code chats, sets them against what the turns cost, the MCP instructions included: the net can be negative. Only an A/B run says what Vtok really saves.",
+       "inputSchema": {"type": "object", "properties": {"action": {"type": "string", "description": "start | stop | status | list | report (default)"}, "name": {"type": "string", "description": "start: the name; report: which stretch (default: the newest)"}, "whole": {"type": "boolean", "description": "report the whole chat"}, "per_call": {"type": "boolean", "description": "report: list every call"}, "price_in": {"type": "number", "description": "US$ per million input tokens (default 3)"}, "limit": {"type": "integer", "description": "per_call rows (default 40)"}, "session": {"type": "string", "description": "a chat session id, or \"current\""}, "all": {"type": "boolean", "description": "list: every chat's stretches"}}}},
       {"name": "vtok_stats",
        "description": "Token counts of files: raw vs Vtok (incl. alias table). Use it to decide whether vtok_read pays off.",
        "inputSchema": {"type": "object", "properties": {"paths": {"type": "array", "items": {"type": "string"}}}, "required": ["paths"]}}
@@ -73,6 +76,6 @@ pub(super) fn tools() -> Value {
     let mut v = all;
     if let Some(a) = v.as_array_mut() { if !crate::config::mcp_run_enabled() { a.retain(|t| t["name"] != "vtok_run"); }
         // fewer tool schemas = fewer tokens on every turn; these stay available from the command line (and as MCP calls)
-        if std::env::var("VTOK_MCP_ALL").map_or(true, |v| v != "1") { a.retain(|t| !matches!(t["name"].as_str(), Some("vtok_gain") | Some("vtok_stats") | Some("vtok_map") | Some("vtok_graph") | Some("vtok_browse"))); } }
+        if std::env::var("VTOK_MCP_ALL").map_or(true, |v| v != "1") { a.retain(|t| !matches!(t["name"].as_str(), Some("vtok_gain") | Some("vtok_session") | Some("vtok_stats") | Some("vtok_map") | Some("vtok_graph") | Some("vtok_browse"))); } }
     v
 }

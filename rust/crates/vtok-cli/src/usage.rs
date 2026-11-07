@@ -8,7 +8,7 @@
 //! crate's own unit tests never write it.
 //!
 //! Files: `context` (who is calling), `rec` (a line), `store` (disk), `kinds` (what a kind means), `filter` (which
-//! records), `gain` (the table), `fmt` (numbers and times).
+//! records), `tally` (sums by kind, shared with the session reports), `gain` (the table), `fmt` (numbers and times).
 pub(crate) mod context;
 pub(crate) mod filter;
 pub(crate) mod fmt;
@@ -16,6 +16,7 @@ mod gain;
 pub(crate) mod kinds;
 pub(crate) mod rec;
 pub(crate) mod store;
+pub(crate) mod tally;
 #[cfg(test)] mod t_filter;
 #[cfg(test)] mod t_gain;
 #[cfg(test)] mod t_store;

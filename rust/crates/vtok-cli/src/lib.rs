@@ -27,6 +27,7 @@ mod proxy;
 mod refs;
 mod route;
 mod rewrite;
+mod session;
 mod shell;
 mod squeeze;
 mod terse;
@@ -60,6 +61,7 @@ pub fn run(args: &[String]) -> i32 {
         "config" => config::run(rest),
         "run" => shell::run(rest),
         "gain" => usage::gain(rest),
+        "session" => session::run(rest),
         "hook" => hook::run(rest),
         "rewrite" => rewrite::run(rest),
         "browse" => browse::run(rest),

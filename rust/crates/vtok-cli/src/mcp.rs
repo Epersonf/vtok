@@ -47,6 +47,7 @@ fn call_inner(name: &str, args: &Value) -> std::result::Result<String, String> {
         "vtok_find" => tool_find(args),
         "vtok_run" => tool_run(args),
         "vtok_gain" => crate::usage::gain_tool(args),
+        "vtok_session" => crate::session::tool(args),
         "vtok_output" => tool_output(args),
         _ => Err(format!("unknown tool {name:?}")),
     }

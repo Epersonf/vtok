@@ -35,9 +35,36 @@ Caveats, read before quoting any number:
   below); its `compress` engine barely changes tool output.
 - Small corpus, one machine, no repeat runs, no agent in the loop. It says nothing about task success.
 
-Graph, same 115 Rust files: Graphify `update` 4.8 s, 1,296 nodes, 3,351 edges, 1.26 MB, report 2,935 tokens;
-`vtok graph build` 0.33 s, 1,153 nodes, 2,638 edges, 110 KB, report 794 tokens. Edge precision is not measured
-(name-based resolution gives false positives, e.g. a call to a generic `text`).
+## Graph accuracy (`graph_eval.py`)
+
+Edge accuracy of `vtok graph` and Graphify against rust-analyzer's SCIP index (a compiler-grade ground truth). An edge
+A -> B is true when the code inside A references B; its kind follows B (function/method = call, type = type use,
+const/static = reference). Prerequisites: `rustup component add rust-analyzer`, Graphify on PATH (or `GRAPHIFY`), a built
+vtok. Nothing is downloaded. Run `python benchmarks/graph_eval.py` for this repository's `rust/` workspace; point
+`EVAL_SRC`, `EVAL_SUB` and `EVAL_EXTRA` at any other Cargo workspace (see the script's docstring).
+
+Non-test code, precision / recall in %. Edges that touch files rust-analyzer did not index (code behind a `cfg` it did not
+enable, such as `#[cfg(unix)]` on Windows or an optional feature) cannot be judged and are left out of precision for BOTH
+tools (`EVAL_UNMAPPED=fp` also counts unmapped items inside indexed files as wrong).
+
+| code | role | vtok calls | Graphify calls | vtok type uses | Graphify type uses |
+|---|---|---|---|---|---|
+| vtok's own tree | tuned on | 99.9 / 95.4 | 98.6 / 81.5 | 100 / 90.1 | 99.4 / 47.8 |
+| RTK `src/` (3,426 definitions) | scores calibrated here | 99.3 / 94.8 | 98.7 / 82.4 | 99.9 / 97.0 | 99.8 / 50.3 |
+| indexmap 2.14.2 | held out | 98.0 / 56.5 | 67.2 / 40.2 | 100 / 69.2 | 90.4 / 32.8 |
+| aho-corasick 1.1.5 | held out | 92.0 / 54.2 | 75.1 / 34.1 | 98.8 / 95.6 | 98.9 / 50.1 |
+
+What this says: precision is high and its classes are calibrated on code the scores were never fitted to (EXTRACTED calls
+99.6-100% precise on both held-out crates; the 0.8 bucket 81-86%). Recall of calls drops from about 95% to about 55% on
+the two library crates: calls on values whose type vtok cannot see (generics, trait-heavy code) are missed. Graphify is
+lower on precision and recall on every held-out figure but one (type-use precision on aho-corasick, a tie). The first
+version of this work reported 100% call precision on vtok's own tree and 81% on RTK (before the fixes below); an RTK
+false-positive analysis then fixed the general causes (the manifest above a graphed `src/` was not found, trait dispatch
+on unknown receivers, variant patterns shadowing functions). Measured on the same RTK code: vtok graph 1.2 MB, 3.7-4.4 s,
+report about 920 tokens; Graphify 9.1 MB, 11-14 s, report about 24,600 tokens. On vtok's own tree: 135 KB and 1.1 s
+against 1.15 MB. Only Rust has a ground truth; the other languages' resolution is covered by fixture tests, not measured.
+Known: nested items (a `const` inside a function) have no node, so references to them are credited to the enclosing
+function; `windows-sys`-style generated binding crates take about 17 s and write a 20 MB graph.
 
 ## Answer style (`style_eval.py`)
 

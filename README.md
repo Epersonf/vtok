@@ -138,7 +138,7 @@ permission rules apply. For clients that ignore MCP instructions, `vtok init --w
 
 **Automatic compaction of shell output (Claude Code).** `vtok init --claude-hook ~/.claude/settings.json` registers a PreToolUse hook
 (`vtok hook`) that rewrites known long-output commands (tests, builds, installs, `git log/diff`, recursive `grep`/`find`) to
-`vtok run -- <command>` before they run, so the agent gets the compact view without asking for it. Commands with pipes, redirects or `&&`,
+`vtok run -- <command>` before they run, so the agent gets the compact view without asking for it. Commands with pipes, redirects or `&&` (other than a leading `cd DIR &&` or `export X=y &&`, which stays in front),
 except a leading `cd DIR &&` / `export X=y &&` prefix, which is kept in front, and anything unrecognised, pass through untouched; the hook never grants permission by itself. Agent-neutral setups can alias the same
 thing with `vtok run --`.
 

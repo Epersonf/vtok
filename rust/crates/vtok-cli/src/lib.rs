@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::path::{Path, PathBuf};
 use vtok_api::*;
 mod agents;
+mod auto;
 mod config;
 mod discover;
 mod filters;
@@ -33,6 +34,7 @@ const USAGE: &str = "usage: vtok <command> ...
   discover [--days N] [--min-tokens N] [--dir D]  find shell commands in past Claude Code sessions that vtok run would have shrunk
   graph build|explain N|path A B|hubs|communities|hook [--dir D]   persistent call graph with communities (.vtok/graph.json)
   rewrite COMMAND...                             print the vtok run form of a long-output command (exit 1 when unchanged), for any agent hook
+  shims install [DIR] | list                     wrapper scripts for cargo/npm/pytest/tsc/... on PATH: compact output for ANY agent, no hook
   init [--agent NAME | --write FILE | --claude-hook SETTINGS | --terse]                            usage note for any agent (AGENTS.md etc.), as a fenced block
   gain [--days N] [--json]                       tokens saved by Vtok's tools (local usage log)
   outline FILE [--lang L]                        names and line ranges of a file (cheapest overview)
@@ -170,6 +172,8 @@ pub fn run(args: &[String]) -> i32 {
         "gain" => usage::gain(rest),
         "hook" => hook::run(rest),
         "rewrite" => rewrite::run(rest),
+        "auto" => auto::run(rest),
+        "shims" => auto::shims_cmd(rest),
         "squeeze" => squeeze::run(rest),
         "discover" => discover::run(rest),
         "graph" => graph::run(rest),

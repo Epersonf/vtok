@@ -47,8 +47,19 @@ def tasks_pip():
     ]
 
 
+def tasks_explain():
+    kw = lambda *groups: (lambda wd, ans: all(any(k.lower() in ans.lower() for k in g) for g in groups))
+    return [
+        ("explain redirects", "Explain what Session.resolve_redirects does and how it stops following redirects forever. Answer in a short paragraph.", kw(("redirect",), ("TooManyRedirects", "max_redirects"))),
+        ("explain select_proxy", "Explain how `select_proxy` in utils.py chooses a proxy for a URL: which keys of the proxies dict does it try, in which order?", kw(("scheme",), ("hostname",), ("all",))),
+        ("explain netrc", "Explain what `get_netrc_auth` does and when it returns None.", kw(("netrc",), ("None",))),
+        ("explain json", "Explain how Response.json decides which encoding to use and what it raises on invalid JSON.", kw(("encoding", "utf"), ("JSONDecodeError", "RequestsJSONDecodeError"))),
+    ]
+
+
 def tasks():
     if SUITE == "pip": return tasks_pip()
+    if SUITE == "explain": return tasks_explain()
     truth_netrc = callers(SRC, "get_netrc_auth")
     truth_merge = callers(SRC, "merge_setting")
     def q_set(truth, extras_ok=1):
@@ -75,6 +86,8 @@ def tasks():
     ]
 
 
+CAVEMAN_SKILL = pathlib.Path("/root/workspace/open-source/caveman/skills/caveman/SKILL.md")
+CAVEMAN = CAVEMAN_SKILL.read_text().split("---", 2)[-1].strip() if CAVEMAN_SKILL.exists() else ""
 CFGS = ("base", "vtok", "vtok+hint")
 VTOK_ONLY = ",".join(f"mcp__vtok__vtok_{t}" for t in ("read", "chunk", "edit", "outline", "refs", "find", "map", "output", "stats"))
 
@@ -87,11 +100,12 @@ def one(task, cfg, rep, model, tmp):
     wd = wd_root / SRC.name
     mcp = wd_root / "mcp.json"
     vt = cfg.startswith("vtok")
+    cave = cfg == "caveman"
     only = cfg == "vtok-only"
     mcp.write_text(json.dumps({"mcpServers": {"vtok": {"command": VTOK, "args": ["mcp"]}} if vt else {}}))
     if cfg in ("vtok+hint", "vtok-only"): prompt = subprocess.run([VTOK, "init"], capture_output=True, text=True).stdout + "\n" + prompt
-    cmd = ["claude", "-p", prompt + " Be brief.", "--output-format", "stream-json", "--verbose", "--model", model, "--max-turns", "30", "--no-session-persistence", "--strict-mcp-config",
-           "--mcp-config", str(mcp), "--allowedTools", VTOK_ONLY + ",ToolSearch" if only else (VTOK_TOOLS if vt else BASE_TOOLS), "--permission-mode", "acceptEdits"] + (["--disallowedTools", "Read,Grep,Glob,Edit,Write,Bash,NotebookEdit"] if only else [])
+    cmd = ["claude", "-p", prompt + ("" if SUITE == "explain" else " Be brief."), "--output-format", "stream-json", "--verbose", "--model", model, "--max-turns", "30", "--no-session-persistence", "--strict-mcp-config",
+           "--mcp-config", str(mcp), "--allowedTools", VTOK_ONLY + ",ToolSearch" if only else (VTOK_TOOLS if vt else BASE_TOOLS), "--permission-mode", "acceptEdits"] + (["--disallowedTools", "Read,Grep,Glob,Edit,Write,Bash,NotebookEdit"] if only else []) + (["--append-system-prompt", CAVEMAN] if cave else [])
     env = dict(os.environ, VTOK_NO_USAGE="1")
     try:
         r = subprocess.run(cmd, cwd=wd, capture_output=True, text=True, timeout=900, env=env)
@@ -122,12 +136,13 @@ def main():
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--only", default="")
     ap.add_argument("--cfgs", default="")
-    ap.add_argument("--suite", default="requests", choices=["requests", "pip"])
+    ap.add_argument("--suite", default="requests", choices=["requests", "pip", "explain"])
     a = ap.parse_args()
     global SUITE, SRC
     SUITE = a.suite
     global CFGS
     if a.cfgs: CFGS = tuple(a.cfgs.split(","))
+    if SUITE == "explain": SRC = REPO / ".venv/lib/python3.12/site-packages/requests"
     if SUITE == "pip": SRC = REPO / ".venv/lib/python3.12/site-packages/pip"
     ts = [t for t in tasks() if not a.only or a.only in t[0]]
     rows = []

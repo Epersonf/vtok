@@ -13,7 +13,7 @@ fn fnv(s: &str) -> String {
 }
 
 fn instructions() -> String {
-    let mut s = String::from("Vtok shows source code in a compact notation that costs fewer tokens (comments and docstrings are dropped, names are aliased, whitespace is minimal). Use vtok_read instead of reading Python / TypeScript / JavaScript / Rust files when you do not need the comments; it prints an alias table (alias=original) followed by the code. Cheapest way to work on a big file: vtok_outline lists the name and line range of every symbol (a few hundred tokens); for a symbol across the whole project use vtok_refs (definitions and uses by name); then vtok_chunk with id = one of those names (`name`, or `Class.method` when ambiguous) returns just that item, with the aliases it uses. If you already know the name, call vtok_chunk directly. vtok_read with view=skeleton adds signatures but costs about 3x more than the outline. Big files read in full come back as an index plus a chunk map (ids like c3), which vtok_chunk also accepts. To change code, send the edited Vtok of a chunk or symbol to vtok_edit with the rev from the read (the server decodes it, splices it into the original file and rejects the edit if the file changed). Only the tokens you change are rewritten; comments next to a changed token are kept, comments inside a replaced item are lost; for one-line tweaks the normal edit tool may be better. New names are written in full; names in the alias table stay aliased.\n\nUse these tools only when they save tokens: read a small file (under ~100 lines) or run a short command directly; use a narrow pattern for vtok_output (matches are capped); if a Vtok call would cost more than the plain alternative, skip it.\n\nLong command output: use vtok_run if it is available (it is only listed when the user enabled it); otherwise run the command through your shell tool as `vtok run -- <command>`. Either way you get a compact view (errors, summary, head/tail, repeated lines collapsed) plus an id, and vtok_output(id, grep/lines/tail) returns any part of the full output.\n");
+    let mut s = String::from("Vtok shows source code in a compact notation that costs fewer tokens (comments and docstrings are dropped, names are aliased, whitespace is minimal). Use vtok_read instead of reading Python / TypeScript / JavaScript / Rust files when you do not need the comments; it prints an alias table (alias=original) followed by the code. Cheapest way to work on a big file: vtok_outline lists the name and line range of every symbol (a few hundred tokens); to locate something in a project use vtok_find with the words of your question (show=1 returns the compact code of the best match in the same call) or vtok_refs for where a name is defined and used; then vtok_chunk with id = one of those names (`name`, or `Class.method` when ambiguous) returns just that item, with the aliases it uses. If you already know the name, call vtok_chunk directly. vtok_read with view=skeleton adds signatures but costs about 3x more than the outline. Big files read in full come back as an index plus a chunk map (ids like c3), which vtok_chunk also accepts. To change code, send the edited Vtok of a chunk or symbol to vtok_edit with the rev from the read (the server decodes it, splices it into the original file and rejects the edit if the file changed). Only the tokens you change are rewritten; comments next to a changed token are kept, comments inside a replaced item are lost; for one-line tweaks the normal edit tool may be better. New names are written in full; names in the alias table stay aliased.\n\nUse these tools only when they save tokens: read a small file (under ~100 lines) or run a short command directly; use a narrow pattern for vtok_output (matches are capped); if a Vtok call would cost more than the plain alternative, skip it.\n\nLong command output: use vtok_run if it is available (it is only listed when the user enabled it); otherwise run the command through your shell tool as `vtok run -- <command>`. Either way you get a compact view (errors, summary, head/tail, repeated lines collapsed) plus an id, and vtok_output(id, grep/lines/tail) returns any part of the full output.\n");
     for l in languages() {
         s.push_str(&format!("\n[{}]\n{}", l.name(), l.grammar_prompt()));
     }
@@ -23,33 +23,33 @@ fn instructions() -> String {
 fn tools() -> Value {
     let all = json!([
       {"name": "vtok_read",
-       "description": "Read a Python/TypeScript/JavaScript/Rust file as compact Vtok (far fewer tokens than the raw file). Returns rev, an alias table and the code; files above max_lines come back as an index + chunk map. view: full (default, lossless), skeleton (signatures only: use it to find the symbol to fetch with vtok_chunk), lean (no types/import paths; read-only).",
+       "description": "Compact Vtok of a Python/TypeScript/JavaScript/Rust file: rev, alias table, code. Big files return an index + chunk map. view: full, skeleton or lean.",
        "inputSchema": {"type": "object", "properties": {
           "path": {"type": "string"}, "view": {"type": "string", "enum": ["full", "skeleton", "lean"]},
           "max_lines": {"type": "integer", "description": "split files longer than this (default: `vtok config` max-lines, else 150)"}}, "required": ["path"]}},
       {"name": "vtok_chunk",
-       "description": "Full Vtok of one chunk (id like c3 from the chunk map of vtok_read) or of exactly one symbol (id = its name from the skeleton, or Class.method).",
+       "description": "Compact code of one symbol (name, or Class.method) or chunk id (c3), with its rev and aliases.",
        "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}, "id": {"type": "string"}, "max_lines": {"type": "integer"}}, "required": ["path", "id"]}},
       {"name": "vtok_edit",
-       "description": "Replace chunks or symbols with edited Vtok. chunks maps chunk id or symbol name -> complete new Vtok of that chunk/symbol (c1 for a small file = whole file). rev must be the rev from vtok_read/vtok_chunk. Unchanged tokens keep their exact original text; comments inside a replaced item are lost.",
+       "description": "Replace symbols/chunks with edited Vtok: chunks maps id -> complete new Vtok; rev from the read/chunk. Untouched tokens keep their original text.",
        "inputSchema": {"type": "object", "properties": {
           "path": {"type": "string"}, "rev": {"type": "string"},
           "chunks": {"type": "object", "additionalProperties": {"type": "string"}},
           "max_lines": {"type": "integer"}, "dry_run": {"type": "boolean"}}, "required": ["path", "rev", "chunks"]}},
       {"name": "vtok_outline",
-       "description": "Names and line ranges of every symbol in a Python/TypeScript/JavaScript/Rust file, one per line (imports merged). The cheapest overview of a file; then fetch one symbol with vtok_chunk.",
+       "description": "Symbol names and line ranges of a file: the cheapest overview.",
        "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}},
       {"name": "vtok_refs",
-       "description": "Where a symbol is defined and where its name is used, across a project (Python/TypeScript/JavaScript/Rust files): one line per defining symbol and per using symbol, with file and line ranges you can pass to vtok_chunk. Matches by name, not by type, and says so when several definitions share the name. Replaces grep + reading each hit.",
+       "description": "Where a symbol is defined and used across a project, one line each with file and line range (by name, not type).",
        "inputSchema": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string", "description": "directory to search (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 500"}}, "required": ["name"]}},
       {"name": "vtok_find",
-       "description": "Find where something is implemented from the words of a question or topic (e.g. \"redirect handling\", \"cookie jar\"): ranks symbols by how well their names, parents, file path and signature words match, and returns file, symbol and line range ready for vtok_chunk. Matches names, not meaning or comments, so try a few word variants. Cheaper than grep for orientation.",
-       "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 400"}}, "required": ["query"]}},
+       "description": "Find symbols from the words of a question (matches names, path, signature words): file, symbol, line range. show=N also returns the compact code of the top N matches.",
+       "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 400"}, "show": {"type": "integer", "description": "also return the compact code (with rev and aliases, ready for vtok_edit) of the top N matches, 0-3, default 0"}}, "required": ["query"]}},
       {"name": "vtok_map",
        "description": "Overview of a project directory within a token budget: every Python/TypeScript/JavaScript/Rust file with its size and its most used symbols (line range, x N = uses in other files, ~ = several definitions share the name), plus signatures for the top few. Use it to decide where to look; then vtok_outline / vtok_chunk. A plain file listing is cheaper when file names already tell you where to look.",
        "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 700"}}}},
       {"name": "vtok_output",
-       "description": "Read back part of the full output of a command run with `vtok run -- <command>` (id from its header). Give grep (text, `a|b` for alternatives, case-insensitive), lines (A-B), tail or head; default is the last 40 lines.",
+       "description": "Read part of a stored `vtok run` output by id: grep, lines A-B, tail or head.",
        "inputSchema": {"type": "object", "properties": {"id": {"type": "string"}, "grep": {"type": "string"}, "lines": {"type": "string", "description": "A-B (1-based)"}, "tail": {"type": "integer"}, "head": {"type": "integer"}, "context": {"type": "integer", "description": "lines around each grep hit (default 2)"}, "max_tokens": {"type": "integer"}}, "required": ["id"]}},
       {"name": "vtok_run",
        "description": "Run a shell command and get a compact view of its output (errors, summary, head/tail, repeated lines collapsed) plus an id; the full output stays stored and vtok_output(id, grep/lines/tail) returns any part. Use it instead of a plain shell call for commands with long output (test runs, builds, installs, listings). The command runs with the user's privileges, in cwd (default: the server's directory), and is killed after timeout_s (default 120, max 900). Always reports the exit status first.",
@@ -62,7 +62,9 @@ fn tools() -> Value {
        "inputSchema": {"type": "object", "properties": {"paths": {"type": "array", "items": {"type": "string"}}}, "required": ["paths"]}}
     ]);
     let mut v = all;
-    if let Some(a) = v.as_array_mut() { if !crate::config::mcp_run_enabled() { a.retain(|t| t["name"] != "vtok_run"); } }
+    if let Some(a) = v.as_array_mut() { if !crate::config::mcp_run_enabled() { a.retain(|t| t["name"] != "vtok_run"); }
+        // fewer tool schemas = fewer tokens on every turn; these stay available from the command line (and as MCP calls)
+        if std::env::var("VTOK_MCP_ALL").map_or(true, |v| v != "1") { a.retain(|t| !matches!(t["name"].as_str(), Some("vtok_gain") | Some("vtok_stats") | Some("vtok_map"))); } }
     v
 }
 
@@ -144,9 +146,20 @@ fn tool_find(a: &Value) -> std::result::Result<String, String> {
     let q = arg_str(a, "query")?;
     let dir = a.get("path").and_then(|v| v.as_str()).unwrap_or(".");
     let budget = a.get("max_tokens").and_then(|v| v.as_u64()).map_or(400, |n| n.clamp(100, 8000) as usize);
+    let show = a.get("show").and_then(|v| v.as_u64()).unwrap_or(0).min(3) as usize;
     let r = crate::refs::find_symbols(q, std::path::Path::new(dir), budget);
-    crate::usage::record("find", r.raw_tokens.max(ntok(&r.text)), ntok(&r.text), q);
-    Ok(r.text)
+    let mut out = r.text.clone();
+    // one call instead of find + chunk: the compact code of the best matches
+    for (rel, id) in r.top.iter().take(show) {
+        let full = std::path::Path::new(dir).join(rel);
+        match tool_chunk(&json!({"path": full.to_string_lossy(), "id": id})) {
+            Ok(c) if ntok(&c) <= 700 => { out.push('\n'); out.push_str(&c); }
+            Ok(c) => out.push_str(&format!("\n# {rel} {id}: {} tokens, too long to inline; use vtok_chunk\n", ntok(&c))),
+            Err(e) => out.push_str(&format!("\n# {rel} {id}: {e}\n")),
+        }
+    }
+    crate::usage::record("find", r.raw_tokens.max(ntok(&out)), ntok(&out), q);
+    Ok(out)
 }
 
 fn tool_map(a: &Value) -> std::result::Result<String, String> {

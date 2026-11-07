@@ -43,7 +43,7 @@ fn defines(line: &str, name: &str) -> bool {
     false
 }
 
-pub struct Report { pub text: String, pub raw_tokens: usize }
+pub struct Report { pub text: String, pub raw_tokens: usize, pub top: Vec<(String, String)> }
 
 /// Defs and uses of `name` under `root`, as compact lines, within `budget` tokens.
 pub fn find(name: &str, root: &Path, budget: usize) -> Report {
@@ -96,7 +96,7 @@ pub fn find(name: &str, root: &Path, budget: usize) -> Report {
         shown += 1;
     }
     if shown < total { out.push_str(&format!("# {} more use sites not shown (raise max_tokens or narrow with a directory)\n", total - shown)); }
-    Report { text: out, raw_tokens }
+    Report { text: out, raw_tokens, top: vec![] }
 }
 
 struct FileInfo { rel: String, lines: usize, syms: Vec<(String, usize, usize, String)> }
@@ -220,14 +220,14 @@ pub fn map(root: &Path, budget: usize) -> Report {
             if ntok(&out) > budget { if best_dirs.is_none() { let mut cut = String::new(); for l in out.lines() { if ntok(&(cut.clone() + l)) > budget { break; } cut.push_str(l); cut.push('\n'); } cut.push_str("# more directories not shown: pass a subdirectory\n"); best_dirs = Some(cut); } break; }
             best_dirs = Some(out);
         }
-        return Report { text: best_dirs.unwrap_or(head), raw_tokens };
+        return Report { text: best_dirs.unwrap_or(head), raw_tokens, top: vec![] };
     }
     let maxk = cand.iter().map(|c| c.len()).max().unwrap_or(0);
     let mut best = render(0, 0);
     let mut kbest = 0;
     for k in 1..=maxk { let t = render(k, 0); if ntok(&t) > budget { break; } best = t; kbest = k; }
     for sigs in [4usize, 8, 16, 32] { let t = render(kbest, sigs); if ntok(&t) > budget { break; } best = t; }
-    Report { text: best, raw_tokens }
+    Report { text: best, raw_tokens, top: vec![] }
 }
 
 fn cap_sig(s: &str) -> String { if s.chars().count() <= 90 { s.to_string() } else { format!("{}…", s.chars().take(90).collect::<String>()) } }
@@ -319,7 +319,7 @@ pub fn find_symbols(query: &str, root: &Path, budget: usize) -> Report {
         shown += 1;
     }
     if shown == 0 { out.push_str("# nothing matches: try other words (names are matched, not comments or meaning)\n"); }
-    Report { text: out, raw_tokens }
+    Report { text: out, raw_tokens, top: scored.iter().take(5).map(|(_, c)| (c.rel.clone(), c.id.clone())).collect() }
 }
 
 pub fn run_find(args: &[String]) -> i32 {

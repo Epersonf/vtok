@@ -1,0 +1,371 @@
+[
+ {
+  "task": "explain redirects",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.055638299999999995,
+  "turns": 2,
+  "answer": "`Session.resolve_redirects` (`sessions.py:186`) is a generator. It takes a response that is a redirect and yields each following response. It starts with `get_r",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 46431,
+  "tokens_out": 581,
+  "fresh_in": 11588
+ },
+ {
+  "task": "explain redirects",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.05809199999999999,
+  "turns": 3,
+  "answer": "`Session.resolve_redirects` (`sessions.py:186`) is a generator. It takes a response and the request that produced it, then follows each redirect in turn. It sta",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 68432,
+  "tokens_out": 730,
+  "fresh_in": 11272
+ },
+ {
+  "task": "explain redirects",
+  "cfg": "caveman",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0744077,
+  "turns": 4,
+  "answer": "`Session.resolve_redirects` (`sessions.py:186`) is a generator. It takes a response, and while `get_redirect_target` finds a `Location` header, it builds the ne",
+  "tools": {
+   "Grep": 1,
+   "Read": 2
+  },
+  "tokens_in": 101920,
+  "tokens_out": 806,
+  "fresh_in": 14403
+ },
+ {
+  "task": "explain redirects",
+  "cfg": "caveman",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0653529,
+  "turns": 3,
+  "answer": "`Session.resolve_redirects` (`sessions.py:186`) is a generator. It takes a redirect response and keeps issuing follow-up requests until a response has no redire",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 73457,
+  "tokens_out": 721,
+  "fresh_in": 13028
+ },
+ {
+  "task": "explain select_proxy",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.048159099999999996,
+  "turns": 2,
+  "answer": "`select_proxy` (utils.py:885) returns the value for the first matching key in the proxies dict, or `None` if nothing matches. It parses the URL and tries keys f",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44549,
+  "tokens_out": 589,
+  "fresh_in": 9698
+ },
+ {
+  "task": "explain redirects",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.058343599999999995,
+  "turns": 3,
+  "answer": "`Session.resolve_redirects` (`sessions.py:186`) is a generator. Starting from an initial redirect response, it builds and sends each follow-up request, and yiel",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 69710,
+  "tokens_out": 648,
+  "fresh_in": 11514
+ },
+ {
+  "task": "explain select_proxy",
+  "cfg": "caveman",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0548169,
+  "turns": 2,
+  "answer": "`select_proxy` (`utils.py:885`) parses the URL and returns the value of the first key it finds in `proxies`. If `proxies` is `None` or empty, it returns `None`.",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47923,
+  "tokens_out": 544,
+  "fresh_in": 11434
+ },
+ {
+  "task": "explain redirects",
+  "cfg": "caveman",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0640749,
+  "turns": 3,
+  "answer": "`Session.resolve_redirects` (`sessions.py:186`) is a generator. It takes a response, and while that response has a redirect target (`get_redirect_target`), it b",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 73325,
+  "tokens_out": 646,
+  "fresh_in": 12896
+ },
+ {
+  "task": "explain select_proxy",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.048185099999999995,
+  "turns": 2,
+  "answer": "`select_proxy` (`utils.py:885`) returns the value for the first key it finds in the `proxies` dict, going from most specific to least specific.\n\n**Normal case (",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44663,
+  "tokens_out": 546,
+  "fresh_in": 9812
+ },
+ {
+  "task": "explain select_proxy",
+  "cfg": "caveman",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0536869,
+  "turns": 2,
+  "answer": "`select_proxy` (`utils.py:885`) returns the value of the first key it finds in `proxies`. It tries the keys from most specific to least specific.\n\nFor a URL wit",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47923,
+  "tokens_out": 431,
+  "fresh_in": 11434
+ },
+ {
+  "task": "explain select_proxy",
+  "cfg": "caveman",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.05347690000000001,
+  "turns": 2,
+  "answer": "`select_proxy` (`utils.py:885`) returns the value for the first key found in `proxies`. It tries these keys in order, most specific first:\n\n1. `scheme://hostnam",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47903,
+  "tokens_out": 418,
+  "fresh_in": 11414
+ },
+ {
+  "task": "explain select_proxy",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0475711,
+  "turns": 2,
+  "answer": "`select_proxy` (`utils.py:885`) returns the value of the first matching key in the `proxies` dict. It treats a missing or empty dict as `{}`.\n\n**Normal case (th",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44572,
+  "tokens_out": 521,
+  "fresh_in": 9721
+ },
+ {
+  "task": "explain netrc",
+  "cfg": "caveman",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.057222499999999996,
+  "turns": 2,
+  "answer": "`get_netrc_auth` (`utils.py:231`) looks up login credentials for a URL's host in a netrc file. It returns `(login, password)`, or `None` if it finds nothing.\n\n*",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 48191,
+  "tokens_out": 668,
+  "fresh_in": 11726
+ },
+ {
+  "task": "explain netrc",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.051856700000000006,
+  "turns": 2,
+  "answer": "`get_netrc_auth` (`utils.py:231`) looks up credentials for a URL in the user's netrc file. It returns a `(login, password)` tuple that Requests can use as basic",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 45035,
+  "tokens_out": 755,
+  "fresh_in": 10208
+ },
+ {
+  "task": "explain netrc",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.052716700000000005,
+  "turns": 2,
+  "answer": "`get_netrc_auth` (`utils.py:231`) looks up credentials for a URL's host in the user's netrc file. It returns a `(login, password)` tuple, or `None` if there's n",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 45080,
+  "tokens_out": 823,
+  "fresh_in": 10253
+ },
+ {
+  "task": "explain netrc",
+  "cfg": "caveman",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0571285,
+  "turns": 2,
+  "answer": "`get_netrc_auth(url, raise_errors=False)` in `utils.py:231` looks up credentials for a URL's host in a netrc file. It returns `(login, password)` or `None`.\n\n**",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 48315,
+  "tokens_out": 609,
+  "fresh_in": 11850
+ },
+ {
+  "task": "explain netrc",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0527147,
+  "turns": 2,
+  "answer": "`get_netrc_auth` (`utils.py:231`) looks up credentials for a URL's host in the user's netrc file. It returns a `(login, password)` tuple, or `None` if it finds ",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 45057,
+  "tokens_out": 832,
+  "fresh_in": 10230
+ },
+ {
+  "task": "explain netrc",
+  "cfg": "caveman",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0575785,
+  "turns": 2,
+  "answer": "`get_netrc_auth` (`utils.py:231`) looks up login credentials for a URL's host in a netrc file. It returns a `(login, password)` tuple, or `None` if it finds not",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 48315,
+  "tokens_out": 654,
+  "fresh_in": 11850
+ },
+ {
+  "task": "explain json",
+  "cfg": "caveman",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.05968520000000001,
+  "turns": 2,
+  "answer": "`Response.json` (`models.py:1087`) picks the encoding like this:\n\n1. **No `self.encoding`, and content longer than 3 bytes:**\n   - It calls `guess_json_utf(self",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 48246,
+  "tokens_out": 895,
+  "fresh_in": 11774
+ },
+ {
+  "task": "explain json",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0654005,
+  "turns": 4,
+  "answer": "`Response.json` (`models.py:1087`) picks the encoding in two stages, and it raises `requests.exceptions.JSONDecodeError` on invalid JSON.\n\n## Choosing the encod",
+  "tools": {
+   "Grep": 2,
+   "Read": 1
+  },
+  "tokens_in": 68250,
+  "tokens_out": 1442,
+  "fresh_in": 11325
+ },
+ {
+  "task": "explain json",
+  "cfg": "caveman",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.059223200000000004,
+  "turns": 2,
+  "answer": "`Response.json` (`models.py:1087`) picks the encoding in two steps.\n\n**Encoding choice**\n1. **`self.encoding` is empty, and content is longer than 3 bytes.**\n  ",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 48268,
+  "tokens_out": 840,
+  "fresh_in": 11796
+ },
+ {
+  "task": "explain json",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.06342590000000001,
+  "turns": 4,
+  "answer": "`Response.json` (`models.py:1087`) picks its encoding in two stages, and every JSON parse failure comes out as one exception type.\n\n## Choosing the encoding\n\n1.",
+  "tools": {
+   "Grep": 2,
+   "Read": 1
+  },
+  "tokens_in": 68016,
+  "tokens_out": 1328,
+  "fresh_in": 11117
+ },
+ {
+  "task": "explain json",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0785367,
+  "turns": 6,
+  "answer": "`Response.json` (`models.py:1087`) has two decoding paths. Which one runs depends on whether `self.encoding` is set.\n\n## Choosing the encoding\n\n**1. No encoding",
+  "tools": {
+   "Grep": 3,
+   "Read": 2
+  },
+  "tokens_in": 95302,
+  "tokens_out": 1803,
+  "fresh_in": 13075
+ },
+ {
+  "task": "explain json",
+  "cfg": "caveman",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0700054,
+  "turns": 4,
+  "answer": "`Response.json` (`models.py:1087`) picks an encoding in two paths.\n\n**Path 1: `self.encoding` is unset, body is non-empty and longer than 3 bytes**\n- `guess_jso",
+  "tools": {
+   "Grep": 2,
+   "Read": 1
+  },
+  "tokens_in": 73086,
+  "tokens_out": 1243,
+  "fresh_in": 12892
+ }
+]

@@ -9,6 +9,7 @@ fn words(cmd: &str) -> Vec<&str> {
 
 /// True for commands whose output is usually long and mostly noise.
 pub fn is_chatty(cmd: &str) -> bool {
+    if crate::tomlfilters::matches(cmd.trim()) { return true; }
     let w = words(cmd);
     let Some(&prog) = w.first() else { return false };
     let prog = prog.rsplit('/').next().unwrap_or(prog);

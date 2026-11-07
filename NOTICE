@@ -1,0 +1,6 @@
+Vtok is MIT licensed (see LICENSE).
+
+rust/crates/vtok-cli/filters/builtin.toml contains command filter definitions and their inline tests taken
+unmodified from RTK (https://github.com/rtk-ai/rtk, src/filters/*.toml), which is licensed under the Apache License,
+Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0). Copyright the RTK contributors. The filter engine that
+runs them is vtok's own implementation of the same file format.

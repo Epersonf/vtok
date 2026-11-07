@@ -464,7 +464,7 @@ pub fn compact(raw: &str, code: i32, budget: usize) -> String { compact_cmd("", 
 pub fn compact_cmd(cmd: &str, raw: &str, code: i32, budget: usize) -> String {
     let orig_lines = clean(raw);
     let orig = orig_lines.join("\n");
-    let lines = crate::userfilters::apply(cmd, &orig_lines).or_else(|| squeeze_table(&orig_lines)).unwrap_or_else(|| orig_lines.clone());
+    let lines = crate::userfilters::apply(cmd, &orig_lines).or_else(|| crate::tomlfilters::apply(cmd, &orig_lines)).or_else(|| squeeze_table(&orig_lines)).unwrap_or_else(|| orig_lines.clone());
     let text = lines.join("\n");
     let raw_tok = ntok(&orig);
     // a clean run (exit 0, no error lines) needs only its summary, not a full head/tail

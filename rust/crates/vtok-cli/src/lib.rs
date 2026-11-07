@@ -17,6 +17,7 @@ mod refs;
 mod rewrite;
 mod shell;
 mod squeeze;
+mod tomlfilters;
 mod usage;
 mod userfilters;
 

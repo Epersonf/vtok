@@ -150,6 +150,8 @@ thing with `vtok run --`, or call `vtok rewrite COMMAND` from their own hook (pr
 
 `vtok run` also has per-tool views, picked by the shape of the output: compiler and linter diagnostics (tsc, ruff, flake8, mypy, eslint) grouped by rule and message with `file:lines`, the long `git status` grouped by state, jest/vitest (failures and summary), npm/pnpm/pip installs, cargo builds (crates counted, warnings kept), terraform plans, go test and Maven/Gradle.
 
+**RTK's declarative filters.** `vtok run` also runs the 62 command filters of [RTK](https://github.com/rtk-ai/rtk) (make, terraform/tofu plan, helm, pulumi, gcc, jq, shellcheck, yamllint, systemctl, df, ps, xcodebuild, ...; Apache-2.0, see `NOTICE`) with their own inline tests as our test suite. The same schema works in `~/.config/vtok/filters.toml` for your commands.
+
 **Your own filters.** For a command vtok does not know, put rules in `~/.config/vtok/filters.json` (or `$VTOK_FILTERS`): `[{"match": "make deploy", "drop_contains": ["Refreshing"], "keep_contains": [], "head": 3, "tail": 10}]`. `match` is a substring of the command line, matching lines are dropped or (with `keep_contains`) kept, `head`/`tail` cap the rest. Plain substrings, no regex. The file is read from the user config only, never from a repository, so a cloned project cannot hide output from its agent.
 
 `vtok output --grep` shows at most 40 matching lines and says how many more there are. Agents are told to skip Vtok when the plain alternative is cheaper (small files, short output).

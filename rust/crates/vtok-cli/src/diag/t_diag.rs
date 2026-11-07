@@ -86,6 +86,16 @@ fn a_long_place_list_says_how_many_it_left_out() {
 }
 
 #[test]
+fn a_huge_run_is_bounded_but_every_group_keeps_a_few_places() {
+    let ds: Vec<D> = (0..10).flat_map(|k| (0..100).map(move |i| d("a.ts", i + 1, 1, &format!("TS{}", 2000 + k), &format!("kind {k}")))).collect();
+    let o = render(&ds, NOUN, None);
+    let listed: usize = o.iter().filter(|l| l.starts_with("a.ts:")).map(|l| l.split(',').count()).sum();
+    assert_eq!(listed, 400 + 6 * 5, "400 places in all, then five per group");
+    assert_eq!(o.iter().filter(|l| l.contains("+95 more places")).count(), 6);
+    for k in 0..10 { assert!(o.iter().any(|l| l.starts_with(&format!("TS{} x100", 2000 + k)))); }
+}
+
+#[test]
 fn absolute_paths_below_the_base_become_relative() {
     use super::path::relative_to;
     assert_eq!(relative_to("C:\\Users\\me\\app\\src\\a.js", "c:/Users/me/app"), "src/a.js");

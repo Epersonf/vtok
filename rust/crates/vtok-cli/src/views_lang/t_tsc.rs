@@ -4,7 +4,7 @@ use super::util::{re, t::*};
 /// Is `file:line` named in the view, as `file:1,2,10:5` (place list) or `file:2 TS...` (single error)?
 fn kept(out: &str, file: &str, line: u32) -> bool {
     out.lines().flat_map(|l| l.split_whitespace()).any(|w| {
-        w.strip_prefix(file).and_then(|r| r.strip_prefix(':')).map_or(false, |r| r.split(',').any(|it| it.split(':').next() == Some(&line.to_string())))
+        w.strip_prefix(file).and_then(|r| r.strip_prefix(':')).is_some_and(|r| r.split(',').any(|it| it.split(':').next() == Some(&line.to_string())))
     })
 }
 

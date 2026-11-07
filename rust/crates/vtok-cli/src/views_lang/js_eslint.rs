@@ -49,7 +49,7 @@ fn parse(lines: &[String]) -> Parsed {
 pub fn text(lines: &[String], min: usize) -> Option<String> {
     let p = parse(lines);
     // the tool counted more problems than could be read: hand the raw text on rather than hide the rest
-    if p.ds.is_empty() || p.ds.len() < min || p.reported.map_or(false, |n| n > p.ds.len()) { return None; }
+    if p.ds.is_empty() || p.ds.len() < min || p.reported.is_some_and(|n| n > p.ds.len()) { return None; }
     let summary: Vec<String> = p.headline.into_iter().chain(p.hint).chain(p.tail).collect();
     finish(render(&p.ds, NOUN, if summary.is_empty() { None } else { Some(summary.join("\n")) }))
 }

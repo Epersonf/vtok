@@ -6,14 +6,14 @@ use crate::diag::{plural, render, D};
 
 fn is_frame(l: &str) -> bool {
     let t = l.trim_start();
-    t.starts_with('~') || t.starts_with('^') || t.split_whitespace().next().map_or(false, |w| w.bytes().all(|b| b.is_ascii_digit()))
+    t.starts_with('~') || t.starts_with('^') || t.split_whitespace().next().is_some_and(|w| w.bytes().all(|b| b.is_ascii_digit()))
 }
 
 /// The `Errors  Files` table, watch banners, and what `npm run` / `yarn` / `bun run` wrap around a failing script.
 fn is_table_or_banner(l: &str) -> bool {
     let t = l.trim();
     t.starts_with("Errors  Files") || t.starts_with("Version ") || t.starts_with('[') && t.contains("] ")
-        || t.split_whitespace().count() == 2 && t.split_whitespace().next().map_or(false, |w| w.bytes().all(|b| b.is_ascii_digit()))
+        || t.split_whitespace().count() == 2 && t.split_whitespace().next().is_some_and(|w| w.bytes().all(|b| b.is_ascii_digit()))
         || ["> ", "$ ", "npm ", "pnpm ", "yarn ", "bun ", "ELIFECYCLE", "error Command failed", "info Visit", "Exit status"].iter().any(|p| t.starts_with(p))
 }
 
@@ -65,7 +65,7 @@ pub fn tsc(lines: &[String]) -> Option<String> {
     let p = parse(lines);
     if p.ds.is_empty() { return p.found.and_then(|f| finish(vec![f])); }
     // the tool counted more errors than we could read: let the generic summariser see the raw text
-    if p.reported.map_or(false, |n| n > p.ds.len()) { return None; }
+    if p.reported.is_some_and(|n| n > p.ds.len()) { return None; }
     let mut out = render(&p.ds, ("error", "errors"), p.found);
     if p.other > 0 { let at = out.len() - 1; out.insert(at, format!("({} omitted)", plural(p.other, "other line", "other lines"))); }
     finish(out)

@@ -33,6 +33,9 @@ fn clip(s: &str, n: usize) -> String {
 const MAX_GROUPS: usize = 40;
 const MAX_PLACES: usize = 150;
 const MAX_WARN_PLACES: usize = 12;
+/// Places listed over all groups; once they are used up every group still lists `MIN_PLACES` and counts the rest.
+const TOTAL_PLACES: usize = 400;
+const MIN_PLACES: usize = 5;
 const MAX_EXTRA: usize = 6;
 
 pub fn plural(n: usize, one: &str, many: &str) -> String { format!("{n} {}", if n == 1 { one } else { many }) }
@@ -40,7 +43,8 @@ pub fn plural(n: usize, one: &str, many: &str) -> String { format!("{n} {}", if 
 /// Words joined by single spaces, empty ones (no file, no rule code) left out.
 fn words(parts: &[&str]) -> String { parts.iter().filter(|p| !p.is_empty()).copied().collect::<Vec<_>>().join(" ") }
 
-fn push_group(out: &mut Vec<String>, g: &Group) {
+/// One group's lines, at most about `cap` places; returns how many places it listed.
+fn push_group(out: &mut Vec<String>, g: &Group, cap: usize) -> usize {
     let w = if g.warn { "warning" } else { "" };
     let mut extra: Vec<String> = g.extra.iter().take(MAX_EXTRA).map(|e| format!("  {}", clip(e, MAX_MSG))).collect();
     if g.extra.len() > MAX_EXTRA { extra.push("  ...".into()); }
@@ -49,13 +53,14 @@ fn push_group(out: &mut Vec<String>, g: &Group) {
         let at = if h.line == 0 { h.file.clone() } else { format!("{}:{}", h.file, h.line) };
         out.push(words(&[&at, w, &g.code, &g.msg]));
         out.extend(extra);
-        return;
+        return 1;
     }
     let count = format!("x{}:", g.hits.len());
     let head = if g.code.is_empty() { words(&[w, &count, &g.msg]) } else { words(&[w, &format!("{} {count}", g.code), &g.msg]) };
     out.push(head);
     out.extend(extra);
-    out.extend(locs::lines(g, if g.warn { MAX_WARN_PLACES } else { MAX_PLACES }));
+    out.extend(locs::lines(g, cap));
+    locs::shown(g.hits.len(), cap)
 }
 
 /// Kinds past the cap, still named with their first place: `+2 more kinds (13 diagnostics): TS2304 x12 a.ts:4, TS2339 b.ts:9`.
@@ -78,7 +83,11 @@ pub fn render(ds: &[D], noun: (&str, &str), summary: Option<String>) -> Vec<Stri
     let mut groups = group(ds);
     groups.sort_by_key(|g| g.warn); // stable: errors keep their order, warnings follow
     let mut out = vec![];
-    for g in groups.iter().take(MAX_GROUPS) { push_group(&mut out, g); }
+    let mut room = TOTAL_PLACES;
+    for g in groups.iter().take(MAX_GROUPS) {
+        let cap = (if g.warn { MAX_WARN_PLACES } else { MAX_PLACES }).min(room.max(MIN_PLACES));
+        room = room.saturating_sub(push_group(&mut out, g, cap));
+    }
     if groups.len() > MAX_GROUPS { out.push(tally(&groups[MAX_GROUPS..], noun)); }
     let files: std::collections::HashSet<&str> = groups.iter().flat_map(|g| g.hits.iter().map(|h| h.file.as_str())).filter(|f| !f.is_empty()).collect();
     let total: usize = groups.iter().map(|g| g.hits.len()).sum();

@@ -1,26 +1,5 @@
-//! eslint (stylish), oxlint and biome: every error location kept, warnings collapsed per rule.
+//! oxlint and biome: every error location kept, warnings collapsed per rule (eslint has its own module, `js_eslint`).
 use super::util::*;
-
-pub fn eslint(lines: &[String]) -> Option<String> {
-    let item = re(r"^\s+(\d+):(\d+)\s+(error|warning)\s+(.*?)\s{2,}(\S+)\s*$");
-    let (mut file, mut errs, mut warns) = (String::new(), vec![], vec![]);
-    let mut shown = String::new();
-    for l in lines {
-        if let Some(c) = item.captures(l) {
-            if &c[3] == "error" {
-                if shown != file { errs.push(file.clone()); shown = file.clone(); }
-                errs.push(format!("  {}:{} {} [{}]", &c[1], &c[2], short(&c[4], 160), &c[5]));
-            } else { warns.push(c[5].to_string()); }
-        } else if !l.starts_with(' ') && !l.trim().is_empty() && !l.starts_with('✖') && !l.starts_with("0 errors") { file = l.trim().to_string(); }
-    }
-    let summary = grep(lines, r"^✖ \d+ problems?|^\d+ problems?");
-    if errs.is_empty() && warns.is_empty() && summary.is_empty() { return None; }
-    let mut out = cap(errs, 80);
-    if !warns.is_empty() { out.push(format!("{} warning(s): {}", warns.len(), tally(&warns))); }
-    out.extend(summary);
-    out.extend(grep(lines, r"potentially fixable with the `--fix`"));
-    finish(out)
-}
 
 pub fn oxlint(lines: &[String]) -> Option<String> {
     let head = re(r"^\s*([x!×⚠]) (\S+?): (.*)$");
@@ -66,18 +45,6 @@ pub fn biome(lines: &[String]) -> Option<String> {
 mod tests {
     use super::*;
     use super::super::util::t::*;
-
-    #[test]
-    fn eslint_errors_kept_warnings_collapsed() {
-        let mut s = String::from("/app/src/a.js\n  10:5  error  'x' is defined but never used  no-unused-vars\n");
-        for i in 0..6 { s += &format!("  {}:1  warning  Unexpected console statement  no-console\n", 20 + i); }
-        s += "\n/app/src/b.js\n  3:9  warning  Missing semicolon  semi\n\n✖ 8 problems (1 error, 7 warnings)\n  0 errors and 1 warning potentially fixable with the `--fix` option.\n";
-        let l = lines(&s);
-        let o = small(eslint(&l), &l);
-        assert!(o.contains("/app/src/a.js") && o.contains("10:5 'x' is defined but never used [no-unused-vars]"));
-        assert!(o.contains("7 warning(s): no-console x6, semi x1") && o.contains("✖ 8 problems"));
-        assert!(!o.contains("20:1") && !o.contains("/app/src/b.js"));
-    }
 
     #[test]
     fn oxlint_keeps_error_locations() {

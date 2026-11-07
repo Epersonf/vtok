@@ -2,6 +2,8 @@
 //! `view(cmd, lines)` decides the tool from the command line and returns None when the output is not
 //! what that tool prints.
 mod js_build;
+mod js_eslint;
+#[cfg(test)] mod t_eslint;
 mod json_lint;
 mod json_test;
 mod json_util;
@@ -28,6 +30,9 @@ mod util;
 /// pytest's FAILURES report by shape, for runs whose command line does not name pytest (`make test`, CI scripts).
 pub fn pytest_view(lines: &[String]) -> Option<String> { py::pytest(lines) }
 
+/// eslint's text formats by shape, for runs whose command line does not name eslint (`make lint`); `min` problems or more.
+pub fn eslint_text(lines: &[String], min: usize) -> Option<String> { js_eslint::text(lines, min) }
+
 pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
     let c = util::parse(cmd)?;
     let a = &c.args;
@@ -40,7 +45,7 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
         "playwright" => json_test::playwright(l).or_else(|| js_playwright::playwright(l)),
         "prettier" => js_tsc::prettier(l),
         "tsc" | "vue-tsc" => ts_tsc::tsc(l),
-        "eslint" => json_lint::eslint(l).or_else(|| js_lint::eslint(l)),
+        "eslint" => js_eslint::json(l).or_else(|| js_eslint::text(l, 1)),
         "oxlint" => js_lint::oxlint(l),
         "biome" => js_lint::biome(l),
         "next" if first == "build" => js_build::next(l),

@@ -4,10 +4,12 @@
 //! kinds are still named with their counts, and an overlong place list says how many places it left out.
 mod group;
 mod locs;
+mod path;
 mod quote;
 #[cfg(test)] mod t_diag;
 
 use group::{group, Group};
+pub use path::set_base;
 
 /// One diagnostic. `extra` are the indented elaboration lines tsc prints under a message.
 #[derive(Clone, Default)]
@@ -15,13 +17,20 @@ pub struct D { pub file: String, pub line: u32, pub col: u32, pub code: String, 
 
 impl D {
     pub fn new(file: &str, line: u32, col: u32, code: &str, msg: &str) -> D {
-        D { file: file.replace('\\', "/"), line, col, code: code.into(), msg: msg.into(), ..Default::default() }
+        D { file: path::relative(file), line, col, code: code.into(), msg: clip(msg, MAX_MSG), ..Default::default() }
     }
+}
+
+/// A message longer than this (tsc prints whole type literals) is cut: the start says what it is about.
+const MAX_MSG: usize = 300;
+
+fn clip(s: &str, n: usize) -> String {
+    if s.chars().count() <= n { s.to_string() } else { format!("{}...", s.chars().take(n).collect::<String>()) }
 }
 
 const MAX_GROUPS: usize = 40;
 const MAX_PLACES: usize = 150;
-const MAX_WARN_PLACES: usize = 30;
+const MAX_WARN_PLACES: usize = 12;
 const MAX_EXTRA: usize = 6;
 
 pub fn plural(n: usize, one: &str, many: &str) -> String { format!("{n} {}", if n == 1 { one } else { many }) }
@@ -31,7 +40,7 @@ fn words(parts: &[&str]) -> String { parts.iter().filter(|p| !p.is_empty()).copi
 
 fn push_group(out: &mut Vec<String>, g: &Group) {
     let w = if g.warn { "warning" } else { "" };
-    let mut extra: Vec<String> = g.extra.iter().take(MAX_EXTRA).map(|e| format!("  {e}")).collect();
+    let mut extra: Vec<String> = g.extra.iter().take(MAX_EXTRA).map(|e| format!("  {}", clip(e, MAX_MSG))).collect();
     if g.extra.len() > MAX_EXTRA { extra.push("  ...".into()); }
     if g.hits.len() == 1 && g.hits[0].arg.is_empty() {
         let h = &g.hits[0];
@@ -47,16 +56,19 @@ fn push_group(out: &mut Vec<String>, g: &Group) {
     out.extend(locs::lines(g, if g.warn { MAX_WARN_PLACES } else { MAX_PLACES }));
 }
 
-/// Kinds past the cap, still named: `+5 more kinds (23 diagnostics): TS2304 x12, TS2339 x8, ...`.
-fn tally(rest: &[Group]) -> String {
+/// Kinds past the cap, still named with their first place: `+2 more kinds (13 diagnostics): TS2304 x12 a.ts:4, TS2339 b.ts:9`.
+fn tally(rest: &[Group], noun: (&str, &str)) -> String {
     let mut s = String::new();
     for g in rest {
-        let one = format!("{} x{}", g.code, g.hits.len());
-        if s.len() + one.len() > 240 { s.push_str(", ..."); break; }
+        let h = &g.hits[0];
+        let at = if h.line == 0 { h.file.clone() } else { format!("{}:{}", h.file, h.line) };
+        let label = if g.code.is_empty() { clip(&g.msg, 40) } else { g.code.clone() };
+        let one = words(&[&label, &if g.hits.len() > 1 { format!("x{}", g.hits.len()) } else { String::new() }, &at]);
+        if s.len() + one.len() > 900 { s.push_str(", ..."); break; }
         if !s.is_empty() { s.push_str(", "); }
         s.push_str(&one);
     }
-    format!("+{} more kinds ({}): {s}", rest.len(), plural(rest.iter().map(|g| g.hits.len()).sum(), "diagnostic", "diagnostics"))
+    format!("+{} more kinds ({}): {s}", rest.len(), plural(rest.iter().map(|g| g.hits.len()).sum(), noun.0, noun.1))
 }
 
 /// Lines for `ds`: groups (errors first), then the kinds past the cap, then `summary` or `Found N <noun> in M files.`
@@ -65,7 +77,7 @@ pub fn render(ds: &[D], noun: (&str, &str), summary: Option<String>) -> Vec<Stri
     groups.sort_by_key(|g| g.warn); // stable: errors keep their order, warnings follow
     let mut out = vec![];
     for g in groups.iter().take(MAX_GROUPS) { push_group(&mut out, g); }
-    if groups.len() > MAX_GROUPS { out.push(tally(&groups[MAX_GROUPS..])); }
+    if groups.len() > MAX_GROUPS { out.push(tally(&groups[MAX_GROUPS..], noun)); }
     let files: std::collections::HashSet<&str> = groups.iter().flat_map(|g| g.hits.iter().map(|h| h.file.as_str())).filter(|f| !f.is_empty()).collect();
     let total: usize = groups.iter().map(|g| g.hits.len()).sum();
     let in_files = if files.is_empty() { String::new() } else { format!(" in {}", plural(files.len(), "file", "files")) };

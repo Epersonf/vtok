@@ -12,6 +12,7 @@ pub fn execute(cmd: &[String], cwd: Option<&str>, timeout: Option<std::time::Dur
     if cmd.len() == 1 { c.arg("-c").arg(format!("{{ {}\n}} 2>&1", cmd[0])); }
     else { c.arg("-c").arg("exec \"$@\" 2>&1").arg("sh").args(cmd); }
     if let Some(d) = cwd { c.current_dir(d); }
+    crate::diag::set_base(cwd); // diagnostics views show the absolute paths the tool printed relative to here
     c.stdin(if inherit_stdin { Stdio::inherit() } else { Stdio::null() }).stdout(Stdio::piped()).stderr(Stdio::inherit());
     #[cfg(unix)]
     { use std::os::unix::process::CommandExt; c.process_group(0); }

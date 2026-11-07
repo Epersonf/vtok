@@ -1,6 +1,6 @@
 //! npm / pnpm / yarn / bun / deno: install, outdated, ls; test and run scripts are sniffed for the runner.
 use super::util::*;
-use super::{js_lint, js_playwright, js_test, ts_tsc};
+use super::{js_eslint, js_playwright, js_test, ts_tsc};
 
 pub fn pkg(tool: &str, args: &[String], lines: &[String]) -> Option<String> {
     let sub = args.iter().find(|a| !a.starts_with('-')).map(|s| s.as_str()).unwrap_or("");
@@ -18,7 +18,7 @@ pub fn pkg(tool: &str, args: &[String], lines: &[String]) -> Option<String> {
 fn sniff(lines: &[String]) -> Option<String> {
     js_test::vitest(lines).or_else(|| js_test::jest(lines)).or_else(|| js_playwright::playwright(lines))
         .or_else(|| if has(lines, r"error TS\d+") { ts_tsc::tsc(lines) } else { None })
-        .or_else(|| if has(lines, r"^✖ \d+ problems?") { js_lint::eslint(lines) } else { None })
+        .or_else(|| if has(lines, r"^✖ \d+ problems?") { js_eslint::text(lines, 1) } else { None })
         .or_else(|| if has(lines, r"^\(pass\)|^\(fail\)") { bun_test(lines) } else { None })
 }
 

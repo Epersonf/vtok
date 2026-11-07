@@ -1,5 +1,5 @@
-//! Linters' JSON reports: rubocop, eslint (`-f json`), sqlfluff, phpstan (`--error-format=json`).
-use super::json_util::{doc, trim_common};
+//! Linters' JSON reports: rubocop, sqlfluff, phpstan (`--error-format=json`); eslint's is in `js_eslint`.
+use super::json_util::doc;
 use super::util::{cap, finish, short, tally};
 use serde_json::Value;
 
@@ -19,28 +19,6 @@ pub fn rubocop(lines: &[String]) -> Option<String> {
     let mut out = cap(rows.clone(), 60);
     out.push(format!("rubocop: {} offenses in {} of {} files ({fixable} correctable)", rows.len(), files.iter().filter(|f| !f["offenses"].as_array().map_or(true, |o| o.is_empty())).count(), files.len()));
     if cops.len() > 8 { out.push(format!("by cop: {}", short(&tally(&cops), 300))); }
-    finish(out)
-}
-
-pub fn eslint(lines: &[String]) -> Option<String> {
-    let v = doc(lines)?;
-    let files: Vec<&Value> = v.as_array()?.iter().filter(|f| f.get("filePath").is_some()).collect();
-    if files.is_empty() { return None; }
-    let paths: Vec<&str> = files.iter().map(|f| f["filePath"].as_str().unwrap_or("")).collect();
-    let cut = trim_common(&paths);
-    let (mut rows, mut rules, mut e, mut w) = (Vec::new(), Vec::new(), 0, 0);
-    for (f, p) in files.iter().zip(&paths) {
-        for m in f["messages"].as_array().into_iter().flatten() {
-            let err = m["severity"] == 2;
-            if err { e += 1 } else { w += 1 }
-            let rule = m["ruleId"].as_str().unwrap_or("-");
-            rules.push(rule.to_string());
-            rows.push(format!("{}:{}:{} {} {rule} {}", &p[cut..], m["line"], m["column"], if err { "E" } else { "W" }, short(m["message"].as_str().unwrap_or(""), 140)));
-        }
-    }
-    let mut out = cap(rows, 60);
-    out.push(format!("eslint: {e} errors, {w} warnings in {} files", files.len()));
-    if rules.len() > 8 { out.push(format!("by rule: {}", short(&tally(&rules), 300))); }
     finish(out)
 }
 

@@ -73,7 +73,7 @@ fn kinds_past_the_cap_are_named_not_dropped() {
     let ds: Vec<D> = (0..45).map(|i| d("a.ts", i + 1, 1, &format!("TS{}", 1000 + i), &format!("distinct message number {i}"))).collect();
     let o = render(&ds, NOUN, None);
     assert_eq!(o.len(), 40 + 1 + 1);
-    assert!(o[40].starts_with("+5 more kinds (5 diagnostics): TS1040 x1, TS1041 x1") && o[40].contains("TS1044 x1"), "{}", o[40]);
+    assert!(o[40].starts_with("+5 more kinds (5 errors): TS1040 a.ts:41, TS1041 a.ts:42") && o[40].ends_with("TS1044 a.ts:45"), "{}", o[40]);
 }
 
 #[test]
@@ -81,6 +81,32 @@ fn a_long_place_list_says_how_many_it_left_out() {
     let ds: Vec<D> = (1..=200).map(|i| d("a.ts", i, 1, "TS2322", "same")).collect();
     let o = render(&ds, NOUN, None);
     assert!(o.iter().any(|l| l == "... +50 more places"), "{o:?}");
+}
+
+#[test]
+fn absolute_paths_below_the_base_become_relative() {
+    use super::path::relative_to;
+    assert_eq!(relative_to("C:\\Users\\me\\app\\src\\a.js", "c:/Users/me/app"), "src/a.js");
+    assert_eq!(relative_to("/home/me/app/src/a.js", "/home/me/app"), "src/a.js");
+    assert_eq!(relative_to("/home/me/app2/a.js", "/home/me/app"), "/home/me/app2/a.js", "a sibling with the same prefix is not below");
+    assert_eq!(relative_to("src\\a.js", "/home/me/app"), "src/a.js");
+    assert_eq!(relative_to("/elsewhere/a.js", ""), "/elsewhere/a.js");
+}
+
+#[test]
+fn a_huge_message_is_cut_but_keeps_its_start() {
+    let long = format!("Type '{}' is not assignable", "x".repeat(500));
+    let o = render(&[d("a.ts", 1, 1, "TS2322", &long)], NOUN, None);
+    assert!(o[0].len() < 340 && o[0].starts_with("a.ts:1 TS2322 Type 'xxx") && o[0].ends_with("..."), "{}", o[0]);
+}
+
+#[test]
+fn rule_less_diagnostics_have_no_stray_spaces() {
+    let o = render(&[d("a.js", 3, 1, "", "Parsing error: Unexpected token")], ("problem", "problems"), None);
+    assert_eq!(o[0], "a.js:3 Parsing error: Unexpected token");
+    let three: Vec<D> = (1..=3).map(|i| d("a.js", i, 1, "", "Parsing error: Unexpected token")).collect();
+    assert_eq!(render(&three, ("problem", "problems"), None)[..2], ["x3: Parsing error: Unexpected token", "a.js:1,2,3"]);
+    assert_eq!(render(&[d("", 0, 0, "TS18003", "No inputs were found")], NOUN, None), ["TS18003 No inputs were found", "Found 1 error."]);
 }
 
 #[test]

@@ -17,18 +17,51 @@ pub fn answer(input: &str) -> Option<String> {
     Some(json!({"hookSpecificOutput": {"hookEventName": "PreToolUse", "updatedInput": ti}}).to_string())
 }
 
+/// How the hook and the commands it rewrites name this program: `vtok` when that resolves on PATH, otherwise the absolute
+/// path of this executable (with `/`, quoted if it has a space), so a build kept outside PATH still works.
+pub fn binary() -> String {
+    binary_for(std::env::var_os("PATH").as_deref(), std::env::current_exe().ok())
+}
+
+fn binary_for(path: Option<&std::ffi::OsStr>, exe: Option<std::path::PathBuf>) -> String {
+    let names: &[&str] = if cfg!(windows) { &["vtok.exe", "vtok.cmd", "vtok.bat"] } else { &["vtok"] };
+    let on_path = path.is_some_and(|p| std::env::split_paths(p).any(|d| names.iter().any(|n| d.join(n).is_file())));
+    match exe {
+        Some(e) if !on_path => {
+            let s = e.to_string_lossy().replace('\\', "/");
+            if s.contains(' ') { format!("\"{s}\"") } else { s }
+        }
+        _ => "vtok".to_string(),
+    }
+}
+
+/// True for a settings entry that already runs a vtok `hook`: the very command `command`, or any command whose program is
+/// named `vtok...` (by name or by path, quoted or not) and ends in ` hook`.
+fn has_hook(entry: &Value, command: &str) -> bool {
+    let vtok_hook = |c: &str| {
+        let c = c.trim();
+        let prog = match c.strip_prefix('"') { Some(r) => r.split('"').next().unwrap_or(""), None => c.split(' ').next().unwrap_or("") };
+        prog.rsplit(['/', '\\']).next().unwrap_or("").starts_with("vtok") && c.ends_with(" hook")
+    };
+    entry["hooks"].as_array().is_some_and(|hs| hs.iter().filter_map(|h| h["command"].as_str()).any(|c| c == command || vtok_hook(c)))
+}
+
 pub fn run(args: &[String]) -> i32 {
     use std::io::Read;
     let mut s = String::new();
     if std::io::stdin().read_to_string(&mut s).is_err() { return 0; }
+    crate::rewrite::use_binary(binary);
     let agent = args.iter().position(|a| a == "--agent").and_then(|i| args.get(i + 1)).map(|s| s.as_str());
     let out = match agent { None | Some("claude") => answer(&s), Some(a) => crate::hook_agents::answer(a, &s) };
     if let Some(a) = out { println!("{a}"); }
     0
 }
 
-/// Add the hook to a Claude Code settings file (idempotent), keeping everything else in it.
-pub fn install(path: &str) -> Result<bool, String> {
+/// Add the hook to a Claude Code settings file (idempotent), keeping everything else in it. The command names this program
+/// by `binary()`, so a build outside PATH is registered by its path.
+pub fn install(path: &str) -> Result<bool, String> { install_with(path, &format!("{} hook", binary())) }
+
+fn install_with(path: &str, command: &str) -> Result<bool, String> {
     let mut v: Value = match std::fs::read_to_string(path) {
         Ok(t) if !t.trim().is_empty() => serde_json::from_str(&t).map_err(|e| format!("{path}: not valid JSON ({e}); left untouched"))?,
         _ => json!({}),
@@ -37,13 +70,14 @@ pub fn install(path: &str) -> Result<bool, String> {
     let arr = v.as_object_mut().unwrap().entry("hooks").or_insert_with(|| json!({}))
         .as_object_mut().ok_or("hooks is not an object")?.entry("PreToolUse").or_insert_with(|| json!([]))
         .as_array_mut().ok_or("PreToolUse is not an array")?;
-    if arr.iter().any(|e| e.to_string().contains("vtok hook")) { return Ok(false); }
-    arr.push(json!({"matcher": "Bash", "hooks": [{"type": "command", "command": "vtok hook"}]}));
+    if arr.iter().any(|e| has_hook(e, command) || e.to_string().contains("vtok hook")) { return Ok(false); }
+    arr.push(json!({"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}));
     if let Some(d) = std::path::Path::new(path).parent() { if !d.as_os_str().is_empty() { std::fs::create_dir_all(d).map_err(|e| e.to_string())?; } }
     std::fs::write(path, serde_json::to_string_pretty(&v).unwrap() + "\n").map_err(|e| format!("{path}: {e}"))?;
     Ok(true)
 }
 
+#[cfg(test)] mod t_binary;
 #[cfg(test)]
 mod tests {
     use super::*;

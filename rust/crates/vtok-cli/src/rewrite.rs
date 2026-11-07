@@ -56,10 +56,21 @@ fn is_chatty_in(cmd: &str, base: Option<&Path>, wide: bool) -> bool {
     narrow || (wide && wide::chatty(&w, base))
 }
 
+/// How rewritten commands name this program: `vtok`, unless the hook installed a function that knows better (see
+/// `hook::binary`). The answer is worked out at most once, and only when a command is about to be wrapped.
+static NAME: std::sync::OnceLock<fn() -> String> = std::sync::OnceLock::new();
+static BIN: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+
+pub fn use_binary(name: fn() -> String) { let _ = NAME.set(name); }
+
+fn bin() -> &'static str { BIN.get_or_init(|| NAME.get().map_or_else(|| "vtok".to_string(), |f| f())) }
+
 fn wrap(seg: &str, low_risk_only: bool, base: Option<&Path>, wide: bool) -> Option<String> {
     let t = seg.trim();
     if t.is_empty() || t.starts_with("vtok ") || has_shell_meta(t) || !is_chatty_in(t, base, wide) || (low_risk_only && !crate::risk::low_risk(t)) { return None; }
-    Some(seg.replacen(t, &format!("vtok run -- {t}"), 1))
+    let bin = bin();
+    if t.starts_with(&format!("{bin} ")) { return None; }
+    Some(seg.replacen(t, &format!("{bin} run -- {t}"), 1))
 }
 
 /// The rewritten command line, or None to leave the original alone.

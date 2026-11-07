@@ -1,29 +1,41 @@
 //! Storage and command entry points of `vtok graph`: `.vtok/graph.json`, staleness, the git hook, `run`.
-use super::{build, comm, docs, Graph, Node, KINDS};
+use super::edges::EdgeMap;
+use super::{build, docs, Graph, Node, CALLS, KINDS, MENTIONS, REFERENCES, RELS, USES_TYPE};
 use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
 
 impl Graph {
-    /// Version 2 adds the edge confidence as a third element (0 EXTRACTED, 1 INFERRED); version 1 files still load.
+    /// Version 3: edges are [from, to, relation index into "rels", score in percent (100 = EXTRACTED)].
+    /// Versions 1 and 2 ([from, to] and [from, to, 0|1]) still load, with the relation guessed from the target kind;
+    /// `load_or_build` rebuilds them anyway.
     pub(crate) fn to_json(&self) -> Value {
-        json!({"v": 2, "files": self.files,
+        json!({"v": 3, "files": self.files, "rels": RELS,
                "nodes": self.nodes.iter().map(|n| json!([n.file, n.name, n.a, n.b, n.kind])).collect::<Vec<_>>(),
-               "edges": self.edges.iter().zip(&self.conf).map(|(e, c)| json!([e.0, e.1, c])).collect::<Vec<_>>()})
+               "edges": self.edges.iter().zip(&self.rel).zip(&self.score).map(|((e, r), s)| json!([e.0, e.1, r, s])).collect::<Vec<_>>()})
     }
 
     pub(crate) fn from_json(v: &Value) -> Option<Graph> {
         let kind = |s: &str| -> &'static str { KINDS.iter().copied().find(|k| *k == s).unwrap_or("value") };
         let nodes: Vec<Node> = v.get("nodes")?.as_array()?.iter().filter_map(|n| { let a = n.as_array()?; Some(Node { file: a.first()?.as_str()?.into(), name: a.get(1)?.as_str()?.into(), a: a.get(2)?.as_u64()? as usize, b: a.get(3)?.as_u64()? as usize, kind: kind(a.get(4)?.as_str()?) }) }).collect();
-        let mut edges = vec![];
-        let mut conf = vec![];
+        let v3 = v.get("v").and_then(|x| x.as_u64()).unwrap_or(1) >= 3;
+        let names: Vec<String> = v.get("rels").and_then(|r| r.as_array()).map(|r| r.iter().filter_map(|x| x.as_str().map(String::from)).collect()).unwrap_or_default();
+        let mut m = EdgeMap::new();
         for e in v.get("edges")?.as_array()? {
             let a = e.as_array()?;
-            edges.push((a.first()?.as_u64()? as usize, a.get(1)?.as_u64()? as usize));
-            conf.push(a.get(2).and_then(|c| c.as_u64()).unwrap_or(0).min(1) as u8);
+            let (x, y) = (a.first()?.as_u64()? as usize, a.get(1)?.as_u64()? as usize);
+            if x >= nodes.len() || y >= nodes.len() { return None; }
+            let (rel, score) = if v3 {
+                let r = names.get(a.get(2)?.as_u64()? as usize).and_then(|n| RELS.iter().position(|k| k == n))? as u8;
+                (r, a.get(3)?.as_u64()?.min(100) as u8)
+            } else {
+                let r = if !nodes[x].is_code() || !nodes[y].is_code() { MENTIONS } else { match nodes[y].kind { "type" => USES_TYPE, "value" => REFERENCES, _ => CALLS } };
+                (r, if a.get(2).and_then(|c| c.as_u64()).unwrap_or(0) == 0 { 100 } else { 70 })
+            };
+            m.insert((x, y, rel), score);
         }
-        if edges.iter().any(|&(a, b)| a >= nodes.len() || b >= nodes.len()) { return None; }
-        let label = comm::communities(&nodes, &edges);
-        Some(Graph { files: v.get("files")?.as_u64()? as usize, nodes, edges, conf, label })
+        let mut g = Graph { files: v.get("files")?.as_u64()? as usize, nodes, ..Default::default() };
+        g.finish(m);
+        Some(g)
     }
 }
 
@@ -41,7 +53,9 @@ pub fn load_or_build(root: &Path) -> Graph {
     let p = graph_path(root);
     if let Ok(meta) = std::fs::metadata(&p) {
         if meta.modified().map_or(false, |m| m >= newest_source(root)) {
-            if let Some(g) = std::fs::read_to_string(&p).ok().and_then(|t| serde_json::from_str::<Value>(&t).ok()).and_then(|v| Graph::from_json(&v)) { return g; }
+            let v = std::fs::read_to_string(&p).ok().and_then(|t| serde_json::from_str::<Value>(&t).ok());
+            // older versions lack relations and scores: rebuild them transparently
+            if let Some(g) = v.filter(|v| v.get("v").and_then(|x| x.as_u64()) == Some(3)).and_then(|v| Graph::from_json(&v)) { return g; }
         }
     }
     let g = build(root);

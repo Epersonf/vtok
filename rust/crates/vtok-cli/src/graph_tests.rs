@@ -32,12 +32,12 @@ fn edges_follow_calls_and_docs_link_to_symbols() {
     let g = build(&d);
     let id = |n: &str| g.nodes.iter().position(|x| x.name == n).unwrap();
     assert!(g.edges.contains(&(id("mid"), id("leaf"))) && g.edges.contains(&(id("top"), id("mid"))) && g.edges.contains(&(id("K.m"), id("top"))));
-    assert!(!g.edges.iter().any(|e| e.0 == id("lone") || e.1 == id("lone")));
+    assert!(!g.semantic().any(|e| e.0 == id("lone") || e.1 == id("lone")));
     assert!(g.nodes.iter().any(|n| n.kind == "doc" && n.name == "NOTES.md"));
     let p = g.path("K.m", "leaf");
     assert!(p.contains("3 hops") && p.contains("K.m") && p.contains("leaf") && p.contains("confidence EXTRACTED"), "{p}");
     let e = g.explain("mid");
-    assert!(e.contains("used by (1): top") && e.contains("uses (1): leaf") && e.contains("[EXTRACTED]"), "{e}");
+    assert!(e.contains("called by (1): top") && e.contains("calls (1): leaf pkg/a.py:1\n"), "{e}");
     assert!(g.hubs(3).contains("mid"));
     std::fs::remove_dir_all(&d).ok();
 }
@@ -61,7 +61,7 @@ fn homonyms_are_narrowed_by_imports_directory_and_receiver_or_dropped() {
     assert_eq!(conf(&g, go, id(&g, "Cache.save", "models")), None, "receiver `repo` picks Repo, `thing` matches nothing");
     assert_eq!(conf(&g, id(&g, "caller", "solo"), id(&g, "unique_fn", "solo")), Some(EXTRACTED));
     let e = g.explain("run");
-    assert!(e.contains("helper a/util.py:1 [INFERRED]"), "{e}");
+    assert!(e.contains("calls (1): helper a/util.py:1 0.90"), "{e}");
     assert!(g.path("run", "helper").contains("confidence INFERRED"));
     let back = Graph::from_json(&g.to_json()).unwrap();
     assert_eq!(back.conf, g.conf);
@@ -104,6 +104,6 @@ fn stored_graph_round_trips_and_goes_stale() {
     assert_eq!(o.conf, vec![EXTRACTED]);
     std::thread::sleep(std::time::Duration::from_millis(1100));
     std::fs::write(d.join("pkg/c.py"), "def extra():\n    return 2\n").unwrap();
-    assert_eq!(load_or_build(&d).nodes.len(), a.nodes.len() + 1, "a newer source file triggers a rebuild");
+    assert_eq!(load_or_build(&d).nodes.len(), a.nodes.len() + 2, "a newer source file (a symbol and its file node) triggers a rebuild");
     std::fs::remove_dir_all(&d).ok();
 }

@@ -10,7 +10,7 @@ impl Graph {
     fn surprising(&self, n: usize) -> Vec<(usize, usize)> {
         let deg = self.degree();
         let hub = (self.nodes.len() / 40).max(12);
-        let mut v: Vec<(usize, usize)> = self.edges.iter().copied()
+        let mut v: Vec<(usize, usize)> = self.semantic()
             .filter(|&(a, b)| self.label[a] != self.label[b] && deg[a] <= hub && deg[b] <= hub && self.nodes[a].is_code() && self.nodes[b].is_code() && self.nodes[a].kind != "value" && self.nodes[b].kind != "value" && self.nodes[a].file != self.nodes[b].file)
             .collect();
         v.sort_by_key(|&(a, b)| (std::cmp::Reverse(deg[a].min(deg[b])), a, b));
@@ -55,7 +55,7 @@ impl Graph {
         for &o in &idx { names.entry(self.label[o]).or_insert_with(|| self.community_name(self.label[o])); }
         let data = serde_json::json!({
             "nodes": idx.iter().map(|&o| { let n = &self.nodes[o]; serde_json::json!([n.file, n.name, n.a, n.b, n.kind]) }).collect::<Vec<_>>(),
-            "edges": self.edges.iter().zip(&self.conf).filter(|(e, _)| keep.contains(&e.0) && keep.contains(&e.1)).map(|(e, c)| [remap[&e.0], remap[&e.1], *c as usize]).collect::<Vec<_>>(),
+            "edges": (0..self.edges.len()).filter(|&k| keep.contains(&self.edges[k].0) && keep.contains(&self.edges[k].1) && !crate::graph::structural(self.rel[k])).map(|k| serde_json::json!([remap[&self.edges[k].0], remap[&self.edges[k].1], self.conf[k], crate::graph::RELS[self.rel[k] as usize], self.score[k]])).collect::<Vec<_>>(),
             "details": idx.iter().map(|&o| self.nodes[o].detail()).collect::<Vec<_>>(),
             "label": idx.iter().map(|&o| self.label[o]).collect::<Vec<_>>(),
             "names": names, "cut": cut, "total": self.nodes.len(),

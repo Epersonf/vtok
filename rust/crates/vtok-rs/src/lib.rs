@@ -393,5 +393,6 @@ pub fn decode(vtok: &str, table: &HashMap<String, String>, literals: &HashMap<St
     Ok(String::from_utf8_lossy(&out).into_owned())
 }
 
+mod idents;
 mod plugin;
 pub use plugin::Rust;

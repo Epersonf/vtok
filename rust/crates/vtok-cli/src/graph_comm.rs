@@ -6,7 +6,7 @@ use std::collections::{BTreeMap, HashMap};
 pub(crate) fn communities(nodes: &[Node], edges: &[(usize, usize)]) -> Vec<usize> {
     let n = nodes.len();
     // plain values (locals, constants, parameters) are glue, not structure: they never join a group
-    let edges: Vec<(usize, usize)> = edges.iter().copied().filter(|&(a, b)| nodes[a].kind != "value" && nodes[b].kind != "value").collect();
+    let edges: Vec<(usize, usize)> = edges.iter().copied().filter(|&(a, b)| !matches!(nodes[a].kind, "value" | "file") && !matches!(nodes[b].kind, "value" | "file")).collect();
     let edges = &edges[..];
     // god nodes (shared types and helpers used everywhere) glue unrelated code together: leave them out of the grouping
     let mut deg = vec![0usize; n];

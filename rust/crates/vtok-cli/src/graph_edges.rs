@@ -1,49 +1,119 @@
-//! Symbol nodes and call edges for `vtok graph`. A callee name with one definition gives an EXTRACTED edge; with several
-//! homonyms the edge is kept (INFERRED) only when evidence picks exactly one: the using file imports the defining
-//! module, shares its directory, defines it itself, or the receiver names the owning type (`repo.save` -> `Repo.save`).
-use super::{Graph, Node, EXTRACTED, INFERRED};
-use std::collections::{BTreeMap, HashMap, HashSet};
+//! Nodes of `vtok graph`: one file node per source file plus its symbols (functions, methods, types, values), and
+//! the edge map shared by every relation builder. Resolution lives in graph_resolve.rs, structure in graph_rels.rs.
+use super::{Graph, Node, EXTRACTED, MENTIONS};
+use std::collections::{BTreeMap, HashMap};
 use std::path::Path;
 use vtok_api::*;
 
-pub(crate) struct Parsed { pub rel: String, pub src: String, pub syms: Vec<(String, usize, usize)>, pub node_of: Vec<Option<usize>> }
-pub(crate) type EdgeMap = BTreeMap<(usize, usize), u8>;
-const MAX_CANDIDATES: usize = 40;
+pub(crate) struct Parsed {
+    pub rel: String,
+    pub src: String,
+    pub lang: &'static str,
+    pub syms: Vec<(String, usize, usize)>,
+    pub node_of: Vec<Option<usize>>,
+    pub file_node: usize,
+    /// type nodes declared as `trait` / `interface` / `protocol`
+    pub traits: Vec<usize>,
+}
 
-pub(crate) fn put(m: &mut EdgeMap, k: (usize, usize), c: u8) { let e = m.entry(k).or_insert(c); if c < *e { *e = c; } }
+/// (from, to, relation) -> score in percent (100 = EXTRACTED).
+pub(crate) type EdgeMap = BTreeMap<(usize, usize, u8), u8>;
+
+pub(crate) fn put_rel(m: &mut EdgeMap, from: usize, to: usize, rel: u8, score: u8) {
+    if from == to { return; }
+    let e = m.entry((from, to, rel)).or_insert(score);
+    if score > *e { *e = score; }
+}
+
+/// Document links (relation `mentions`): EXTRACTED or INFERRED (0.7).
+pub(crate) fn put(m: &mut EdgeMap, k: (usize, usize), c: u8) { put_rel(m, k.0, k.1, MENTIONS, if c == EXTRACTED { 100 } else { 70 }); }
+
+/// The declaration line of a symbol: its first line that is not an attribute, decorator, comment or blank.
+pub(crate) fn decl_line<'a>(lines: &[&'a str], a: usize, b: usize) -> &'a str {
+    (a..=b.min(a + 12)).filter_map(|i| lines.get(i - 1).copied()).find(|l| {
+        let t = l.trim_start();
+        !(t.is_empty() || t.starts_with("#[") || t.starts_with("#![") || t.starts_with("//") || t.starts_with('@') || t.starts_with("/*") || t.starts_with('*') || t.starts_with('#') && !t.starts_with("#define"))
+    }).unwrap_or_else(|| lines.get(a.saturating_sub(1)).copied().unwrap_or(""))
+}
+
+fn words(text: &str) -> Vec<&str> { text.split(|c: char| c.is_whitespace() || c == '(' || c == '<' || c == ':').filter(|x| !x.is_empty()).take(6).collect() }
 
 fn kind_of(text: &str, id: &str) -> &'static str {
-    let w: Vec<&str> = text.split(|c: char| c.is_whitespace() || c == '(' || c == '<').filter(|x| !x.is_empty()).collect();
-    if w.iter().take(5).any(|t| matches!(*t, "fn" | "def" | "function" | "func")) { if id.contains('.') { "method" } else { "function" } }
-    else if w.iter().take(5).any(|t| matches!(*t, "class" | "struct" | "enum" | "trait" | "interface" | "type" | "union")) { "type" }
+    let w = words(text);
+    if w.iter().any(|t| matches!(*t, "fn" | "def" | "function" | "func")) { if id.contains('.') { "method" } else { "function" } }
+    else if w.iter().any(|t| matches!(*t, "class" | "struct" | "enum" | "trait" | "interface" | "type" | "union" | "protocol" | "record")) { "type" }
+    else if w.iter().any(|t| matches!(*t, "const" | "static" | "let" | "var" | "val")) { "value" }
     else if id.contains('.') { "method" } else { "value" }
 }
 
 pub(crate) fn rel_of(root: &Path, p: &Path) -> String { p.strip_prefix(root).unwrap_or(p).display().to_string().replace(std::path::MAIN_SEPARATOR, "/") }
 
-/// Parse every source file and add its symbols as nodes.
+/// Parse every source file and add its file node and symbol nodes.
 pub(crate) fn parse_files(root: &Path, g: &mut Graph) -> Vec<Parsed> {
     let mut files = vec![];
     crate::refs::walk(root, &mut files);
     let mut parsed = vec![];
     for f in &files {
-        let Ok(src) = std::fs::read_to_string(f) else { continue };
+        let Ok(raw) = std::fs::read_to_string(f) else { continue };
+        let src = normalize_newlines(&raw);
         let rel = rel_of(root, f);
         let Ok(l) = language_for_path(&rel) else { continue };
-        let Ok(syms) = symbols(l.name(), &src) else { continue };
+        let Ok(mut syms) = symbols(l.name(), &src) else { continue };
         let lines: Vec<&str> = src.lines().collect();
         let mut node_of = vec![];
+        let mut traits = vec![];
         for (id, a, b) in &syms {
-            if id == "use" || id.starts_with("use#") || id.starts_with("import") || id.starts_with("mod#") { node_of.push(None); continue; }
-            let text = lines.get(a - 1).copied().unwrap_or("");
+            let base = crate::refs::base(id);
+            if matches!(base, "use" | "attr" | "extern" | "imports") || base.starts_with("import") || id.starts_with("mod#") || base.ends_with('!') { node_of.push(None); continue; }
+            let text = decl_line(&lines, *a, *b);
             let t = text.trim();
-            if (t.starts_with("mod ") || t.starts_with("pub mod ")) && t.ends_with(';') { node_of.push(None); continue; }
-            g.nodes.push(Node { file: rel.clone(), name: id.split('#').next().unwrap_or(id).to_string(), a: *a, b: *b, kind: kind_of(text, id) });
+            if t.split_whitespace().any(|w| w == "mod") && t.ends_with(';') { node_of.push(None); continue; }
+            let name = id.split('#').next().unwrap_or(id).to_string();
+            let mut kind = kind_of(text, id);
+            // `tests.helper` inside an inline `mod tests { .. }` is a function, not a method
+            if kind == "method" {
+                if let Some((owner, _)) = name.rsplit_once('.') {
+                    let m = format!("mod {owner}");
+                    if !owner.contains(' ') && lines.iter().any(|l| l.trim_start().trim_start_matches("pub ").starts_with(&m)) { kind = "function"; }
+                }
+            }
+            g.nodes.push(Node { file: rel.clone(), name, a: *a, b: *b, kind });
+            if kind == "type" && words(text).iter().any(|w| matches!(*w, "trait" | "interface" | "protocol")) { traits.push(g.nodes.len() - 1); }
             node_of.push(Some(g.nodes.len() - 1));
         }
-        parsed.push(Parsed { rel, src, syms, node_of });
+        containers(g, &rel, &lines, &mut syms, &mut node_of, &mut traits);
+        g.nodes.push(Node { file: rel.clone(), name: rel.clone(), a: 1, b: lines.len().max(1), kind: "file" });
+        parsed.push(Parsed { rel, src, lang: l.name(), syms, node_of, file_node: g.nodes.len() - 1, traits });
     }
     parsed
+}
+
+/// Traits, classes and interfaces whose body the plugin split into members (`Speak.speak` without a `Speak` node)
+/// get a type node from their declaration line to their last member.
+fn containers(g: &mut Graph, rel: &str, lines: &[&str], syms: &mut Vec<(String, usize, usize)>, node_of: &mut Vec<Option<usize>>, traits: &mut Vec<usize>) {
+    let start = node_of.iter().flatten().min().copied().unwrap_or(g.nodes.len());
+    let mut owners: BTreeMap<String, (usize, usize)> = BTreeMap::new();
+    for n in &g.nodes[start..] {
+        let Some((o, _)) = n.name.rsplit_once('.') else { continue };
+        if o.contains(" for ") || o.contains(' ') { continue; }
+        let e = owners.entry(o.to_string()).or_insert((n.a, n.b));
+        e.0 = e.0.min(n.a);
+        e.1 = e.1.max(n.b);
+    }
+    for (o, (a, b)) in owners {
+        if g.nodes[start..].iter().any(|n| n.name == o) { continue; }
+        let last = o.rsplit('.').next().unwrap_or(&o);
+        let decl = (a.saturating_sub(60).max(1)..a).rev().find_map(|i| {
+            let w: Vec<&str> = lines.get(i - 1)?.split(|c: char| !(c.is_alphanumeric() || c == '_')).filter(|w| !w.is_empty()).collect();
+            w.windows(2).find(|p| p[1] == last && matches!(p[0], "trait" | "interface" | "class" | "struct" | "enum" | "protocol" | "object")).map(|p| (i, p[0]))
+        });
+        let Some((d, kw)) = decl else { continue };
+        let end = (b + 1).min(lines.len().max(1));
+        g.nodes.push(Node { file: rel.to_string(), name: o.clone(), a: d, b: end, kind: "type" });
+        if matches!(kw, "trait" | "interface" | "protocol") { traits.push(g.nodes.len() - 1); }
+        syms.push((o, d, end));
+        node_of.push(Some(g.nodes.len() - 1));
+    }
 }
 
 pub(crate) fn by_base(nodes: &[Node]) -> HashMap<String, Vec<usize>> {
@@ -52,78 +122,7 @@ pub(crate) fn by_base(nodes: &[Node]) -> HashMap<String, Vec<usize>> {
     m
 }
 
-/// Identifier words of the import-like lines of a file.
-fn import_words(src: &str) -> HashSet<String> {
-    const KW: &[&str] = &["import ", "from ", "use ", "pub use ", "require", "#include", "using ", "package ", "mod ", "pub mod ", "@import", "export ", "include "];
-    let mut out = HashSet::new();
-    for l in src.lines() {
-        let t = l.trim_start();
-        if KW.iter().any(|k| t.starts_with(k)) || l.contains("require(") || l.contains(" from '") || l.contains(" from \"") || l.contains("import(") {
-            for w in l.split(|c: char| !(c.is_alphanumeric() || c == '_')).filter(|w| !w.is_empty()) { out.insert(w.to_string()); }
-        }
-    }
-    out
-}
-
-fn stem_of(file: &str) -> &str { let n = file.rsplit('/').next().unwrap_or(file); n.split('.').next().unwrap_or(n) }
-fn dir_of(file: &str) -> &str { file.rsplit_once('/').map_or("", |x| x.0) }
-fn dir_name(file: &str) -> &str { dir_of(file).rsplit('/').next().unwrap_or("") }
-fn owner_of(name: &str) -> &str { name.rsplit_once('.').map_or("", |x| x.0.rsplit('.').next().unwrap_or(x.0)) }
-
-/// The identifier right before `.name` or `::name` on this line.
-fn receiver(line: &str, name: &str) -> Option<String> {
-    let mut from = 0;
-    while let Some(i) = line.get(from..).and_then(|t| t.find(name)) {
-        let p = from + i;
-        from = p + name.len();
-        let head = line[..p].trim_end();
-        let Some(head) = head.strip_suffix("::").or_else(|| head.strip_suffix('.')) else { continue };
-        let r: String = head.chars().rev().take_while(|c| c.is_alphanumeric() || *c == '_').collect::<Vec<_>>().into_iter().rev().collect();
-        if !r.is_empty() { return Some(r); }
-    }
-    None
-}
-
-fn score(nodes: &[Node], f: &Parsed, from: usize, to: usize, words: &HashSet<String>, recv: Option<&str>) -> u32 {
-    let t = &nodes[to];
-    let mut s = 0;
-    if t.file == f.rel { s += 4; }
-    if let Some(r) = recv {
-        let owner = owner_of(&t.name);
-        let own_self = matches!(r, "self" | "this" | "cls" | "Self" | "super") && !owner.is_empty() && owner == owner_of(&nodes[from].name);
-        if own_self || (!owner.is_empty() && r.eq_ignore_ascii_case(owner)) || r == stem_of(&t.file) || r == dir_name(&t.file) { s += 3; }
-    }
-    if words.contains(stem_of(&t.file)) || (!dir_name(&t.file).is_empty() && words.contains(dir_name(&t.file))) { s += 2; }
-    if dir_of(&t.file) == dir_of(&f.rel) { s += 1; }
-    s
-}
-
-pub(crate) fn resolve(nodes: &[Node], parsed: &[Parsed], by_base: &HashMap<String, Vec<usize>>) -> EdgeMap {
-    let mut m = EdgeMap::new();
-    for f in parsed {
-        let Ok(l) = language_for_path(&f.rel) else { continue };
-        let Ok(ids) = idents_dot(l.name(), &f.src) else { continue };
-        let local: HashSet<&str> = f.node_of.iter().flatten().map(|&i| crate::refs::base(&nodes[i].name)).collect();
-        let words = import_words(&f.src);
-        let lines: Vec<&str> = f.src.lines().collect();
-        for (name, ln, dot, call) in ids {
-            let Some(defs) = by_base.get(&name) else { continue };
-            if defs.len() > MAX_CANDIDATES { continue; }
-            // innermost listed symbol that contains the line
-            let Some((idx, _)) = f.syms.iter().enumerate().filter(|(i, (_, a, b))| f.node_of[*i].is_some() && *a <= ln && ln <= *b).min_by_key(|(_, (_, a, b))| b - a) else { continue };
-            let from = f.node_of[idx].unwrap();
-            // the usual name-based rules: methods need `.name`, functions need a call, others any mention
-            let line = lines.get(ln - 1).copied().unwrap_or("");
-            let recv = if dot || line.contains("::") { receiver(line, &name) } else { None };
-            // `pkg.func()` is a qualified call when the receiver names the module that defines the function
-            let qualified = |to: usize| recv.as_deref().map_or(false, |r| r == stem_of(&nodes[to].file) || r == dir_name(&nodes[to].file));
-            let cands: Vec<usize> = defs.iter().copied().filter(|&to| !(to == from || (nodes[to].file == f.rel && nodes[to].a == ln)) && match nodes[to].kind { "method" => dot, "function" => call && (!dot || qualified(to)), _ => !dot || local.contains(name.as_str()) }).collect();
-            if defs.len() == 1 { if let Some(&to) = cands.first() { put(&mut m, (from, to), EXTRACTED); } continue; }
-            if cands.is_empty() { continue; }
-            let sc: Vec<u32> = cands.iter().map(|&to| score(nodes, f, from, to, &words, recv.as_deref())).collect();
-            let best = *sc.iter().max().unwrap();
-            if best > 0 && sc.iter().filter(|&&s| s == best).count() == 1 { put(&mut m, (from, cands[sc.iter().position(|&s| s == best).unwrap()]), INFERRED); }
-        }
-    }
-    m
+/// Innermost symbol node of a parsed file that contains `line`.
+pub(crate) fn enclosing(f: &Parsed, line: usize) -> Option<usize> {
+    f.syms.iter().enumerate().filter(|(i, (_, a, b))| f.node_of[*i].is_some() && *a <= line && line <= *b).min_by_key(|(_, (_, a, b))| b - a).and_then(|(i, _)| f.node_of[i])
 }

@@ -140,6 +140,8 @@ impl Language for Rust {
         Some(nodes.into_iter().filter(|n| !SKIP.contains(&n.kind())).map(|n| (n.start_byte() - off, n.end_byte() - off)).collect())
     }
 
+    fn identifier_spans(&self, text: &str) -> Option<Vec<(usize, usize)>> { Some(super::idents::spans(text)) }
+
     fn tokens(&self, text: &str, member: bool) -> Option<Vec<(usize, usize)>> {
         let w = wrapped(text, member);
         let off = if member { w.len() - text.len() - 2 } else { 0 };

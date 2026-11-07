@@ -6,9 +6,11 @@ mod auto;
 mod config;
 mod discover;
 mod filters;
+mod filters_tools;
 mod init;
 mod gitfmt;
 mod graph;
+mod graph_out;
 mod hook;
 mod mcp;
 mod refs;
@@ -16,6 +18,7 @@ mod rewrite;
 mod shell;
 mod squeeze;
 mod usage;
+mod userfilters;
 
 const USAGE: &str = "usage: vtok <command> ...
   languages
@@ -32,7 +35,7 @@ const USAGE: &str = "usage: vtok <command> ...
   find WORDS... [--dir DIR] [--max-tokens N]     symbols whose names match the words of a question\n  map [DIR] [--max-tokens N]                     project overview: most used symbols per file, with signatures\n  refs NAME [DIR] [--max-tokens N]               where a symbol is defined and used (by name, whole project)
   squeeze FILE [--write] | --rewrite FILE | --check A B   shrink a CLAUDE.md / AGENTS.md style file (prose only, code untouched)
   discover [--days N] [--min-tokens N] [--dir D]  find shell commands in past Claude Code sessions that vtok run would have shrunk
-  graph build|explain N|path A B|hubs|communities|hook [--dir D]   persistent call graph with communities (.vtok/graph.json)
+  graph build|explain N|path A B|hubs|communities|report|html|hook [--dir D]   persistent call graph with communities (.vtok/graph.json)
   rewrite COMMAND...                             print the vtok run form of a long-output command (exit 1 when unchanged), for any agent hook
   shims install [DIR] | list                     wrapper scripts for cargo/npm/pytest/tsc/... on PATH: compact output for ANY agent, no hook
   init [--agent NAME | --write FILE | --claude-hook SETTINGS | --terse]                            usage note for any agent (AGENTS.md etc.), as a fenced block

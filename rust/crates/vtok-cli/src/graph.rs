@@ -96,12 +96,16 @@ pub fn build(root: &Path) -> Graph {
     }
     g.edges = edges.into_iter().collect();
     g.edges.sort();
-    g.label = communities(g.nodes.len(), &g.edges);
+    g.label = communities(&g.nodes, &g.edges);
     g
 }
 
 /// Deterministic label propagation over the undirected graph; labels are renumbered by community size.
-fn communities(n: usize, edges: &[(usize, usize)]) -> Vec<usize> {
+fn communities(nodes: &[Node], edges: &[(usize, usize)]) -> Vec<usize> {
+    let n = nodes.len();
+    // plain values (locals, constants, parameters) are glue, not structure: they never join a group
+    let edges: Vec<(usize, usize)> = edges.iter().copied().filter(|&(a, b)| nodes[a].kind != "value" && nodes[b].kind != "value").collect();
+    let edges = &edges[..];
     // god nodes (shared types and helpers used everywhere) glue unrelated code together: leave them out of the grouping
     let mut deg = vec![0usize; n];
     for &(a, b) in edges { deg[a] += 1; deg[b] += 1; }
@@ -129,9 +133,9 @@ fn communities(n: usize, edges: &[(usize, usize)]) -> Vec<usize> {
 }
 
 impl Graph {
-    fn degree(&self) -> Vec<usize> { let mut d = vec![0; self.nodes.len()]; for &(a, b) in &self.edges { d[a] += 1; d[b] += 1; } d }
-    fn short(&self, i: usize) -> String { let n = &self.nodes[i]; format!("{} {}:{}", n.name, n.file, n.a) }
-    fn community_name(&self, c: usize) -> String {
+    pub(crate) fn degree(&self) -> Vec<usize> { let mut d = vec![0; self.nodes.len()]; for &(a, b) in &self.edges { d[a] += 1; d[b] += 1; } d }
+    pub(crate) fn short(&self, i: usize) -> String { let n = &self.nodes[i]; format!("{} {}:{}", n.name, n.file, n.a) }
+    pub(crate) fn community_name(&self, c: usize) -> String {
         let deg = self.degree();
         let members: Vec<usize> = (0..self.nodes.len()).filter(|&i| self.label[i] == c).collect();
         let mut dirs: BTreeMap<String, usize> = BTreeMap::new();
@@ -157,7 +161,7 @@ impl Graph {
         let mut idx: Vec<usize> = (0..self.nodes.len()).collect();
         idx.sort_by_key(|&i| std::cmp::Reverse(deg[i]));
         let mut out = String::from("# hubs: most connected symbols (callers + callees)\n");
-        for &i in idx.iter().take(n).filter(|&&i| deg[i] > 0) { out.push_str(&format!("{:>3} {} [{}]\n", deg[i], self.short(i), self.nodes[i].kind)); }
+        for &i in idx.iter().filter(|&&i| deg[i] > 0 && self.nodes[i].kind != "value").take(n) { out.push_str(&format!("{:>3} {} [{}]\n", deg[i], self.short(i), self.nodes[i].kind)); }
         out
     }
 
@@ -232,7 +236,7 @@ impl Graph {
         let nodes: Vec<Node> = v.get("nodes")?.as_array()?.iter().filter_map(|n| { let a = n.as_array()?; Some(Node { file: a.first()?.as_str()?.into(), name: a.get(1)?.as_str()?.into(), a: a.get(2)?.as_u64()? as usize, b: a.get(3)?.as_u64()? as usize, kind: kind(a.get(4)?.as_str()?) }) }).collect();
         let edges: Vec<(usize, usize)> = v.get("edges")?.as_array()?.iter().filter_map(|e| { let a = e.as_array()?; Some((a.first()?.as_u64()? as usize, a.get(1)?.as_u64()? as usize)) }).collect();
         if edges.iter().any(|&(a, b)| a >= nodes.len() || b >= nodes.len()) { return None; }
-        let label = communities(nodes.len(), &edges);
+        let label = communities(&nodes, &edges);
         Some(Graph { files: v.get("files")?.as_u64()? as usize, nodes, edges, label })
     }
 }
@@ -287,11 +291,14 @@ pub fn text_for(action: &str, a: Option<&str>, b: Option<&str>, root: &Path) -> 
     let g = load_or_build(root);
     Ok(match action {
         "build" => { let g = build(root); save(root, &g); format!("{}{}{}", g.summary(), g.hubs(5), g.communities_text(5)) }
+        "report" => { let r = g.report(); let _ = std::fs::write(root.join(".vtok/GRAPH_REPORT.md"), &r); r }
+        "html" => { let p = root.join(".vtok/graph.html"); std::fs::write(&p, g.html()).map_err(|e| format!("{}: {e}", p.display()))?; format!("{}
+", p.display()) }
         "hubs" => g.hubs(a.and_then(|s| s.parse().ok()).unwrap_or(15)),
         "communities" => g.communities_text(a.and_then(|s| s.parse().ok()).unwrap_or(12)),
         "explain" => g.explain(a.ok_or("explain needs a symbol name")?),
         "path" => g.path(a.ok_or("path needs two symbol names")?, b.ok_or("path needs two symbol names")?),
-        other => return Err(format!("unknown graph action {other:?} (build, explain, path, hubs, communities)")),
+        other => return Err(format!("unknown graph action {other:?} (build, explain, path, hubs, communities, report, html)")),
     })
 }
 
@@ -299,7 +306,7 @@ pub fn run(args: &[String]) -> i32 {
     let pos: Vec<&String> = args.iter().filter(|a| !a.starts_with("--")).collect();
     let root = args.iter().position(|a| a == "--dir").and_then(|i| args.get(i + 1)).map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
     let pos: Vec<&String> = pos.into_iter().filter(|p| Some(p.as_str()) != args.iter().position(|a| a == "--dir").and_then(|i| args.get(i + 1)).map(|s| s.as_str())).collect();
-    let Some(action) = pos.first() else { eprintln!("usage: vtok graph build|explain NAME|path A B|hubs [N]|communities [N]|hook [--dir D]"); return 2 };
+    let Some(action) = pos.first() else { eprintln!("usage: vtok graph build|explain NAME|path A B|hubs [N]|communities [N]|report|html|hook [--dir D]"); return 2 };
     if action.as_str() == "hook" {
         return match install_hook(&root) { Ok(p) => { println!("{}: rebuilds the graph after each commit", p.display()); 0 } Err(e) => { eprintln!("{e}"); 1 } };
     }

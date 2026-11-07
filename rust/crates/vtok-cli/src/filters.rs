@@ -3,7 +3,7 @@
 //! compact) and the long `git status` grouped by state. Each returns None when the output is not that shape.
 use std::collections::BTreeMap;
 
-struct Diag { file: String, line: String, code: String, msg: String }
+pub(crate) struct Diag { pub file: String, pub line: String, pub code: String, pub msg: String }
 
 fn split_drive(l: &str) -> (&str, &str) {
     let b = l.as_bytes();
@@ -52,8 +52,13 @@ pub fn diagnostics(lines: &[String]) -> Option<String> {
     let ds: Vec<Diag> = lines.iter().filter_map(|l| parse_diag(l)).collect();
     let nonempty = lines.iter().filter(|l| !l.trim().is_empty()).count();
     if ds.len() < 6 || ds.len() * 2 < nonempty { return None; }
+    Some(render_diags(&ds, lines))
+}
+
+/// The grouped view of already parsed diagnostics; `lines` supplies a trailing summary line if the tool printed one.
+pub(crate) fn render_diags(ds: &[Diag], lines: &[String]) -> String {
     let mut groups: BTreeMap<(String, String), BTreeMap<String, Vec<String>>> = BTreeMap::new();
-    for d in &ds { groups.entry((d.code.clone(), d.msg.clone())).or_default().entry(d.file.clone()).or_default().push(d.line.clone()); }
+    for d in ds { groups.entry((d.code.clone(), d.msg.clone())).or_default().entry(d.file.clone()).or_default().push(d.line.clone()); }
     let mut order: Vec<_> = groups.iter().map(|(k, v)| (v.values().map(|x| x.len()).sum::<usize>(), k.clone())).collect();
     order.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
     let files: std::collections::BTreeSet<&String> = ds.iter().map(|d| &d.file).collect();
@@ -69,7 +74,7 @@ pub fn diagnostics(lines: &[String]) -> Option<String> {
     }
     if order.len() > 25 { out.push_str(&format!("+{} more kinds\n", order.len() - 25)); }
     if let Some(s) = lines.iter().rev().find(|l| parse_diag(l).is_none() && l.chars().any(|c| c.is_ascii_digit()) && !l.trim().is_empty()) { out.push_str(s.trim()); out.push('\n'); }
-    Some(out)
+    out
 }
 
 /// Long-format `git status`: branch line, then one row per state with the paths.
@@ -98,7 +103,9 @@ pub fn git_status(lines: &[String]) -> Option<String> {
 ")
 }
 
-pub fn view(lines: &[String]) -> Option<String> { git_status(lines).or_else(|| diagnostics(lines)) }
+pub fn view(lines: &[String]) -> Option<String> {
+    git_status(lines).or_else(|| diagnostics(lines)).or_else(|| crate::filters_tools::view(lines))
+}
 
 #[cfg(test)]
 mod tests {

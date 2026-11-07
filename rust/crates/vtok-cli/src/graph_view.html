@@ -1,0 +1,73 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>vtok graph</title>
+<style>
+html,body{margin:0;height:100%;background:#0f1115;color:#d7dae0;font:13px system-ui,sans-serif;overflow:hidden}
+canvas{display:block}
+#bar{position:fixed;top:8px;left:8px;background:#171a21e6;padding:8px;border-radius:6px;max-width:330px}
+#bar input{width:100%;box-sizing:border-box;margin-bottom:6px;background:#0f1115;color:inherit;border:1px solid #2b303b;padding:4px}
+#info{margin-top:6px;white-space:pre-wrap;word-break:break-all}
+#legend{position:fixed;bottom:8px;left:8px;background:#171a21e6;padding:6px 8px;border-radius:6px;max-height:40vh;overflow:auto}
+#legend div{cursor:pointer;padding:1px 0}
+</style>
+<div id="bar"><input id="q" placeholder="search symbol or file"><div id="stat"></div><div id="info">click a node</div></div>
+<div id="legend"></div>
+<canvas id="c"></canvas>
+<script>
+const G = __DATA__;
+const cv = document.getElementById('c'), cx = cv.getContext('2d');
+let W, H, scale = 1, ox = 0, oy = 0;
+function fit() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+addEventListener('resize', fit); fit();
+const hue = c => (c * 137.5) % 360;
+const N = G.nodes.map((n, i) => ({ i, file: n[0], name: n[1], a: n[2], kind: n[4], c: G.label[i], deg: 0, x: (Math.random() - .5) * 600, y: (Math.random() - .5) * 600, vx: 0, vy: 0 }));
+const E = G.edges.filter(e => N[e[0]] && N[e[1]]);
+E.forEach(e => { N[e[0]].deg++; N[e[1]].deg++; });
+const adj = N.map(() => []);
+E.forEach(e => { adj[e[0]].push(e[1]); adj[e[1]].push(e[0]); });
+let sel = null, hide = new Set(), match = null, drag = null;
+document.getElementById('stat').textContent = N.length + ' symbols, ' + E.length + ' edges' + (G.cut ? ' (top ' + N.length + ' of ' + G.total + ' by connections)' : '');
+const comms = [...new Set(N.map(n => n.c))].sort((a, b) => a - b);
+const lg = document.getElementById('legend');
+comms.slice(0, 40).forEach(c => {
+  const d = document.createElement('div');
+  d.innerHTML = '<span style="color:hsl(' + hue(c) + ',70%,60%)">&#9679;</span> ' + (G.names[c] || 'C' + c);
+  d.onclick = () => { hide.has(c) ? hide.delete(c) : hide.add(c); d.style.opacity = hide.has(c) ? .35 : 1; };
+  lg.appendChild(d);
+});
+document.getElementById('q').oninput = ev => { const t = ev.target.value.toLowerCase(); match = t ? new Set(N.filter(n => (n.name + ' ' + n.file).toLowerCase().includes(t)).map(n => n.i)) : null; };
+function step() {
+  for (let i = 0; i < N.length; i++) for (let j = i + 1; j < N.length; j++) {
+    const a = N[i], b = N[j]; let dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy + 1;
+    if (d2 > 90000) continue; const f = 900 / d2; dx *= f; dy *= f; a.vx += dx; a.vy += dy; b.vx -= dx; b.vy -= dy;
+  }
+  E.forEach(e => { const a = N[e[0]], b = N[e[1]]; const dx = b.x - a.x, dy = b.y - a.y; const k = .012; a.vx += dx * k; a.vy += dy * k; b.vx -= dx * k; b.vy -= dy * k; });
+  N.forEach(n => { n.vx -= n.x * .004; n.vy -= n.y * .004; if (n !== drag) { n.x += n.vx; n.y += n.vy; } n.vx *= .6; n.vy *= .6; });
+}
+function draw() {
+  cx.clearRect(0, 0, W, H); cx.save(); cx.translate(W / 2 + ox, H / 2 + oy); cx.scale(scale, scale);
+  const on = n => !hide.has(n.c) && (!match || match.has(n.i));
+  cx.lineWidth = .5 / scale;
+  E.forEach(e => { const a = N[e[0]], b = N[e[1]]; if (hide.has(a.c) || hide.has(b.c)) return;
+    const hl = sel !== null && (e[0] === sel || e[1] === sel);
+    cx.strokeStyle = hl ? '#ffd166' : 'rgba(150,160,180,.18)'; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); });
+  N.forEach(n => { if (hide.has(n.c)) return; const r = 2 + Math.sqrt(n.deg) * 1.6;
+    cx.globalAlpha = on(n) ? 1 : .12; cx.fillStyle = 'hsl(' + hue(n.c) + ',70%,60%)'; cx.beginPath(); cx.arc(n.x, n.y, r, 0, 7); cx.fill();
+    if (n.i === sel) { cx.strokeStyle = '#fff'; cx.lineWidth = 2 / scale; cx.stroke(); }
+    if (scale > 1.6 || n.deg > 18 || n.i === sel) { cx.fillStyle = '#d7dae0'; cx.font = 11 / scale + 'px sans-serif'; cx.fillText(n.name.split('#')[0], n.x + r + 2, n.y + 3); } });
+  cx.globalAlpha = 1; cx.restore();
+}
+let ticks = 0;
+(function loop() { if (ticks < 400) { step(); ticks++; } draw(); requestAnimationFrame(loop); })();
+const toWorld = (x, y) => [(x - W / 2 - ox) / scale, (y - H / 2 - oy) / scale];
+function pick(x, y) { const [wx, wy] = toWorld(x, y); let best = null, bd = 1e9; N.forEach(n => { if (hide.has(n.c)) return; const d = (n.x - wx) ** 2 + (n.y - wy) ** 2; const r = 6 + Math.sqrt(n.deg) * 1.6; if (d < r * r * 4 && d < bd) { bd = d; best = n; } }); return best; }
+let pan = null;
+cv.onmousedown = ev => { const n = pick(ev.clientX, ev.clientY); if (n) { drag = n; sel = n.i; ticks = 0; show(n); } else pan = [ev.clientX - ox, ev.clientY - oy]; };
+cv.onmousemove = ev => { if (drag) { const [x, y] = toWorld(ev.clientX, ev.clientY); drag.x = x; drag.y = y; } else if (pan) { ox = ev.clientX - pan[0]; oy = ev.clientY - pan[1]; } };
+addEventListener('mouseup', () => { drag = null; pan = null; });
+cv.onwheel = ev => { ev.preventDefault(); const k = ev.deltaY < 0 ? 1.12 : .89; scale = Math.min(8, Math.max(.1, scale * k)); };
+function show(n) {
+  const nb = adj[n.i].map(j => N[j]).sort((a, b) => b.deg - a.deg).slice(0, 12).map(m => '  ' + m.name.split('#')[0] + '  ' + m.file + ':' + m.a).join('\n');
+  document.getElementById('info').textContent = n.name.split('#')[0] + ' [' + n.kind + ']\n' + n.file + ':' + n.a + '\ncommunity: ' + (G.names[n.c] || 'C' + n.c) + '\nconnections: ' + n.deg + '\n' + nb;
+}
+</script>

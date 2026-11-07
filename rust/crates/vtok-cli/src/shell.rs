@@ -458,10 +458,13 @@ fn squeeze_table(lines: &[String]) -> Option<Vec<String>> {
     Some(lines.iter().filter(|l| !(l.len() > 3 && l.chars().all(|c| matches!(c, '-' | '=' | ' ')))).map(|l| sq(l)).collect())
 }
 
-pub fn compact(raw: &str, code: i32, budget: usize) -> String {
+pub fn compact(raw: &str, code: i32, budget: usize) -> String { compact_cmd("", raw, code, budget) }
+
+/// Like `compact`, knowing the command line: a user filter (`filters.json`) for that command runs first.
+pub fn compact_cmd(cmd: &str, raw: &str, code: i32, budget: usize) -> String {
     let orig_lines = clean(raw);
     let orig = orig_lines.join("\n");
-    let lines = squeeze_table(&orig_lines).unwrap_or_else(|| orig_lines.clone());
+    let lines = crate::userfilters::apply(cmd, &orig_lines).or_else(|| squeeze_table(&orig_lines)).unwrap_or_else(|| orig_lines.clone());
     let text = lines.join("\n");
     let raw_tok = ntok(&orig);
     // a clean run (exit 0, no error lines) needs only its summary, not a full head/tail
@@ -550,7 +553,7 @@ pub fn run(args: &[String]) -> i32 {
     let cmd: Vec<String> = args.iter().skip(i + 1).cloned().collect();
     if cmd.is_empty() { eprintln!("usage: vtok run [--max-tokens N] -- COMMAND [ARGS...]"); return 2; }
     match execute(&cmd, None, None, true) {
-        Ok(r) => { print!("{}", compact(&String::from_utf8_lossy(&r.out), r.code, budget)); r.code }
+        Ok(r) => { print!("{}", compact_cmd(&cmd.join(" "), &String::from_utf8_lossy(&r.out), r.code, budget)); r.code }
         Err(e) => { eprintln!("vtok run: {e}"); 127 }
     }
 }
@@ -558,7 +561,7 @@ pub fn run(args: &[String]) -> i32 {
 /// `vtok_run` for the MCP server: same compact view, always led by the exit status.
 pub fn run_for_mcp(command: &str, cwd: Option<&str>, timeout_s: u64, budget: usize) -> Result<String, String> {
     let r = execute(&[command.to_string()], cwd, Some(std::time::Duration::from_secs(timeout_s.clamp(1, 900))), false)?;
-    let body = compact(&String::from_utf8_lossy(&r.out), r.code, budget);
+    let body = compact_cmd(command, &String::from_utf8_lossy(&r.out), r.code, budget);
     let status = if r.timed_out { format!("[timed out after {timeout_s}s, killed; exit {}]", r.code) } else { format!("[exit {}]", r.code) };
     Ok(format!("{status}\n{body}"))
 }

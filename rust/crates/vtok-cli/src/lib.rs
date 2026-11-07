@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::path::{Path, PathBuf};
 use vtok_api::*;
 mod config;
+mod discover;
 mod init;
 mod hook;
 mod mcp;
@@ -24,6 +25,7 @@ const USAGE: &str = "usage: vtok <command> ...
   output ID [--grep A|B] [--lines A-B] [--tail N] [--head N]   read back part of a stored output
   find WORDS... [--dir DIR] [--max-tokens N]     symbols whose names match the words of a question\n  map [DIR] [--max-tokens N]                     project overview: most used symbols per file, with signatures\n  refs NAME [DIR] [--max-tokens N]               where a symbol is defined and used (by name, whole project)
   squeeze FILE [--write] | --rewrite FILE | --check A B   shrink a CLAUDE.md / AGENTS.md style file (prose only, code untouched)
+  discover [--days N] [--min-tokens N] [--dir D]  find shell commands in past Claude Code sessions that vtok run would have shrunk
   init [--write FILE]                            usage note for any agent (AGENTS.md etc.), as a fenced block
   gain [--days N] [--json]                       tokens saved by Vtok's tools (local usage log)
   outline FILE [--lang L]                        names and line ranges of a file (cheapest overview)
@@ -161,6 +163,7 @@ pub fn run(args: &[String]) -> i32 {
         "gain" => usage::gain(rest),
         "hook" => hook::run(rest),
         "squeeze" => squeeze::run(rest),
+        "discover" => discover::run(rest),
         "init" => init::run(rest),
         "refs" => refs::run(rest),
         "map" => refs::run_map(rest),

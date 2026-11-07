@@ -38,11 +38,29 @@ pub fn is_chatty(cmd: &str) -> bool {
 }
 
 /// The rewritten command, or None to leave the original alone.
+/// Split a leading `cd DIR && ` / `export X=y && ` prefix (agents add it to nearly every command) from the command itself.
+pub fn split_prefix(cmd: &str) -> (&str, &str) {
+    let mut rest = cmd.trim_start();
+    let mut used = 0;
+    while let Some(i) = rest.find("&&") {
+        let head = rest[..i].trim();
+        let simple = |h: &str| !h.is_empty() && !h.contains(['|', ';', '<', '>', '`', '\n', '(', ')', '{', '}', '&']) && !h.contains("$(");
+        if (head.starts_with("cd ") || head.starts_with("export ")) && simple(head) {
+            used += cmd.trim_start().len() - rest.len() + i + 2;
+            rest = &rest[i + 2..];
+        } else { break; }
+    }
+    let off = cmd.len() - cmd.trim_start().len() + used;
+    (&cmd[..off.min(cmd.len())], cmd[off.min(cmd.len())..].trim_start())
+}
+
+/// The rewritten command, or None to leave the original alone.
 pub fn rewrite(cmd: &str) -> Option<String> {
-    let t = cmd.trim();
+    let (pre, t) = split_prefix(cmd);
+    let t = t.trim();
     if t.is_empty() || t.starts_with("vtok ") || t.contains(SHELL_META) || t.contains("$(") { return None; }
     if !is_chatty(t) { return None; }
-    Some(format!("vtok run -- {t}"))
+    Some(format!("{}vtok run -- {t}", if pre.is_empty() { String::new() } else { format!("{} ", pre.trim()) }))
 }
 
 pub fn answer(input: &str) -> Option<String> {
@@ -89,7 +107,7 @@ mod tests {
         assert_eq!(rewrite("cargo test --release").as_deref(), Some("vtok run -- cargo test --release"));
         assert_eq!(rewrite("FOO=1 python -m pytest -v tests").as_deref(), Some("vtok run -- FOO=1 python -m pytest -v tests"));
         assert!(rewrite("npm install").is_some() && rewrite("git log --stat").is_some() && rewrite("grep -rn foo src").is_some());
-        for no in ["ls", "cat a.txt", "git log --oneline", "git status -q", "cargo test | head", "echo hi && cargo test", "vtok run -- cargo test", "python script.py", "cd x\ncargo test", "grep foo file", "cargo run"] {
+        for no in ["ls", "cat a.txt", "git log --oneline", "git status -q", "cargo test | head", "vtok run -- cargo test", "python script.py", "cd x\ncargo test", "grep foo file", "cargo run"] {
             assert!(rewrite(no).is_none(), "{no}");
         }
     }

@@ -134,10 +134,12 @@ permission rules apply. For clients that ignore MCP instructions, `vtok init --w
 **Instruction files.** `vtok squeeze CLAUDE.md` removes whitespace, rules, bold markers and filler phrases from the prose (code blocks, inline code, URLs, headings and tables are untouched); `--write` replaces the file and keeps `CLAUDE.md.orig`.
 `vtok squeeze --rewrite FILE` prints a rewrite request for your own agent, and `vtok squeeze --check ORIGINAL NEW` verifies that every code block, inline code, URL and heading survived. Measured on a dense 2.3k-token CLAUDE.md: 3% with the deterministic pass, 8% with an agent rewrite; prose-heavy files shrink more.
 
+**Where would it help?** `vtok discover` reads your local Claude Code transcripts, takes every shell command whose output was large, runs Vtok's compactor on the output that command really returned, and ranks command kinds by tokens saved (and whether the hook would wrap them). Read-only. The figure is an upper bound: it counts compaction of the whole output, including `cat`/`sed` file dumps that the hook does not touch.
+
 **Automatic compaction of shell output (Claude Code).** `vtok init --claude-hook ~/.claude/settings.json` registers a PreToolUse hook
 (`vtok hook`) that rewrites known long-output commands (tests, builds, installs, `git log/diff`, recursive `grep`/`find`) to
 `vtok run -- <command>` before they run, so the agent gets the compact view without asking for it. Commands with pipes, redirects or `&&`,
-and anything unrecognised, pass through untouched; the hook never grants permission by itself. Agent-neutral setups can alias the same
+except a leading `cd DIR &&` / `export X=y &&` prefix, which is kept in front, and anything unrecognised, pass through untouched; the hook never grants permission by itself. Agent-neutral setups can alias the same
 thing with `vtok run --`.
 
 `vtok output --grep` shows at most 40 matching lines and says how many more there are. Agents are told to skip Vtok when the plain alternative is cheaper (small files, short output).

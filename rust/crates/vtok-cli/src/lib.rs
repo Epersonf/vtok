@@ -6,6 +6,7 @@ mod auto;
 mod browse;
 mod config;
 mod discover;
+mod filter_cmd;
 mod filters;
 mod filters_tools;
 mod init;
@@ -50,6 +51,7 @@ const USAGE: &str = "usage: vtok <command> ...
   discover [--days N] [--min-tokens N] [--dir D]  find shell commands in past Claude Code sessions that vtok run would have shrunk
   graph build|explain N|path A B|hubs|communities|report|html|hook [--dir D]   persistent call graph with communities (.vtok/graph.json)
   rewrite COMMAND...                             print the vtok run form of a long-output command (exit 1 when unchanged), for any agent hook
+  filter [--explain] -- COMMAND...               show what vtok run would print for output read from stdin (testing filters)
   browse URL [--max-tokens N] [--no-links] [--allow-private]   web page as compact text (full text kept under an id)
   route REQUEST [--files N] [--json]             pick a model tier and effort for a request (small / medium / large)
   proxy [--port N] [--upstream URL]              local API proxy: model auto is routed to the model route picks
@@ -192,6 +194,7 @@ pub fn run(args: &[String]) -> i32 {
         "hook" => hook::run(rest),
         "rewrite" => rewrite::run(rest),
         "browse" => browse::run(rest),
+        "filter" => filter_cmd::run(rest),
         "route" => route::run(rest),
         "proxy" => proxy::run(rest),
         "auto" => auto::run(rest),

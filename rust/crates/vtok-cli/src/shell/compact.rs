@@ -80,7 +80,10 @@ pub fn build(cmd: &str, raw: &str, code: i32, budget: usize, persist: bool) -> C
     let clean_run = code == 0 && !lines.iter().any(|l| score(l) >= 3 && !is_pass_line(l));
     let runner = lines.iter().any(|l| score(l) == 2);
     let small = if clean_run && runner { CLEAN_MIN_TOKENS.min(crate::config::run_tiny()) } else { crate::config::run_tiny() };
-    if raw_tok <= small { return verbatim(text, id); }
+    if raw_tok <= small {
+        if persist { crate::usage::record_run(cmd, id.as_deref(), raw_tok, raw_tok, " (tiny)"); }
+        return verbatim(text, id);
+    }
     let tiny = clean_run && runner && raw_tok <= CLEAN_GENERIC_TOKENS;
     let picked = if verdict { Some(summary_or_partial(with_newline(base.join("\n")))) } else { pick(cmd, &views_in, &base, &lines, budget, clean_run && runner, tiny) };
     let Some((body, kind)) = picked else { return verbatim(text, id) };
@@ -88,10 +91,10 @@ pub fn build(cmd: &str, raw: &str, code: i32, budget: usize, persist: bool) -> C
     let shown = Compacted { text: body, kind, id: Some(id.clone()) };
     let shown_tok = ntok(&shown.render(code));
     if shown_tok >= raw_tok || shown.text.trim().is_empty() {
-        if persist { crate::usage::record("run", raw_tok, raw_tok, "(not smaller: raw)"); }
+        if persist { crate::usage::record_run(cmd, Some(&id), raw_tok, raw_tok, " (not smaller)"); }
         return verbatim(text, Some(id));
     }
-    if persist { crate::usage::record("run", raw_tok, shown_tok, &id); }
+    if persist { crate::usage::record_run(cmd, Some(&id), raw_tok, shown_tok, ""); }
     shown
 }
 

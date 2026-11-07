@@ -1,5 +1,5 @@
 use super::output::{select, Query};
-use super::store::{latest_in, load_in, store_in, valid_id};
+use super::store::{latest_among, latest_in, load_among, load_in, store_in, valid_id};
 
 fn tmp(name: &str) -> std::path::PathBuf {
     let d = std::env::temp_dir().join(format!("vtok-store-{name}-{}", std::process::id()));
@@ -22,6 +22,22 @@ fn stored_output_round_trips_and_latest_is_the_newest() {
     std::fs::remove_file(d.join("latest")).unwrap();
     assert!(latest_in(&d).is_some(), "without the pointer file the newest file wins");
     let _ = std::fs::remove_dir_all(&d);
+}
+
+#[test]
+fn an_output_stored_in_an_older_directory_is_still_found() {
+    let (new, old) = (tmp("among-new"), tmp("among-old"));
+    let id = store_in(&old, "stored by a process that had HOME\n").unwrap();
+    let both = [new.clone(), old.clone()];
+    assert_eq!(load_among(&both, &id).unwrap(), vec!["stored by a process that had HOME".to_string()]);
+    assert!(load_among(&[new.clone()], &id).unwrap_err().contains("no stored output"));
+    assert!(load_among(&[], &id).unwrap_err().contains("no state directory"));
+    assert!(load_among(&both, "../x").unwrap_err().contains("invalid"));
+    assert_eq!(latest_among(&both).as_deref(), Some(id.as_str()), "the only output there is");
+    std::thread::sleep(std::time::Duration::from_millis(30));
+    let newer = store_in(&new, "stored later\n").unwrap();
+    assert_eq!(latest_among(&both).as_deref(), Some(newer.as_str()), "the newest of the two directories");
+    let _ = (std::fs::remove_dir_all(&new), std::fs::remove_dir_all(&old));
 }
 
 #[test]

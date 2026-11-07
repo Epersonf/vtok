@@ -20,6 +20,7 @@ Rows are bucketed by raw size: small <= 400 tokens < medium <= 4000 < large. Per
 pooled retention (pooled = retained lines / changed lines over the whole bucket).
 """
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import re
 import shutil
 import statistics

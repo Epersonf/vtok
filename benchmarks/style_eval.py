@@ -14,6 +14,7 @@ caps new calls. --export-snapshot writes the committed numbers-only style_snapsh
 """
 import argparse
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import sys
 from concurrent.futures import ThreadPoolExecutor
 

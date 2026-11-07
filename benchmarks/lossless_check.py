@@ -7,6 +7,7 @@ separates two things that would merge (word|word, and for css also word|selector
 first differing token.
 """
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import re
 import subprocess
 import sys

@@ -18,6 +18,8 @@ Vtok drops comments/docstrings, so it also shows less information - see the 'com
 usage: python bench/nav/run.py OUT.json --corpus LANG=DIR[,DIR] ... [--per-bucket N] [--seed S] [--vtok PATH]
 The sample is measured in `measure.py`; `mcp_client.py` talks to `vtok mcp`.
 """
+import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import argparse, json, pathlib, random, sys
 from mcp_client import Mcp
 from measure import measure, summarize

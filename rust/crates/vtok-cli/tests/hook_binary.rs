@@ -20,7 +20,7 @@ fn own_name() -> String {
 }
 
 fn run(args: &[&str], stdin: &str, path_dir: &Path) -> Output {
-    let mut child = Command::new(EXE).args(args).env("PATH", path_dir).env_remove("VTOK_HOOK_WIDE")
+    let mut child = Command::new(EXE).args(args).env("PATH", path_dir).env_remove("VTOK_HOOK_WIDE").env("VTOK_NO_USAGE", "1")
         .stdin(Stdio::piped()).stdout(Stdio::piped()).stderr(Stdio::piped()).spawn().unwrap();
     child.stdin.take().unwrap().write_all(stdin.as_bytes()).unwrap();
     let out = child.wait_with_output().unwrap();

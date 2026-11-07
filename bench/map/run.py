@@ -4,6 +4,8 @@ Questions are author-chosen ("where is X handled?") with a known target file and
 whether the target FILE and target SYMBOL appear in the output. Baselines: `vtok outline` of every file (always names
 everything, expensive) and a bare file listing (names files only). No model: this measures visibility, not whether an
 agent would pick the right line. Tokens: tiktoken o200k_base (proxy)."""
+import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import argparse, json, pathlib, subprocess
 import tiktoken
 

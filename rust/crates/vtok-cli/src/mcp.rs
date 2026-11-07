@@ -46,7 +46,7 @@ fn call_inner(name: &str, args: &Value) -> std::result::Result<String, String> {
         "vtok_browse" => crate::browse::page(arg_str(args, "url")?, &crate::browse::Opts { budget: args.get("max_tokens").and_then(|v| v.as_u64()).unwrap_or(3000) as usize, links: args.get("links").and_then(|v| v.as_bool()).unwrap_or(true), allow_private: false }),
         "vtok_find" => tool_find(args),
         "vtok_run" => tool_run(args),
-        "vtok_gain" => crate::usage::gain_text(args.get("days").and_then(|v| v.as_u64()).unwrap_or(30), false),
+        "vtok_gain" => crate::usage::gain_tool(args),
         "vtok_output" => tool_output(args),
         _ => Err(format!("unknown tool {name:?}")),
     }
@@ -82,6 +82,9 @@ fn handle(msg: &Value) -> Option<Value> {
 
 pub fn serve(args: &[String]) -> i32 {
     if args.iter().any(|a| a == "--allow-run") { crate::config::ALLOW_RUN.store(true, std::sync::atomic::Ordering::Relaxed); }
+    crate::usage::set_via("mcp");
+    // stderr never reaches the model; it is where a log that cannot be written is reported instead of lost in silence
+    if let Err(e) = crate::usage::health() { eprintln!("vtok mcp: usage will not be recorded: {e}"); }
     let stdin = std::io::stdin();
     let mut out = std::io::stdout();
     for line in stdin.lock().lines() {

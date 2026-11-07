@@ -5,7 +5,7 @@
 //!
 //! `scan` reads the transcripts (each tool call once, however many resumed sessions repeat it), `command_key` names the
 //! kind of command, `report` prints the numbers.
-mod command_key;
+pub(crate) mod command_key;
 mod report;
 mod scan;
 #[cfg(test)] mod t_discover;

@@ -8,6 +8,7 @@ Run it with another binary in VTOK_BIN to compare two builds. Deterministic apar
 import csv
 import json
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import random
 import subprocess
 import sys

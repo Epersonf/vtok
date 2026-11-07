@@ -5,16 +5,12 @@ const KEEP_FILES: usize = 100;
 const KEEP_SECS: u64 = 7 * 24 * 3600;
 const LATEST: &str = "latest";
 
-pub fn state_dir() -> Option<PathBuf> {
-    if let Some(p) = std::env::var_os("VTOK_STATE") { return Some(PathBuf::from(p)); }
-    if let Some(x) = std::env::var_os("XDG_STATE_HOME") { return Some(PathBuf::from(x).join("vtok")); }
-    if let Some(h) = std::env::var_os("HOME") { return Some(PathBuf::from(h).join(".local/state/vtok")); }
-    // Windows has no HOME by default.
-    if let Some(a) = std::env::var_os("LOCALAPPDATA") { return Some(PathBuf::from(a).join("vtok")); }
-    std::env::var_os("USERPROFILE").map(|h| PathBuf::from(h).join(".local/state/vtok"))
-}
+use super::state::{state_dir, state_dirs};
 
 fn out_dir() -> Option<PathBuf> { state_dir().map(|d| d.join("out")) }
+
+/// Where stored outputs are looked up: the directory written to, then the older locations (see `state`).
+fn out_dirs() -> Vec<PathBuf> { state_dirs().into_iter().map(|d| d.join("out")).collect() }
 
 pub fn valid_id(id: &str) -> bool { (6..=32).contains(&id.len()) && id.bytes().all(|b| b.is_ascii_hexdigit()) }
 
@@ -67,9 +63,28 @@ pub(super) fn latest_in(dir: &Path) -> Option<String> {
     newest.1.file_stem().and_then(|s| s.to_str()).filter(|s| valid_id(s)).map(String::from)
 }
 
-pub fn latest() -> Option<String> { latest_in(&out_dir()?) }
+pub fn latest() -> Option<String> { latest_among(&out_dirs()) }
 
-pub fn load(id: &str) -> Result<Vec<String>, String> { load_in(&out_dir().ok_or("no state directory (set HOME or VTOK_STATE)")?, id) }
+/// The newest of the most recent outputs of several directories.
+pub(super) fn latest_among(dirs: &[PathBuf]) -> Option<String> {
+    dirs.iter().filter_map(|d| {
+        let id = latest_in(d)?;
+        let when = std::fs::metadata(d.join(format!("{id}.txt"))).ok()?.modified().ok()?;
+        Some((when, id))
+    }).max_by_key(|(when, _)| *when).map(|(_, id)| id)
+}
+
+pub fn load(id: &str) -> Result<Vec<String>, String> { load_among(&out_dirs(), id) }
+
+/// The output `id` from the first directory that has it.
+pub(super) fn load_among(dirs: &[PathBuf], id: &str) -> Result<Vec<String>, String> {
+    if dirs.is_empty() { return Err("no state directory (set HOME or VTOK_STATE)".into()); }
+    if !valid_id(id) { return Err(format!("invalid output id {id:?}")); }
+    match dirs.iter().find(|d| d.join(format!("{id}.txt")).exists()) {
+        Some(d) => load_in(d, id),
+        None => Err(format!("no stored output {id:?} (expired or never stored)")),
+    }
+}
 
 pub(super) fn load_in(dir: &Path, id: &str) -> Result<Vec<String>, String> {
     if !valid_id(id) { return Err(format!("invalid output id {id:?}")); }

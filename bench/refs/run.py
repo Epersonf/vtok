@@ -3,6 +3,8 @@ without it). Deterministic, no model. Tokens: tiktoken o200k_base (proxy).
 
 Recall check: every grep hit that is code (not a comment line) should appear in the refs output, as a use line or a
 definition start. Hits inside strings count as misses (a name in a string is not a reference), reported as such."""
+import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import argparse, json, pathlib, re, subprocess, sys
 import tiktoken
 

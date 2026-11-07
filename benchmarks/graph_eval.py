@@ -18,6 +18,7 @@ Every tool runs on its own copy of the code inside EVAL_WORK, never inside the r
 """
 import json
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import shutil
 import subprocess
 import sys

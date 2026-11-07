@@ -5,7 +5,8 @@
 pub fn key(cmd: &str) -> String {
     let cmd = crate::rewrite::split_prefix(after_cd(cmd)).1;
     let w: Vec<&str> = cmd.split_whitespace().skip_while(|w| w.contains('=') && !w.starts_with('-') && !w.contains('/')).collect();
-    let prog = w.first().map(|p| p.rsplit('/').next().unwrap_or(p)).unwrap_or("?");
+    let prog = w.first().map(|p| p.rsplit(['/', '\\']).next().unwrap_or(p)).unwrap_or("?");
+    let prog = prog.strip_suffix(".exe").unwrap_or(prog);
     match (prog, w.get(1)) {
         ("python" | "python3", Some(&"-m")) => format!("python -m {}", w.get(2).unwrap_or(&"")),
         ("for" | "while" | "until", _) => "shell loop".to_string(),

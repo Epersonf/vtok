@@ -9,6 +9,7 @@ Tokens are (chars + 3) / 4, the metric RTK's own benchmark uses. "keep" counts h
 (failing test names, error codes, ...) survive in each tool's output: a crude retention check, not a quality score.
 """
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import shutil
 import subprocess
 import sys

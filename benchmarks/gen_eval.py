@@ -12,6 +12,7 @@ Options: --vtok PATH (default $VTOK_BIN or `vtok` on PATH), --max N files per la
 sampled from the sorted list), --jobs N (default 8), --fails (print every refused file with the reason).
 """
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import re
 import statistics
 import subprocess

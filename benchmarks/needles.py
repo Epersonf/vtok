@@ -5,6 +5,7 @@ usage: python needles.py OUTDIR      (env CAVEMAN_BIN, VTOK_BIN)
 import datetime
 import json
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import random
 import subprocess
 import sys

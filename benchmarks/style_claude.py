@@ -11,6 +11,7 @@ system text, so editing the note invalidates only its own arm.
 import hashlib
 import json
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import shutil
 import subprocess
 import tempfile

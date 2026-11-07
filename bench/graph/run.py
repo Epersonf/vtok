@@ -7,6 +7,8 @@ check whether the target file / symbol shows up; also the size of GRAPH_REPORT.m
 file/symbol hit rates of `vtok map` (bench/map).
 Part 2 (callers): for names in `requests`, who uses NAME? Truth = Python's `ast` (functions whose body mentions NAME as a call or attribute).
 Compare tokens and recall of `graphify explain NAME --all` and `vtok refs NAME`."""
+import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import argparse, ast, json, pathlib, re, subprocess, sys
 import tiktoken
 

@@ -122,7 +122,7 @@ fresh model, then `python check.py <task> vtok <reply-file>`.
     vtok run -- cargo test            # run a command; print errors, summary, head/tail, repeated lines collapsed
     vtok output ID --grep "FAILED|panic" --context 3     # read back part of the full output (also --lines A-B, --tail N)
 
-`vtok run` stores the whole (ANSI-stripped) output under `~/.local/state/vtok/out` (`$VTOK_STATE`; the newest 100 files for 7
+`vtok run` stores the whole (ANSI-stripped) output under the `out` folder of the state directory (`$VTOK_STATE`, else `$XDG_STATE_HOME/vtok`, else `%LOCALAPPDATA%\vtok` on Windows, else `~/.local/state/vtok`; on Windows the older `~/.local/state/vtok` is still read; the newest 100 files for 7
 days) and prints a compact view. A closing line appears only when something was cut (`# more: vtok output ID`) or the command failed (`# exit=N; more: vtok output ID`); a fully summarised success prints just the summary, e.g. `cargo test: 233 passed (3 suites), 3 warnings`. Output under ~250 tokens (the `run-tiny` setting), or a compact view that is not smaller, is printed as is.
 The command's exit code is preserved. `vtok output [ID] [--grep A|B] [--lines A-B] [--tail N] [--head N]` reads part of a stored run (no ID: the most recent one), `vtok output [ID] --file PATH` prints one file's section of a stored diff, and `vtok filter [--explain] [--code N] -- CMD < output` previews the view of captured output.
 
@@ -166,8 +166,8 @@ thing with `vtok run --`, or call `vtok rewrite COMMAND` from their own hook (pr
 
 `vtok output --grep` shows at most 40 matching lines and says how many more there are. Agents are told to skip Vtok when the plain alternative is cheaper (small files, short output).
 
-`vtok gain [--days N] [--json]` reports what the tools saved (an upper bound versus raw output; `output` reads count as extra cost;
-disable logging with `VTOK_NO_USAGE=1`). Benchmarks: `bench/nav/RESULTS.md`, `bench/run/RESULTS.md`.
+`vtok gain [--days N | --since 2h] [--session current|ID] [--cwd DIR] [--legacy] [--json | --line]` reports what the tools saved, by tool, and says what each `raw` stands for. `run` is compared with the command's real output (exact, counted up to 8,000 tokens because a shell tool shows no more); `read`, `chunk` and `outline` with the whole file (an upper bound: an agent may have used grep or a ranged read; counted up to 25,000); `find`, `refs`, `map`, `graph` and `browse` with a whole project or page, which nobody would have read, so they are listed and never counted; reading a stored output back is extra cost. Every record carries the chat's session id (`VTOK_SESSION`, else Claude Code's `CLAUDE_CODE_SESSION_ID`, which its shell tool and MCP servers inherit), the working directory and whether it came through the MCP server; records written before those tags are left out unless `--legacy` is given, because they include test and benchmark runs. The log is `usage.jsonl` in the state directory, one file on Windows whoever launched vtok; `VTOK_NO_USAGE=1` turns it off, the crate's own tests and the benchmark harnesses never write it, and `vtok mcp` says on stderr, once, when it cannot write it. A saving is tokens that were not sent: it cannot see the extra turns a compact view may cause, so only an A/B run (`bench/loop`) says what vtok saves.
+Benchmarks: `bench/nav/RESULTS.md`, `bench/run/RESULTS.md`.
 
 ## Where is it defined, who uses it
 

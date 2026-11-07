@@ -9,6 +9,7 @@ NEEDLE`, which an agent can only run when it already knows what to look for.
 """
 import json
 import os
+os.environ.setdefault("VTOK_NO_USAGE", "1")  # benchmark runs must not enter the user's usage log
 import random
 import subprocess
 import sys

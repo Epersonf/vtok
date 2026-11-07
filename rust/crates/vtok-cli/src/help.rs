@@ -22,7 +22,7 @@ pub(crate) const USAGE: &str = "usage: vtok <command> ...
   proxy [--port N] [--upstream URL]              local API proxy: model auto is routed to the model route picks
   shims install [DIR] | list                     wrapper scripts for cargo/npm/pytest/tsc/... on PATH: compact output for ANY agent, no hook
   init [--hook AGENT [--global] | --agent NAME | --write FILE | --claude-hook SETTINGS] [--terse]   usage note for any agent (AGENTS.md etc.), as a fenced block; --terse adds the answer-style note (alone: prints it)
-  gain [--days N] [--json]                       tokens saved by Vtok's tools (local usage log)
+  gain [--days N | --since 2h] [--session current|ID] [--cwd DIR] [--legacy] [--json | --line]   tokens saved by Vtok's tools (local usage log)
   outline FILE [--lang L]                        names and line ranges of a file (cheapest overview)
   symbols FILE [--lang L]                        id and line range of every addressable symbol
   grammar --lang L

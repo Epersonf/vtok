@@ -62,8 +62,20 @@ pub fn gain_text(days: u64, as_json: bool) -> Result<String, String> {
     Ok(out)
 }
 
+/// One short line for a status bar: `vtok saved 12.3k tok (41%) / 7d`. Empty when nothing was recorded.
+pub fn line(days: u64) -> String {
+    let Ok(j) = gain_text(days, true) else { return String::new() };
+    let Ok(v) = serde_json::from_str::<Value>(&j) else { return String::new() };
+    let (raw, shown) = (v["raw"].as_i64().unwrap_or(0), v["shown"].as_i64().unwrap_or(0));
+    if raw <= 0 { return String::new(); }
+    let saved = raw - shown;
+    let k = if saved.abs() >= 1000 { format!("{:.1}k", saved as f64 / 1000.0) } else { saved.to_string() };
+    format!("vtok saved {k} tok ({:.0}%) / {days}d", 100.0 * saved as f64 / raw as f64)
+}
+
 pub fn gain(args: &[String]) -> i32 {
     let days: u64 = args.iter().position(|a| a == "--days").and_then(|i| args.get(i + 1)).and_then(|v| v.parse().ok()).unwrap_or(30);
+    if args.iter().any(|a| a == "--line") { println!("{}", line(days)); return 0; }
     match gain_text(days, args.iter().any(|a| a == "--json")) {
         Ok(t) => { println!("{}", t.trim_end()); 0 }
         Err(e) => { eprintln!("{e}"); 1 }

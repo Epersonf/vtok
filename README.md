@@ -136,6 +136,8 @@ permission rules apply. For clients that ignore MCP instructions, `vtok init --w
 
 **Call graph.** `vtok graph build` writes `.vtok/graph.json`: functions, methods, types and markdown docs as nodes, name-based call edges, and communities (groups of related symbols; shared helpers used everywhere are left out of the grouping). Then `vtok graph explain NAME` (callers and callees), `path A B` (shortest chain), `hubs`, `communities`. The graph refreshes itself when a source file is newer; `vtok graph hook` adds a git post-commit hook that rebuilds it. Same name-based limits as `refs` (no type resolution); Python, TypeScript/JavaScript and Rust only. Also available to agents as `vtok_graph` with `VTOK_MCP_ALL=1`.
 
+**Status bar and answer style.** `vtok gain --line` prints one short line (`vtok saved 12.3k tok (41%) / 30d`) for a status bar. `vtok init --terse` prints an optional answer-style block (short answers, one-line review comments, terse commit messages). It is off by default: in our loop measurements a terse-style prompt cut output tokens by 20% but raised total cost by 7%.
+
 **Where would it help?** `vtok discover` reads your local Claude Code transcripts, takes every shell command whose output was large, runs Vtok's compactor on the output that command really returned, and ranks command kinds by tokens saved (and whether the hook would wrap them). Read-only. The figure is an upper bound: it counts compaction of the whole output, including `cat`/`sed` file dumps that the hook does not touch.
 
 **Automatic compaction of shell output (Claude Code).** `vtok init --claude-hook ~/.claude/settings.json` registers a PreToolUse hook

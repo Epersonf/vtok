@@ -10,6 +10,14 @@ pub const BLOCK: &str = "## Token-saving tools (Vtok)
 - Commands with long output (tests, builds, installs, listings): use `vtok_run` if it is available, otherwise run `vtok run -- <command>` in the shell. You get errors, a summary and an id; `vtok_output` (or `vtok output ID --grep TEXT`) returns any part of the full output.
 ";
 
+/// Optional output-style rules (what the agent writes, not what it reads). Off by default: in our measurements a terse-style
+/// prompt cut output tokens ~20% but total cost went up ~7% (see bench/loop/RESULTS.md), so it is for people who want short answers.
+pub const TERSE: &str = "## Answer style
+- Answer in the fewest words that stay correct: no preamble, no recap of the question, no closing offer. Code, commands and numbers are exact.
+- Commit messages: imperative subject under 60 characters; a body only when the reason is not obvious from the diff.
+- Review comments: one line each as `path:line problem -> fix`; skip praise and restating the code.
+";
+
 pub fn fenced() -> String { format!("{BEGIN}\n{BLOCK}{END}\n") }
 
 /// Insert or replace the fenced block in `existing`, leaving everything else untouched.
@@ -31,6 +39,7 @@ pub fn merge(existing: &str) -> String {
 }
 
 pub fn run(args: &[String]) -> i32 {
+    if args.iter().any(|a| a == "--terse") { print!("{TERSE}"); return 0; }
     if let Some(i) = args.iter().position(|a| a == "--claude-hook") {
         let Some(path) = args.get(i + 1) else { eprintln!("usage: vtok init --claude-hook SETTINGS.json   (e.g. ~/.claude/settings.json or .claude/settings.json)"); return 2 };
         return match crate::hook::install(path) { Ok(true) => { println!("{path}: vtok hook added (long shell output is wrapped in `vtok run`)"); 0 } Ok(false) => { println!("{path}: already up to date"); 0 } Err(e) => { eprintln!("{e}"); 1 } };

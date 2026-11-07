@@ -118,7 +118,7 @@ fresh model, then `python check.py <task> vtok <reply-file>`.
 
 ## Outline, and compact command output
 
-    vtok outline FILE                 # name and line range of every symbol (a few hundred tokens), imports merged
+    vtok outline FILE                 # name and line range of every symbol (a few hundred tokens); a run of imports is one `imports` line, which vtok_chunk / vtok_edit accept as an id
     vtok run -- cargo test            # run a command; print errors, summary, head/tail, repeated lines collapsed
     vtok output ID --grep "FAILED|panic" --context 3     # read back part of the full output (also --lines A-B, --tail N)
 

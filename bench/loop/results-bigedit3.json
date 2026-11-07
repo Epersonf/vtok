@@ -1,0 +1,229 @@
+[
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0467345,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66461,
+  "tokens_out": 330,
+  "fresh_in": 9436
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0467345,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66461,
+  "tokens_out": 330,
+  "fresh_in": 9436
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0467345,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66461,
+  "tokens_out": 330,
+  "fresh_in": 9436
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.07541360000000001,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 2034,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_chunk": 2,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 143770,
+  "tokens_out": 1047,
+  "fresh_in": 12974
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.074036,
+  "turns": 7,
+  "answer": "done",
+  "tool_out_chars": 2006,
+  "tools": {
+   "Bash": 1,
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1,
+   "mcp__vtok__vtok_chunk": 1
+  },
+  "tokens_in": 142118,
+  "tokens_out": 971,
+  "fresh_in": 12858
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.08014500000000002,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 3177,
+  "tools": {
+   "Bash": 1,
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "Read": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 164652,
+  "tokens_out": 1098,
+  "fresh_in": 13522
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.049324299999999995,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 401,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66750,
+  "tokens_out": 496,
+  "fresh_in": 9667
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0548803,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 894,
+  "tools": {
+   "Grep": 1,
+   "Read": 2,
+   "Edit": 1
+  },
+  "tokens_in": 89738,
+  "tokens_out": 663,
+  "fresh_in": 10075
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0586955,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 2143,
+  "tools": {
+   "Grep": 2,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 91185,
+  "tokens_out": 798,
+  "fresh_in": 10670
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0692556,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 1670,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 99956,
+  "tokens_out": 1030,
+  "fresh_in": 12560
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0802051,
+  "turns": 6,
+  "answer": "I've just written the edit to `pyparsing/core.py`, and I haven't re-read the file to check it. In `ParserElement.scan_string`, `max_matches` now defaults to `10",
+  "tool_out_chars": 1696,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 2
+  },
+  "tokens_in": 121634,
+  "tokens_out": 1689,
+  "fresh_in": 13123
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0860811,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 1973,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 2,
+   "Grep": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "Edit": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 144830,
+  "tokens_out": 1797,
+  "fresh_in": 13759
+ }
+]

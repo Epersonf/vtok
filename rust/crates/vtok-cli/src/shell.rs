@@ -379,13 +379,35 @@ pub fn load(id: &str) -> Result<Vec<String>, String> {
 fn failure_view(lines: &[String]) -> Option<String> {
     let mut out: Vec<String> = vec![];
     if let Some(start) = lines.iter().position(|l| l.contains(" FAILURES ") && l.starts_with('=')) {
+        // one block per failing test: (name, lines)
+        let mut blocks: Vec<(String, Vec<String>)> = vec![];
         for l in &lines[start + 1..] {
             let t = l.trim();
             if t.contains("short test summary info") { break; }
-            if t.len() > 6 && t.starts_with("___") && t.ends_with("___") { out.push(format!("FAIL {}", t.trim_matches('_').trim())); }
-            else if t.starts_with("E ") || t == "E" { out.push(format!("  {}", cap(t))); }
-            else if let Some((f, rest)) = t.split_once(':') {
-                if f.ends_with(".py") && rest.split(':').next().map_or(false, |n| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit())) { out.push(format!("  at {}", cap(t))); }
+            if t.len() > 6 && t.starts_with("___") && t.ends_with("___") { let n = t.trim_matches('_').trim().to_string(); blocks.push((n.clone(), vec![format!("FAIL {n}")])); }
+            else if let Some(b) = blocks.last_mut() {
+                if t.starts_with("E ") || t == "E" { b.1.push(format!("  {}", cap(t))); }
+                else if let Some((f, rest)) = t.split_once(':') {
+                    if f.ends_with(".py") && rest.split(':').next().map_or(false, |n| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit())) { b.1.push(format!("  at {}", cap(t))); }
+                }
+            }
+        }
+        // parametrized failures share a base name: keep the first, plus any whose assertion has a different shape (digits ignored)
+        let shape = |b: &[String]| b.iter().skip(1).filter(|l| l.trim_start().starts_with("E ")).map(|l| { let mut o = String::new(); for c in l.chars() { if c.is_ascii_digit() { if !o.ends_with('#') { o.push('#'); } } else { o.push(c); } } o }).collect::<Vec<_>>().join("|");
+        let mut order: Vec<String> = vec![];
+        for (n, _) in &blocks { let base = n.split('[').next().unwrap_or(n).to_string(); if !order.contains(&base) { order.push(base); } }
+        for base in order {
+            let group: Vec<&(String, Vec<String>)> = blocks.iter().filter(|(n, _)| n.split('[').next() == Some(base.as_str())).collect();
+            let mut seen: Vec<String> = vec![];
+            let mut skipped: Vec<&str> = vec![];
+            for (n, b) in &group {
+                let sh = shape(b);
+                if seen.contains(&sh) || seen.len() >= 3 { skipped.push(n.as_str()); } else { seen.push(sh); out.extend(b.iter().cloned()); }
+            }
+            if !skipped.is_empty() {
+                let ids: Vec<&str> = skipped.iter().map(|n| n.split_once('[').map_or(*n, |x| x.1.trim_end_matches(']'))).collect();
+                let list = if ids.len() > 6 { format!("{}, {}, … {}", ids[0], ids[1], ids[ids.len() - 1]) } else { ids.join(", ") };
+                out.push(format!("  +{} more failures of {base} with the same assertion ({list})", skipped.len()));
             }
         }
         let tail = lines.iter().rev().find(|l| (l.contains(" passed") || l.contains(" failed")) && l.contains(" in "))?;
@@ -446,7 +468,9 @@ pub fn compact(raw: &str, code: i32, budget: usize) -> String {
     let clean_run = code == 0 && !lines.iter().any(|l| score(l) >= 3 && !is_pass_line(l));
     let runner = lines.iter().any(|l| score(l) == 2);
     if raw_tok <= RAW_BELOW_TOKENS && !(clean_run && runner && raw_tok > 60) { return if text.is_empty() { text } else { text + "\n" }; }
-    let body = if let Some(l) = summarize_listing(&lines, budget.min(150)) { l }
+    let test_report = lines.iter().any(|l| l.starts_with('=') && l.contains(" FAILURES "));
+    let body = if let Some(v) = failure_view(&lines).filter(|v| test_report && ntok(v) <= budget) { v }
+        else if let Some(l) = summarize_listing(&lines, budget.min(150)) { l }
         else if clean_run && runner { summarize_clean(&without_noise(&lines), budget.min(CLEAN_BUDGET)) }
         else if let Some(v) = failure_view(&lines).filter(|v| ntok(v) <= budget) { v }
         else { summarize(&without_noise(&without_passes(&lines)), budget) };
@@ -686,6 +710,11 @@ mod tests {
         let v = failure_view(&py).unwrap();
         assert!(v.contains("FAIL test_a") && v.contains("E       assert 1 == 2") && v.contains("at test_x.py:3") && v.contains("1 failed, 5 passed"), "{v}");
         assert!(!v.contains("def test_a"));
+        let mut many = String::from("=== FAILURES ===\n");
+        for i in 0..20 { many += &format!("____ test_p[{i}] ____\n>   assert f({i}) == 1\nE   assert {} == 1\nt.py:5: AssertionError\n", i + 7); }
+        many += "=== short test summary info ===\n=== 20 failed, 5 passed in 0.1s ===";
+        let v = failure_view(&l(&many)).unwrap();
+        assert!(v.matches("FAIL test_p").count() == 1 && v.contains("+19 more failures of test_p") && v.contains("20 failed"), "{v}");
         let ut = l("ERROR: test_k (m.T.test_k)\n----\nTraceback (most recent call last):\n  File \"/t/m.py\", line 9, in test_k\n    {}['k']\nKeyError: 'k'\n\nRan 3 tests in 0.1s\n\nFAILED (errors=1)");
         let v = failure_view(&ut).unwrap();
         assert!(v.contains("ERROR: test_k") && v.contains("m.py:9") && v.contains("KeyError") && v.contains("Ran 3 tests"), "{v}");

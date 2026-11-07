@@ -1,0 +1,228 @@
+[
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.07527030000000001,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 1321,
+  "tools": {
+   "Bash": 1,
+   "Grep": 1,
+   "ToolSearch": 2,
+   "mcp__vtok__vtok_refs": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 161485,
+  "tokens_out": 1040,
+  "fresh_in": 12502
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.07576440000000001,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 1423,
+  "tools": {
+   "Grep": 1,
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1,
+   "Edit": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 161791,
+  "tokens_out": 1061,
+  "fresh_in": 12567
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 2,
+  "ok": false,
+  "cost": 0.0753736,
+  "turns": 7,
+  "answer": "done",
+  "tool_out_chars": 2886,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 2,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 143618,
+  "tokens_out": 878,
+  "fresh_in": 13402
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.05600960000000001,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 2060,
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 90471,
+  "tokens_out": 636,
+  "fresh_in": 10415
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0674669,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 1590,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 99699,
+  "tokens_out": 920,
+  "fresh_in": 12390
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0525455,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 887,
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 89490,
+  "tokens_out": 510,
+  "fresh_in": 9875
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0690216,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 1655,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 100477,
+  "tokens_out": 962,
+  "fresh_in": 12661
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0709263,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 1774,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 100616,
+  "tokens_out": 1123,
+  "fresh_in": 12733
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.06815449999999999,
+  "turns": 7,
+  "answer": "done",
+  "tool_out_chars": 2610,
+  "tools": {
+   "Grep": 2,
+   "Edit": 2,
+   "Read": 2
+  },
+  "tokens_in": 135938,
+  "tokens_out": 1101,
+  "fresh_in": 11173
+ }
+]

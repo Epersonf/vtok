@@ -108,9 +108,8 @@ pub fn apply_edits(lang: &dyn Language, source: &str, chunks: &[Chunk], edits: &
         let orig = chunk_source(source, c);
         let mut new = lang.decode_chunk(vt, &inv, c.member, c.indent, Some(&orig))?;
         if !force && lang.equivalent(&orig, &new, c.member) { continue; }
-        if let Some(p) = patch_items(lang, &orig, vt, table, &inv, c) {
-            if lang.equivalent(&p, &new, c.member) { new = p; }
-        }
+        let attempts = [patch_items(lang, &orig, vt, table, &inv, c), token_patch(lang, &orig, &new, c.member)];
+        if let Some(p) = attempts.into_iter().flatten().find(|p| lang.equivalent(p, &new, c.member)) { new = p; }
         todo.push((c, new));
     }
     todo.sort_by(|a, b| b.0.start.cmp(&a.0.start));
@@ -248,7 +247,7 @@ fn token_patch(lang: &dyn Language, old: &str, new: &str, member: bool) -> Optio
         let s = if i == 0 { 0 } else { toks[i - 1].1 };
         text[s..toks[i].0].to_string()
     };
-    let mut out = String::from(&old[..ot[0].0]);
+    let mut out = String::new(); // the first gap (taken from 0) already carries the leading whitespace
     let mut dels: std::collections::VecDeque<usize> = Default::default();
     for (o, nn) in ops {
         let (g, tok) = match (o, nn) {

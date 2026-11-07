@@ -1,0 +1,292 @@
+[
+ {
+  "task": "hard: build log",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0486967,
+  "turns": 2,
+  "answer": "`make check` failed with exit code 2.\n\n- **First error line:** `error: module_2222.c:41: undefined reference to 'crc32_update' (link failed)`\n- **Final summary ",
+  "tool_out_chars": 250,
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47259,
+  "tokens_out": 189,
+  "fresh_in": 10792
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "base",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.04855310000000001,
+  "turns": 3,
+  "answer": "`make check` printed no error line. The output is 703 lines, and a case-insensitive search for \"error\", \"fail\", \"fatal\", \"warning\" and \"***\" found nothing.\n\n- *",
+  "tool_out_chars": 614,
+  "tools": {
+   "Bash": 2
+  },
+  "tokens_in": 66376,
+  "tokens_out": 478,
+  "fresh_in": 9525
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.049168,
+  "turns": 3,
+  "answer": "`make check` printed no error line. Nothing in the output matches error, fail, fatal, warn or `***`.\n\nThe output has 703 lines and looks truncated. It ends mid-",
+  "tool_out_chars": 451,
+  "tools": {
+   "Bash": 2
+  },
+  "tokens_in": 66458,
+  "tokens_out": 518,
+  "fresh_in": 9578
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "base",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.04946540000000001,
+  "turns": 3,
+  "answer": "`make check` failed with exit code 2, but the log has no error line to report.\n\n- **First error line:** none. The 503-line output has no \"error\", \"fail\" or \"war",
+  "tool_out_chars": 363,
+  "tools": {
+   "Bash": 2
+  },
+  "tokens_in": 66401,
+  "tokens_out": 576,
+  "fresh_in": 9507
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.042412899999999996,
+  "turns": 2,
+  "answer": "- **First error line** (line 2225): `error: module_2222.c:41: undefined reference to 'crc32_update' (link failed)`\n- **Final line:** `make: *** [Makefile:2: che",
+  "tool_out_chars": 136,
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 43971,
+  "tokens_out": 237,
+  "fresh_in": 9142
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "base",
+  "rep": 2,
+  "ok": false,
+  "cost": 0.042876700000000004,
+  "turns": 2,
+  "answer": "- **First error line** (line 2225 of the output): `error: module_2222.c:41: undefined reference to `crc32_update` (link failed)`\n- **Final summary line:** `make",
+  "tool_out_chars": 142,
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 43990,
+  "tokens_out": 275,
+  "fresh_in": 9163
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0481247,
+  "turns": 2,
+  "answer": "`make check` failed with exit code 2.\n\n- **First error line:** `error: module_2222.c:41: undefined reference to crc32_update (link failed)`\n- **Final summary li",
+  "tool_out_chars": 238,
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47231,
+  "tokens_out": 143,
+  "fresh_in": 10764
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": false,
+  "cost": 0.042230899999999995,
+  "turns": 2,
+  "answer": "`make check` failed.\n\n- **First error line:** `error: module_2222.c:41: undefined reference to `crc32_update` (link failed)`\n- **Final summary line:** `make: **",
+  "tool_out_chars": 118,
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 43938,
+  "tokens_out": 232,
+  "fresh_in": 9109
+ },
+ {
+  "task": "hard: build log",
+  "cfg": "vtok+hint",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0480547,
+  "turns": 2,
+  "answer": "`make check` failed (exit 2).\n\n- **First error line:** `error: module_2222.c:41: undefined reference to `crc32_update` (link failed)`\n- **Final summary line:** ",
+  "tool_out_chars": 250,
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47236,
+  "tokens_out": 134,
+  "fresh_in": 10769
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.056090999999999995,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 3031,
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 92923,
+  "tokens_out": 402,
+  "fresh_in": 10973
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.05615590000000001,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 3047,
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 92943,
+  "tokens_out": 404,
+  "fresh_in": 10984
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0546909,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 3191,
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 92769,
+  "tokens_out": 292,
+  "fresh_in": 10900
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0674102,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 2243,
+  "tools": {
+   "Bash": 5
+  },
+  "tokens_in": 146696,
+  "tokens_out": 474,
+  "fresh_in": 12314
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.056177500000000005,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 2924,
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 92836,
+  "tokens_out": 424,
+  "fresh_in": 10941
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0720277,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 2353,
+  "tools": {
+   "Bash": 4,
+   "Read": 1,
+   "Edit": 2
+  },
+  "tokens_in": 147278,
+  "tokens_out": 818,
+  "fresh_in": 12601
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0545009,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 3047,
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 92734,
+  "tokens_out": 287,
+  "fresh_in": 10865
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.05622590000000001,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 3031,
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 92943,
+  "tokens_out": 411,
+  "fresh_in": 10984
+ },
+ {
+  "task": "hard: fix tests",
+  "cfg": "vtok+hint",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.07037819999999999,
+  "turns": 6,
+  "answer": "Fixed two bugs in `proj/calc.py` (`clamp` off-by-one, `pct` rounding); running the tests now shows all 191 passing.\n\ndone",
+  "tool_out_chars": 2243,
+  "tools": {
+   "Bash": 5
+  },
+  "tokens_in": 147210,
+  "tokens_out": 690,
+  "fresh_in": 12508
+ }
+]

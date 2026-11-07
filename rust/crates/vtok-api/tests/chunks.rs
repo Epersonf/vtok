@@ -104,3 +104,19 @@ fn top() -> u32 {
 ", "        9
 "));
 }
+
+#[test]
+fn python_edits_keep_original_formatting_and_comments() {
+    let src = "class A:\n    W: str = \" \\n\\t\"\n    X: str = \"a b\"\n    # note\n    Y: int = 3\n\n    def f(self, a):\n        # why\n        return a + 1  # tail\n";
+    let mut e = BTreeMap::new();
+    e.insert("A.W".to_string(), "W:str=\" \\t\"\n".to_string());
+    assert_eq!(apply_chunks("python", src, &e, 100, false).unwrap(), src.replace("\" \\n\\t\"", "\" \\t\""), "whitespace inside strings");
+    let mut e = BTreeMap::new();
+    e.insert("A.X".to_string(), "X:str=\"a\"\n".to_string());
+    let out = apply_chunks("python", src, &e, 100, false).unwrap();
+    assert_eq!(out, src.replace("\"a b\"", "\"a\""), "only the changed token is rewritten");
+    let mut e = BTreeMap::new();
+    e.insert("A.f".to_string(), "def f(self,a):\n return a+2\n".to_string());
+    let out = apply_chunks("python", src, &e, 100, false).unwrap();
+    assert_eq!(out, src.replace("a + 1", "a + 2"), "comments inside the item survive a token edit");
+}

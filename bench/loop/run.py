@@ -78,6 +78,13 @@ def build_big():
         body += "def test_math():\n    assert round(2.675, 2) == 2.68\n"
         (d / "fx" / "test_many.py").write_text(body)
         (d / "fx" / "test_umany.py").write_text("import unittest\n\nclass T(unittest.TestCase):\n" + "".join(f"    def test_ok{i}(self):\n        self.assertEqual({i}, {i})\n" for i in range(500)) + "    def test_bad_one(self):\n        self.assertEqual('abc'.upper(), 'abd')\n    def test_bad_two(self):\n        self.assertIn(5, [1, 2, 3])\n")
+    if not (d / "Makefile").exists():
+        (d / "gen_log.py").write_text("import sys\nfor i in range(3000):\n    print(f'[build] compiling module_{i}.c -> module_{i}.o (flags: -O2 -Wall -fPIC) ok in {5 + i % 7}ms')\n    if i == 2222: print('error: module_2222.c:41: undefined reference to `crc32_update` (link failed)')\nprint('build finished: 3000 modules, 1 error')\nsys.exit(1)\n")
+        (d / "Makefile").write_text("check:\n\tpython gen_log.py\n")
+        pr = d / "proj"; (pr / "tests").mkdir(parents=True)
+        (pr / "calc.py").write_text("def clamp(x, lo, hi):\n    return max(lo, min(x, hi - 1))\n\ndef pct(part, whole):\n    return int(part / whole * 100)\n\ndef mean(xs):\n    return sum(xs) / len(xs)\n")
+        (pr / "tests" / "test_calc.py").write_text("import pytest\nfrom calc import clamp, pct, mean\n\n@pytest.mark.parametrize('x', range(0, 130))\ndef test_clamp(x):\n    assert clamp(x, 0, 100) == min(x, 100)\n\n@pytest.mark.parametrize('n', range(1, 61))\ndef test_pct(n):\n    assert pct(n, 7) == (n * 100 + 3) // 7\n\ndef test_mean():\n    assert mean([1, 2, 3]) == 2\n")
+        (pr / "conftest.py").write_text("import sys, pathlib\nsys.path.insert(0, str(pathlib.Path(__file__).parent))\n")
     return d
 
 
@@ -89,7 +96,11 @@ def tasks_big():
     def edit_default(wd, ans):
         t = core(wd); i = t.index("def scan_string(")
         return "max_matches: int = 1000," in t[i:i + 300] and subprocess.run([sys.executable, "-c", "import pyparsing"], cwd=wd, capture_output=True).returncode == 0
+    def fix_calc(wd, ans):
+        return subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "proj"], cwd=wd, capture_output=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1")).returncode == 0
     return [
+        ("hard: build log", "Run `make check` and report the first error line and the final summary line.", both("crc32_update")),
+        ("hard: fix tests", "The tests in proj/ fail (run them from the repo root with `python -m pytest proj`). Fix the bug in proj/calc.py, not the tests, until they pass. Reply `done`.", fix_calc),
         ("big: default arg", "In pyparsing/core.py, what is the default value of the `max_matches` parameter of `ParserElement.scan_string`? Reply only the expression.", both("_MAX_INT")),
         ("big: where defined", "In pyparsing/core.py, which line range (approximately) does the method `ParserElement.transform_string` occupy? Reply `start-end` line numbers.", lambda wd, ans: any(abs(int(a) - 1285) <= 2 for a in __import__("re").findall(r"\d+", ans)[:1])),
         ("big: edit constant", "In pyparsing/core.py change the value of DEFAULT_WHITE_CHARS (the class attribute at the top of ParserElement) from \" \\n\\t\\r\" to \" \\t\". Reply `done` when finished.", edit_white),

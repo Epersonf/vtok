@@ -84,3 +84,24 @@ No cost difference (the gap is the `edit default` task, which has nothing to do 
 commands (the hook skips piped commands), and Claude Code already stores very large tool output on disk and shows a preview. On a 63-test pytest run the compact view is
 ~110 tokens against ~1.8k raw (`tool_out_chars` in the results), a saving of cents at most against a ~45k-token fixed context per run. Separately, in the same suite the
 agent never called Vtok's MCP tools even with the usage block in the prompt: its own Grep and ranged Read were enough on a 6k-line file.
+
+## Scenarios where the agent cannot just `| tail` (suite `big`, tasks `hard:`), Sonnet
+
+`hard: build log`: `make check` prints 3000 compile lines with one linker error in the middle; the question is the first error line. Correct answers out of 6 runs:
+
+| config | correct | input tokens | turns |
+|---|---|---|---|
+| base | 2/6 | 376k | 17 |
+| hook (`vtok init --claude-hook`) | 4/6 | 308k | 14 |
+| vtok+hint (agent calls `vtok run`) | 6/6 | 283k | 12 |
+
+Here the compact view wins on correctness (the agent's own `head`/`tail` often misses the buried error, and twice reported "no error") and uses about 25% fewer input tokens; cost is about equal because of the fixed context.
+
+`hard: fix tests` (56 failing parametrized tests, fix `calc.py`): 4/4 for every config, no saving, the agent pipes through `tail` itself and vtok+hint adds turns. This run exposed a gap that was fixed:
+plain `pytest` failure reports (no `-v`) with many parametrized failures were not compacted (2.5k tokens of near-identical blocks); `vtok run` now keeps the first block of each
+test function plus any with a different assertion shape and says `+29 more failures of test_clamp with the same assertion (101, 102, ... 129)` (about 170 tokens).
+
+`big: edit constant` / `edit default` on a 6.1k-line file, `vtok-only` vs native Edit: first run 0/6 correct. Cause (a product bug, not the benchmark): Python edits rewrote the edited
+line in Vtok's compact spacing (`X:str=" \t"` instead of `X: str = " \t"`) and dropped comments, because the Python plugin had no token-level patching (TS and Rust did). Python now
+patches at token level, strings as single tokens, and falls back to it for single-statement and class-attribute chunks. Result: 6/6 correct, original formatting and comments kept.
+Cost is still higher than native Edit in that harness (about 7 turns against 3: tool discovery, a chunk read, then the edit), so for one-line edits the native tool stays cheaper.

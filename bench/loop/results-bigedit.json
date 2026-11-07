@@ -1,0 +1,224 @@
+[
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 190,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.0722995,
+  "turns": 7,
+  "answer": "done",
+  "tool_out_chars": 1930,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_chunk": 2,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 142415,
+  "tokens_out": 856,
+  "fresh_in": 12700
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 2,
+  "ok": false,
+  "cost": 0.0686232,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 1777,
+  "tools": {
+   "Bash": 1,
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 120422,
+  "tokens_out": 782,
+  "fresh_in": 12510
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.0688539,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 1777,
+  "tools": {
+   "Grep": 1,
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 120505,
+  "tokens_out": 798,
+  "fresh_in": 12526
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.04830960000000001,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 1042,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 67066,
+  "tokens_out": 359,
+  "fresh_in": 9750
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0493538,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 400,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66745,
+  "tokens_out": 499,
+  "fresh_in": 9667
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.07059460000000001,
+  "turns": 5,
+  "answer": "done. The edit tool reported \"-16 lines\", so the docstring and comments inside `scan_string` were probably dropped when it rewrote the function. I didn't check ",
+  "tool_out_chars": 1669,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 100073,
+  "tokens_out": 1160,
+  "fresh_in": 12567
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.0754331,
+  "turns": 6,
+  "answer": "Edit applied and checked. The chunk reads back correctly, and `max_matches` now defaults to `1000`.\n\ndone",
+  "tool_out_chars": 2825,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 2,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 121754,
+  "tokens_out": 1156,
+  "fresh_in": 13263
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.06256350000000001,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 658,
+  "tools": {
+   "Grep": 2,
+   "Edit": 2,
+   "Read": 1
+  },
+  "tokens_in": 135126,
+  "tokens_out": 933,
+  "fresh_in": 10191
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 2,
+  "ok": false,
+  "cost": 0.08245630000000001,
+  "turns": 7,
+  "answer": "I can't confirm the edit's side effects, because the Read, Grep and Bash tools are all disabled here. I'm not saying `done`, because the edit probably did more ",
+  "tool_out_chars": 1907,
+  "tools": {
+   "Bash": 1,
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1,
+   "Read": 1
+  },
+  "tokens_in": 141898,
+  "tokens_out": 1715,
+  "fresh_in": 13115
+ }
+]

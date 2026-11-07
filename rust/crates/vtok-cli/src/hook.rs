@@ -5,63 +5,7 @@
 //! normal rules: the hook never grants approval by itself.
 use serde_json::{json, Value};
 
-const SHELL_META: &[char] = &['|', ';', '&', '<', '>', '`', '\n', '\\', '(', ')', '{', '}'];
-
-fn words(cmd: &str) -> Vec<&str> {
-    // skip leading VAR=value assignments
-    cmd.split_whitespace().skip_while(|w| w.contains('=') && !w.starts_with('-') && !w.contains('/') || (w.contains('=') && w.chars().next().map_or(false, |c| c.is_ascii_uppercase()))).collect()
-}
-
-/// True for commands whose output is usually long and mostly noise.
-pub fn is_chatty(cmd: &str) -> bool {
-    let w = words(cmd);
-    let Some(&prog) = w.first() else { return false };
-    let prog = prog.rsplit('/').next().unwrap_or(prog);
-    let sub = w.get(1).copied().unwrap_or("");
-    let has = |x: &str| w.iter().skip(1).any(|a| *a == x);
-    match prog {
-        "pytest" | "py.test" | "jest" | "vitest" | "mocha" | "tsc" | "eslint" | "ruff" | "mypy" | "pylint" | "flake8" | "make" | "mvn" | "gradle" | "gradlew" | "tox" | "nox" | "rspec" | "phpunit" => true,
-        "python" | "python3" => sub == "-m" && matches!(w.get(2).copied().unwrap_or(""), "pytest" | "unittest" | "pip" | "mypy" | "ruff" | "tox"),
-        "cargo" => matches!(sub, "test" | "build" | "check" | "clippy" | "doc" | "bench" | "install" | "update" | "fetch"),
-        "npm" | "pnpm" | "yarn" | "bun" => matches!(sub, "test" | "install" | "i" | "ci" | "add" | "build" | "lint" | "audit") || (sub == "run" && matches!(w.get(2).copied().unwrap_or(""), "test" | "build" | "lint" | "typecheck")),
-        "pip" | "pip3" | "uv" | "poetry" => matches!(sub, "install" | "list" | "freeze" | "sync" | "lock" | "add") || (sub == "pip" && matches!(w.get(2).copied().unwrap_or(""), "install" | "list" | "freeze")),
-        "go" => matches!(sub, "test" | "build" | "vet" | "mod" | "get"),
-        "dotnet" => matches!(sub, "test" | "build" | "restore"),
-        "docker" | "podman" => matches!(sub, "build" | "logs" | "pull" | "ps" | "images"),
-        "kubectl" => matches!(sub, "logs" | "get" | "describe"),
-        "git" => matches!(sub, "log" | "diff" | "show" | "status" | "blame") && !has("--oneline") && !has("-1") && !has("-n1") && !w.iter().any(|a| a.starts_with("--format") || a.starts_with("--pretty") || a.starts_with("--stat=") && false || *a == "--quiet" || *a == "-q"),
-        "find" | "tree" => true,
-        "ls" => w.iter().skip(1).any(|a| a.starts_with('-') && a.contains('R')),
-        "grep" | "rg" => w.iter().skip(1).any(|a| a.starts_with('-') && (a.contains('r') || a.contains('R'))) || prog == "rg",
-        _ => false,
-    }
-}
-
-/// The rewritten command, or None to leave the original alone.
-/// Split a leading `cd DIR && ` / `export X=y && ` prefix (agents add it to nearly every command) from the command itself.
-pub fn split_prefix(cmd: &str) -> (&str, &str) {
-    let mut rest = cmd.trim_start();
-    let mut used = 0;
-    while let Some(i) = rest.find("&&") {
-        let head = rest[..i].trim();
-        let simple = |h: &str| !h.is_empty() && !h.contains(['|', ';', '<', '>', '`', '\n', '(', ')', '{', '}', '&']) && !h.contains("$(");
-        if (head.starts_with("cd ") || head.starts_with("export ")) && simple(head) {
-            used += cmd.trim_start().len() - rest.len() + i + 2;
-            rest = &rest[i + 2..];
-        } else { break; }
-    }
-    let off = cmd.len() - cmd.trim_start().len() + used;
-    (&cmd[..off.min(cmd.len())], cmd[off.min(cmd.len())..].trim_start())
-}
-
-/// The rewritten command, or None to leave the original alone.
-pub fn rewrite(cmd: &str) -> Option<String> {
-    let (pre, t) = split_prefix(cmd);
-    let t = t.trim();
-    if t.is_empty() || t.starts_with("vtok ") || t.contains(SHELL_META) || t.contains("$(") { return None; }
-    if !is_chatty(t) { return None; }
-    Some(format!("{}vtok run -- {t}", if pre.is_empty() { String::new() } else { format!("{} ", pre.trim()) }))
-}
+use crate::rewrite::rewrite;
 
 pub fn answer(input: &str) -> Option<String> {
     let v: Value = serde_json::from_str(input).ok()?;
@@ -101,16 +45,6 @@ pub fn install(path: &str) -> Result<bool, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn wraps_chatty_commands_only() {
-        assert_eq!(rewrite("cargo test --release").as_deref(), Some("vtok run -- cargo test --release"));
-        assert_eq!(rewrite("FOO=1 python -m pytest -v tests").as_deref(), Some("vtok run -- FOO=1 python -m pytest -v tests"));
-        assert!(rewrite("npm install").is_some() && rewrite("git log --stat").is_some() && rewrite("grep -rn foo src").is_some());
-        for no in ["ls", "cat a.txt", "git log --oneline", "git status -q", "cargo test | head", "vtok run -- cargo test", "python script.py", "cd x\ncargo test", "grep foo file", "cargo run"] {
-            assert!(rewrite(no).is_none(), "{no}");
-        }
-    }
 
     #[test]
     fn answer_keeps_other_fields_and_ignores_other_tools() {

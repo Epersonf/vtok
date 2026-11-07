@@ -142,9 +142,10 @@ permission rules apply. For clients that ignore MCP instructions, `vtok init --w
 
 **Automatic compaction of shell output (Claude Code).** `vtok init --claude-hook ~/.claude/settings.json` registers a PreToolUse hook
 (`vtok hook`) that rewrites known long-output commands (tests, builds, installs, `git log/diff`, recursive `grep`/`find`) to
-`vtok run -- <command>` before they run, so the agent gets the compact view without asking for it. Commands with pipes, redirects or `&&` (other than a leading `cd DIR &&` or `export X=y &&`, which stays in front),
-and anything unrecognised, pass through untouched; the hook never grants permission by itself. Agent-neutral setups can alias the same
-thing with `vtok run --`.
+`vtok run -- <command>` before they run, so the agent gets the compact view without asking for it. Compound lines (`a && b`, `a; b`, `a || b`) are rewritten segment by segment; a segment with a pipe, redirect or substitution, a background `&`, a heredoc and anything unrecognised pass through untouched; the hook never grants permission by itself. Agent-neutral setups can alias the same
+thing with `vtok run --`, or call `vtok rewrite COMMAND` from their own hook (prints the wrapped line, exit 1 when nothing should change).
+
+`vtok run` also has per-tool views, picked by the shape of the output: compiler and linter diagnostics (tsc, ruff, flake8, mypy) grouped by rule and message with `file:lines`, and the long `git status` grouped by state.
 
 `vtok output --grep` shows at most 40 matching lines and says how many more there are. Agents are told to skip Vtok when the plain alternative is cheaper (small files, short output).
 

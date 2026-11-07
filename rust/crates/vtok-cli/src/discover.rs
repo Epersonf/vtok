@@ -30,7 +30,7 @@ fn text_of(c: &Value) -> String {
 
 /// Group key: program plus subcommand ("cargo test", "git log", "python -m pytest").
 fn key(cmd: &str) -> String {
-    let cmd = crate::hook::split_prefix(cmd).1;
+    let cmd = crate::rewrite::split_prefix(cmd).1;
     let w: Vec<&str> = cmd.split_whitespace().skip_while(|w| w.contains('=') && !w.starts_with('-') && !w.contains('/')).collect();
     let prog = w.first().map(|p| p.rsplit('/').next().unwrap_or(p)).unwrap_or("?");
     match (prog, w.get(1)) {
@@ -75,7 +75,7 @@ pub fn run(args: &[String]) -> i32 {
                         let code = if out.starts_with("Exit code ") { 1 } else { 0 };
                         let shown = ntok(&crate::shell::compact(&out, code, 700)) as u64;
                         let e = groups.entry(key(&cmd)).or_insert((0, 0, 0, false));
-                        e.0 += 1; e.1 += raw; e.2 += shown.min(raw); e.3 |= crate::hook::rewrite(&cmd).is_some();
+                        e.0 += 1; e.1 += raw; e.2 += shown.min(raw); e.3 |= crate::rewrite::rewrite(&cmd).is_some();
                     }
                     _ => {}
                 }

@@ -19,3 +19,6 @@ regex = "1"
 toml = "0.8"
 serde = { version = "1", features = ["derive"] }
 ureq = "3"
+lopdf = { version = "0.34", default-features = false, features = ["nom_parser"] }
+imagesize = "0.13"
+zip = { version = "2", default-features = false, features = ["deflate"] }

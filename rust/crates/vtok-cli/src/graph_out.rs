@@ -11,7 +11,7 @@ impl Graph {
         let deg = self.degree();
         let hub = (self.nodes.len() / 40).max(12);
         let mut v: Vec<(usize, usize)> = self.edges.iter().copied()
-            .filter(|&(a, b)| self.label[a] != self.label[b] && deg[a] <= hub && deg[b] <= hub && !["doc", "value"].contains(&self.nodes[a].kind) && !["doc", "value"].contains(&self.nodes[b].kind) && self.nodes[a].file != self.nodes[b].file)
+            .filter(|&(a, b)| self.label[a] != self.label[b] && deg[a] <= hub && deg[b] <= hub && self.nodes[a].is_code() && self.nodes[b].is_code() && self.nodes[a].kind != "value" && self.nodes[b].kind != "value" && self.nodes[a].file != self.nodes[b].file)
             .collect();
         v.sort_by_key(|&(a, b)| (std::cmp::Reverse(deg[a].min(deg[b])), a, b));
         v.truncate(n);
@@ -31,10 +31,13 @@ impl Graph {
         }
         out.push_str("\n## Questions to ask the graph\n");
         let deg = self.degree();
-        let mut idx: Vec<usize> = (0..self.nodes.len()).filter(|&i| deg[i] > 0 && !["doc", "value"].contains(&self.nodes[i].kind)).collect();
+        let mut idx: Vec<usize> = (0..self.nodes.len()).filter(|&i| deg[i] > 0 && self.nodes[i].is_code() && self.nodes[i].kind != "value").collect();
         idx.sort_by_key(|&i| std::cmp::Reverse(deg[i]));
         if let Some(&h) = idx.first() { out.push_str(&format!("- `vtok graph explain {}`: who depends on the most connected symbol?\n", crate::refs::base(&self.nodes[h].name))); }
         if idx.len() >= 2 { out.push_str(&format!("- `vtok graph path {} {}`: how do the two biggest hubs connect?\n", crate::refs::base(&self.nodes[idx[0]].name), crate::refs::base(&self.nodes[idx[1]].name))); }
+        let mut docs: Vec<usize> = (0..self.nodes.len()).filter(|&i| deg[i] > 0 && !self.nodes[i].is_code() && self.nodes[i].kind != "page").collect();
+        docs.sort_by_key(|&i| std::cmp::Reverse(deg[i]));
+        if let Some(&d) = docs.first() { out.push_str(&format!("- `vtok graph explain {}`: which code does the best connected document ({}) cover?\n", self.nodes[d].label(), self.nodes[d].kind)); }
         if let Some((a, b)) = sur.first() { out.push_str(&format!("- `vtok graph path {} {}`: why do these two subsystems touch?\n", crate::refs::base(&self.nodes[*a].name), crate::refs::base(&self.nodes[*b].name))); }
         out
     }
@@ -52,7 +55,8 @@ impl Graph {
         for &o in &idx { names.entry(self.label[o]).or_insert_with(|| self.community_name(self.label[o])); }
         let data = serde_json::json!({
             "nodes": idx.iter().map(|&o| { let n = &self.nodes[o]; serde_json::json!([n.file, n.name, n.a, n.b, n.kind]) }).collect::<Vec<_>>(),
-            "edges": self.edges.iter().filter(|e| keep.contains(&e.0) && keep.contains(&e.1)).map(|e| [remap[&e.0], remap[&e.1]]).collect::<Vec<_>>(),
+            "edges": self.edges.iter().zip(&self.conf).filter(|(e, _)| keep.contains(&e.0) && keep.contains(&e.1)).map(|(e, c)| [remap[&e.0], remap[&e.1], *c as usize]).collect::<Vec<_>>(),
+            "details": idx.iter().map(|&o| self.nodes[o].detail()).collect::<Vec<_>>(),
             "label": idx.iter().map(|&o| self.label[o]).collect::<Vec<_>>(),
             "names": names, "cut": cut, "total": self.nodes.len(),
         });

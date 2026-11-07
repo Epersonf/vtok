@@ -48,7 +48,7 @@ fn fixture(state: &Path, claude: &Path) {
 fn a_named_stretch_is_reported_against_the_turns_of_its_transcript() {
     let (state, claude) = (scratch("fix"), scratch("fix-claude"));
     fixture(&state, &claude);
-    let v: Value = serde_json::from_str(&text(&vtok(&state, &claude, Some("chat-one"), None, &["session", "report", "login", "--json"]))).unwrap();
+    let v: Value = serde_json::from_str(&text(&vtok(&state, &claude, Some("chat-one"), None, &["session", "report", "login", "--standing-tokens", "729", "--json"]))).unwrap();
     assert_eq!((v["calls"].as_u64(), v["saved_exact"].as_i64(), v["saved_upper_bound"].as_i64()), (Some(2), Some(2000), Some(500)), "{v}");
     let c = &v["cost"];
     assert_eq!((c["turns"].as_u64(), c["units"].as_f64()), (Some(4), Some(6000.0)), "{v}");

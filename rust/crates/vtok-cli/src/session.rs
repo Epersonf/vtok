@@ -80,8 +80,8 @@ fn target(spans: &[Span], scope: &Scope, a: &Ask) -> Result<Target, String> {
     let mut filter = Filter::default();
     if scope.chat.is_empty() { filter.cwd = Some(scope.cwd.clone()); } else { filter.session = Some(scope.chat.clone()); }
     Ok(match span {
-        Some(s) => { filter.from = Some(s.from); filter.to = s.to; Target { title: format!("session {:?}", s.name), filter, chat_id: scope.chat.clone(), open: s.to.is_none() } }
-        None => Target { title: if scope.chat.is_empty() { "directory" } else { "whole chat" }.into(), filter, chat_id: scope.chat.clone(), open: false },
+        Some(s) => { filter.from = Some(s.from); filter.to = s.to; Target { title: format!("session {:?}", s.name), filter, chat_id: scope.chat.clone(), open: s.to.is_none(), standing_tokens: a.opts.standing_tokens } }
+        None => Target { title: if scope.chat.is_empty() { "directory" } else { "whole chat" }.into(), filter, chat_id: scope.chat.clone(), open: false, standing_tokens: a.opts.standing_tokens },
     })
 }
 

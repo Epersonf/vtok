@@ -1,4 +1,4 @@
-use super::chat::{measure, Chat};
+use super::chat::{measure, Chat, Standing};
 use super::json::json;
 use super::render::text;
 use super::report::{Opts, Report};
@@ -18,7 +18,10 @@ fn rec(t: u64, kind: &str, raw: u64, shown: u64) -> Rec {
     Rec { t, kind: kind.into(), raw, shown, session: "abcdef123456".into(), cwd: "/p".into(), via: "mcp".into(), tagged: true, ..Default::default() }
 }
 
-fn measured(recs: &[Rec], tr: &Transcript, from: f64, to: f64, mcp: bool) -> Chat { measure(tr, &recs.iter().collect::<Vec<_>>(), from, to, mcp) }
+/// The standing cost is pinned to 729 tokens here, so the figures below do not move when the default is measured again.
+fn measured(recs: &[Rec], tr: &Transcript, from: f64, to: f64, mcp: bool) -> Chat {
+    measure(tr, &recs.iter().collect::<Vec<_>>(), from, to, Standing { seen: mcp, tokens: 729.0 })
+}
 
 fn two_calls() -> Vec<Rec> { vec![rec(150, "run", 3000, 1000), rec(250, "read", 800, 300)] }
 
@@ -52,6 +55,18 @@ fn the_write_of_the_instructions_is_charged_only_to_a_window_with_the_first_turn
     assert_eq!(measured(&[], &tr, 200.0, 500.0, true).standing, 729.0 * 4.0, "four turns, none of them the first");
     let none = measured(&[], &tr, 200.0, 500.0, false);
     assert_eq!((none.standing, none.mcp), (0.0, false), "no MCP in the chat, nothing to charge");
+}
+
+#[test]
+fn the_standing_tokens_can_be_set_by_flag_or_by_tool_argument() {
+    let c = measure(&transcript(&[]), &[], 100.0, 500.0, Standing { seen: true, tokens: 1000.0 });
+    assert_eq!((c.standing, c.standing_tokens), (1000.0 * 16.5, 1000.0));
+    let args: Vec<String> = ["report", "x", "--standing-tokens", "1000", "--by-prompt", "--limit", "5"].iter().map(|s| s.to_string()).collect();
+    let a = super::ask::Ask::from_args(&args).unwrap();
+    assert_eq!((a.name.as_deref(), a.opts.standing_tokens, a.opts.by_prompt, a.opts.limit), (Some("x"), 1000.0, true, Some(5)));
+    assert!(super::ask::Ask::from_args(&["report".to_string(), "--standing-tokens".into(), "lots".into()]).is_err());
+    let j = super::ask::Ask::from_json(&serde_json::json!({"action": "report", "standing_tokens": 900, "by_prompt": true})).unwrap();
+    assert_eq!((j.opts.standing_tokens, j.opts.by_prompt), (900.0, true));
 }
 
 #[test]

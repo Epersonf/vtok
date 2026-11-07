@@ -1,7 +1,7 @@
 //! The text of a report.
 use super::by_prompt;
 use super::calls::{did_not_pay, list};
-use super::cost::{usd, READ, STANDING_TOKENS};
+use super::cost::{usd, READ};
 use super::report::{Opts, Report};
 use crate::usage::fmt::{dur, num, short};
 use crate::usage::kinds::{class, Class};
@@ -61,7 +61,8 @@ fn chat_section(r: &Report, o: &Opts) -> String {
     s.push_str(&format!("worth, in cache-read units (1 unit = one cached token read again = US${:.2}/M):\n", usd(1e6, o.price_in)));
     s.push_str(&format!("  exact calls (vtok run)           {:>12}  {}\n", signed(c.gain_exact), money(c.gain_exact, o)));
     s.push_str(&format!("  whole-file calls (upper bound)   {:>12}  {}\n", signed(c.gain_upper), money(c.gain_upper, o)));
-    let why = if c.mcp { format!("{} tokens x {} turns", STANDING_TOKENS as i64, c.turns) } else { "no MCP call seen; if the server is registered it costs ".to_string() + &format!("{} tokens x {} turns = {} units", STANDING_TOKENS as i64, c.turns, num((STANDING_TOKENS * READ * c.turns as f64) as i64)) };
+    let (tokens, turns) = (c.standing_tokens as i64, c.turns);
+    let why = if c.mcp { format!("{tokens} tokens x {turns} turns") } else { format!("no MCP call seen; if the server is registered it costs {tokens} tokens x {turns} turns = {} units", num((c.standing_tokens * READ * turns as f64) as i64)) };
     s.push_str(&format!("  MCP instructions ({why})  {:>12}\n", signed(-c.standing)));
     let pct = |n: f64| if c.units > 0.0 { 100.0 * n / c.units } else { 0.0 };
     s.push_str(&format!("  net: {} units ({}, {:.1}% of the window) counting exact calls only, {} ({}, {:.1}%) with the upper-bound ones\n", signed(c.net_exact()), money(c.net_exact(), o), pct(c.net_exact()), signed(c.net_all()), money(c.net_all(), o), pct(c.net_all())));

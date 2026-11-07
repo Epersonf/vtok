@@ -13,7 +13,7 @@ pub fn json(r: &Report, o: &Opts) -> String {
     let cost = r.chat.as_ref().map(|c| json!({"turns": c.turns, "input": c.usage.input, "cache_read": c.usage.cache_read, "cache_write": c.usage.cache_write,
         "output": c.usage.output, "units": c.units, "usd": usd(c.units, o.price_in), "gain_exact_units": c.gain_exact, "gain_upper_units": c.gain_upper,
         "standing_units": c.standing, "net_exact_units": c.net_exact(), "net_all_units": c.net_all(), "net_exact_usd": usd(c.net_exact(), o.price_in),
-        "net_all_usd": usd(c.net_all(), o.price_in), "mcp": c.mcp, "model": c.model}));
+        "net_all_usd": usd(c.net_all(), o.price_in), "mcp": c.mcp, "standing_tokens": c.standing_tokens, "model": c.model}));
     let prompts = o.by_prompt.then(|| by_prompt::json_of(&by_prompt::of(r), r.from as f64, o));
     json!({"title": r.title, "chat": r.chat_id, "open": r.open, "from": r.from, "to": r.to, "calls": r.recs.len(), "rows": rows, "counted_calls": t.calls,
            "raw": t.raw, "shown": t.shown, "saved_exact": saved_of(&r.rows, Class::Exact), "saved_upper_bound": saved_of(&r.rows, Class::Upper),

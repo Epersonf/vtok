@@ -1,5 +1,5 @@
 use super::by_prompt::{json_of, lines, table};
-use super::chat::measure;
+use super::chat::{measure, Standing};
 use super::render::text;
 use super::report::{Opts, Report};
 use super::transcript::{Prompt, Transcript, Turn, Usage};
@@ -21,7 +21,9 @@ fn rec(t: u64, kind: &str, raw: u64, shown: u64) -> Rec {
 
 fn two_calls() -> Vec<Rec> { vec![rec(120, "run", 3000, 1000), rec(320, "read", 800, 300)] }
 
-fn all_lines() -> Vec<super::by_prompt::Line> { lines(&transcript(), &two_calls().iter().collect::<Vec<_>>(), 100.0, 400.0, true) }
+fn mcp(seen: bool) -> Standing { Standing { seen, tokens: 729.0 } }
+
+fn all_lines() -> Vec<super::by_prompt::Line> { lines(&transcript(), &two_calls().iter().collect::<Vec<_>>(), 100.0, 400.0, mcp(true)) }
 
 #[test]
 fn each_prompt_gets_its_own_turns_and_calls_but_a_saving_counts_to_the_end() {
@@ -36,7 +38,7 @@ fn each_prompt_gets_its_own_turns_and_calls_but_a_saving_counts_to_the_end() {
 
 #[test]
 fn a_prompt_with_nothing_in_the_window_is_left_out() {
-    let l = lines(&transcript(), &[], 200.0, 400.0, false);
+    let l = lines(&transcript(), &[], 200.0, 400.0, mcp(false));
     assert_eq!(l.len(), 1, "the first prompt's turns are before the window");
     assert_eq!(l[0].text, "and the logout");
 }
@@ -53,7 +55,7 @@ fn the_table_puts_the_dearest_prompt_first_and_honours_the_limit() {
 #[test]
 fn the_report_prints_and_exports_the_prompts_when_asked() {
     let recs = two_calls();
-    let chat = measure(&transcript(), &recs.iter().collect::<Vec<_>>(), 100.0, 400.0, true);
+    let chat = measure(&transcript(), &recs.iter().collect::<Vec<_>>(), 100.0, 400.0, mcp(true));
     let rows = tally(recs.iter());
     let r = Report { title: "whole chat".into(), chat_id: "abcdef123456".into(), open: false, from: 100, to: 400, recs, rows, chat: Some(chat), transcript: Some((PathBuf::from("x.jsonl"), transcript())) };
     let o = Opts { by_prompt: true, ..Opts::default() };

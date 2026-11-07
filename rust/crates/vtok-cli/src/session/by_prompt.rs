@@ -1,7 +1,7 @@
 //! The report by prompt: what the user typed starts a stretch that lasts until the next prompt, and each stretch gets what
 //! its turns cost and what vtok's calls in it were worth. A saving still counts up to the end of the whole report (a call
 //! pays off in the prompts that follow it), so the figures of one prompt are not a verdict on that prompt alone.
-use super::chat::{measure_in, Chat};
+use super::chat::{measure_in, Chat, Standing};
 use super::cost::usd;
 use super::report::{window, Opts, Report};
 use super::transcript::Transcript;
@@ -21,14 +21,14 @@ pub struct Line {
     pub chat: Chat,
 }
 
-pub fn lines(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, mcp: bool) -> Vec<Line> {
+pub fn lines(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, st: Standing) -> Vec<Line> {
     let mut out = Vec::new();
     for (i, p) in tr.prompts.iter().enumerate() {
         let end = tr.prompts.get(i + 1).map_or(f64::INFINITY, |n| n.t);
         let (a, b) = (p.t.max(from), (end - 1e-3).min(to));
         if a > b { continue; }
         let mine: Vec<&Rec> = recs.iter().copied().filter(|r| (r.t as f64) >= a && (r.t as f64) <= b).collect();
-        let chat = measure_in(tr, &mine, a, b, to, mcp);
+        let chat = measure_in(tr, &mine, a, b, to, st);
         if chat.turns == 0 && mine.is_empty() { continue; }
         let tokens = mine.iter().filter(|r| class(&r.kind) != Class::NotCounted).map(|r| saved(&r.kind, r.raw, r.shown)).sum();
         out.push(Line { at: a, text: p.text.clone(), calls: mine.len(), tokens, chat });
@@ -39,7 +39,7 @@ pub fn lines(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, mcp: bool) -> V
 /// The prompts of a report's window; empty without a transcript.
 pub fn of(r: &Report) -> Vec<Line> {
     match (&r.transcript, &r.chat) {
-        (Some((_, tr)), Some(c)) => { let (from, to) = window(r.from, r.to); lines(tr, &r.recs.iter().collect::<Vec<_>>(), from, to, c.mcp) }
+        (Some((_, tr)), Some(c)) => { let (from, to) = window(r.from, r.to); lines(tr, &r.recs.iter().collect::<Vec<_>>(), from, to, Standing { seen: c.mcp, tokens: c.standing_tokens }) }
         _ => Vec::new(),
     }
 }

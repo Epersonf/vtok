@@ -8,9 +8,11 @@ pub const WRITE: f64 = 12.5;
 pub const READ: f64 = 1.0;
 pub const INPUT: f64 = 10.0;
 pub const OUTPUT: f64 = 50.0;
-/// Prompt tokens that registering the MCP server adds to every turn (measured with one-turn `claude -p` runs, see
-/// bench/loop/RESULTS.md).
-pub const STANDING_TOKENS: f64 = 729.0;
+/// Prompt tokens that registering the MCP server adds to every turn, measured with one-turn `claude -p` runs (the prompt
+/// size the API reports, same tools, only the server differs; Claude Code 2.1.312, 2026-11-07): +654 with the default
+/// 8 tools, +744 with `VTOK_MCP_ALL=1` (14 tools: Claude Code sends the names of tools, not their schemas). The larger
+/// is the default because it is what the author's registration costs; `--standing-tokens N` overrides it.
+pub const STANDING_TOKENS: f64 = 744.0;
 /// US$ per million uncached input tokens: the Sonnet-class list price, overridable with `--price-in`.
 pub const DEFAULT_PRICE_IN: f64 = 3.0;
 
@@ -23,7 +25,7 @@ pub fn usd(units: f64, price_in: f64) -> f64 { units * price_in / 10.0 / 1e6 }
 pub fn ride(turns: usize) -> f64 { if turns == 0 { 0.0 } else { WRITE + READ * (turns - 1) as f64 } }
 
 /// What the MCP server's instructions cost over `turns` turns; the first of them pays the write when it is in the window.
-pub fn standing(turns: usize, includes_first_turn: bool) -> f64 {
+pub fn standing(tokens: f64, turns: usize, includes_first_turn: bool) -> f64 {
     if turns == 0 { return 0.0; }
-    STANDING_TOKENS * (READ * turns as f64 + if includes_first_turn { WRITE - READ } else { 0.0 })
+    tokens * (READ * turns as f64 + if includes_first_turn { WRITE - READ } else { 0.0 })
 }

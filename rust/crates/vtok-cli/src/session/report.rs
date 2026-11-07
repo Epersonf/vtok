@@ -1,7 +1,7 @@
 //! A report: the calls of one chat or named session, summed with the same rules as `gain`, and (for Claude Code chats)
 //! joined with the chat's transcript to put them in the cost of the turns around them.
-use super::chat::{measure, Chat};
-use super::cost::DEFAULT_PRICE_IN;
+use super::chat::{measure, Chat, Standing};
+use super::cost::{DEFAULT_PRICE_IN, STANDING_TOKENS};
 use super::transcript::{self, Transcript};
 use crate::usage::filter::Filter;
 use crate::usage::rec::Rec;
@@ -17,14 +17,16 @@ pub struct Target {
     /// The chat whose transcript to read (empty when the chat is unknown).
     pub chat_id: String,
     pub open: bool,
+    /// Prompt tokens per turn the MCP server adds.
+    pub standing_tokens: f64,
 }
 
 /// How to print it.
 #[derive(Clone, Debug)]
-pub struct Opts { pub price_in: f64, pub per_call: bool, pub by_prompt: bool, pub json: bool, pub limit: Option<usize> }
+pub struct Opts { pub price_in: f64, pub standing_tokens: f64, pub per_call: bool, pub by_prompt: bool, pub json: bool, pub limit: Option<usize> }
 
 impl Default for Opts {
-    fn default() -> Opts { Opts { price_in: DEFAULT_PRICE_IN, per_call: false, by_prompt: false, json: false, limit: None } }
+    fn default() -> Opts { Opts { price_in: DEFAULT_PRICE_IN, standing_tokens: STANDING_TOKENS, per_call: false, by_prompt: false, json: false, limit: None } }
 }
 
 pub struct Report {
@@ -61,6 +63,6 @@ pub fn build(t: &Target, now: u64) -> Report {
     let to = t.filter.to.or(if t.open { Some(now) } else { last }).unwrap_or(now);
     let rows = tally(recs.iter());
     let (wf, wt) = window(from, to);
-    let chat = transcript.as_ref().map(|(_, tr)| measure(tr, &recs.iter().collect::<Vec<_>>(), wf, wt, mcp));
+    let chat = transcript.as_ref().map(|(_, tr)| measure(tr, &recs.iter().collect::<Vec<_>>(), wf, wt, Standing { seen: mcp, tokens: t.standing_tokens }));
     Report { title: t.title.clone(), chat_id: t.chat_id.clone(), open: t.open, from, to, recs, rows, chat, transcript }
 }

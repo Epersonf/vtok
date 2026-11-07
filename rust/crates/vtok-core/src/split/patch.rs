@@ -39,21 +39,31 @@ pub(super) fn token_patch(lang: &dyn Language, old: &str, new: &str, member: boo
     };
     let mut out = String::new(); // the first gap (taken from 0) already carries the leading whitespace
     let mut dels: std::collections::VecDeque<usize> = Default::default();
+    // (old, new) index of the token written last. An empty gap that its own text already had (the escape and the word
+    // after it in "\nEstimate") must stay empty; only a gap made empty by this patch can glue two words together.
+    let mut last: (Option<usize>, Option<usize>) = (None, None);
     for (o, nn) in ops {
-        let (g, tok) = match (o, nn) {
-            (Some(i), Some(_)) => { dels.clear(); (gap(old, &ot, i), os[i]) }
+        let (g, tok, touching) = match (o, nn) {
+            (Some(i), Some(k)) => {
+                dels.clear();
+                let touching = i > 0 && last.0 == Some(i - 1);
+                last = (Some(i), Some(k));
+                (gap(old, &ot, i), os[i], touching)
+            }
             (Some(i), None) => { dels.push_back(i); continue; }
             (None, Some(k)) => {
-                let g = match dels.pop_front() {
-                    Some(d) => { let g = gap(old, &ot, d); if g.chars().all(char::is_whitespace) { g } else { gap(new, &nt, k) } }
-                    None => gap(new, &nt, k),
+                let (g, from_new) = match dels.pop_front() {
+                    Some(d) => { let g = gap(old, &ot, d); if g.chars().all(char::is_whitespace) { (g, false) } else { (gap(new, &nt, k), true) } }
+                    None => (gap(new, &nt, k), true),
                 };
-                (g, ns[k])
+                let touching = from_new && k > 0 && last.1 == Some(k - 1);
+                last = (None, Some(k));
+                (g, ns[k], touching)
             }
             _ => continue,
         };
         out.push_str(&g);
-        if g.is_empty() && out.chars().last().map_or(false, is_word) && tok.chars().next().map_or(false, is_word) { out.push(' '); }
+        if g.is_empty() && !touching && out.chars().last().map_or(false, is_word) && tok.chars().next().map_or(false, is_word) { out.push(' '); }
         out.push_str(tok);
     }
     out.push_str(&old[ot.last()?.1..]);

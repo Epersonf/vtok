@@ -75,6 +75,20 @@ fn edit_keeps_untouched_items_verbatim() {
     let _ = s;
 }
 
+/// A string with an escape followed by a word ("\nEstimate") used to make the token patch add a space inside the string, fail
+/// the equivalence check and rewrite the whole function in its minified form.
+#[test]
+fn rust_edit_next_to_an_escape_in_a_string_stays_a_token_patch() {
+    let src = "fn f(x: u32) {\n    let marker = 1;\n\n    println!(\"\\nEstimate: {}\", x + marker);\n}\n";
+    let vt = chunk_of("rust", src, "f", 100).unwrap();
+    let edited = vt.replace("=1;", "=2;");
+    assert_ne!(vt, edited, "{vt}");
+    let mut e = BTreeMap::new();
+    e.insert("f".to_string(), edited);
+    let out = apply_chunks("rust", src, &e, 100, false).unwrap();
+    assert_eq!(out, src.replace("= 1;", "= 2;"));
+}
+
 /// A symbol name (or Class.method) works wherever a chunk id does.
 #[test]
 fn symbols_address_items() {

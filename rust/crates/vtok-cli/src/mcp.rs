@@ -48,6 +48,12 @@ fn tools() -> Value {
       {"name": "vtok_map",
        "description": "Overview of a project directory within a token budget: every Python/TypeScript/JavaScript/Rust/Java/Go/C/C++/C#/Dart/CSS/HTML/SQL file with its size and its most used symbols (line range, x N = uses in other files, ~ = several definitions share the name), plus signatures for the top few. Use it to decide where to look; then vtok_outline / vtok_chunk. A plain file listing is cheaper when file names already tell you where to look.",
        "inputSchema": {"type": "object", "properties": {"path": {"type": "string", "description": "directory (default: server working directory)"}, "max_tokens": {"type": "integer", "description": "default 700"}}}},
+      {"name": "vtok_browse",
+       "description": "Fetch a web page (http/https, public hosts only) and return it as compact text: headings, lists, tables, code and links kept, scripts/styles/navigation dropped. The full text stays stored under the returned id (vtok_output grep). Use it instead of fetching raw HTML.",
+       "inputSchema": {"type": "object", "properties": {"url": {"type": "string"}, "max_tokens": {"type": "integer", "description": "default 3000"}, "links": {"type": "boolean", "description": "keep link URLs (default true)"}}, "required": ["url"]}},
+      {"name": "vtok_route",
+       "description": "Which model tier and reasoning effort fits a request (small / medium / large, with the configured model name): a cheap deterministic score of the request's size, keywords, code and files. Use it to choose the model for a subagent or a delegated task.",
+       "inputSchema": {"type": "object", "properties": {"request": {"type": "string"}, "files": {"type": "integer", "description": "number of files involved, if known"}}, "required": ["request"]}},
       {"name": "vtok_graph",
        "description": "Call graph of the project (by name): action explain (callers and callees of a symbol), path (shortest chain between two symbols), hubs (most connected), communities (groups of related symbols). Built once into .vtok/graph.json and refreshed when sources change.",
        "inputSchema": {"type": "object", "properties": {"action": {"type": "string", "description": "explain | path | hubs | communities"}, "a": {"type": "string", "description": "symbol name (explain, path start) or count (hubs, communities)"}, "b": {"type": "string", "description": "path end symbol"}, "path": {"type": "string", "description": "project directory (default: server working directory)"}}, "required": ["action"]}},
@@ -67,7 +73,7 @@ fn tools() -> Value {
     let mut v = all;
     if let Some(a) = v.as_array_mut() { if !crate::config::mcp_run_enabled() { a.retain(|t| t["name"] != "vtok_run"); }
         // fewer tool schemas = fewer tokens on every turn; these stay available from the command line (and as MCP calls)
-        if std::env::var("VTOK_MCP_ALL").map_or(true, |v| v != "1") { a.retain(|t| !matches!(t["name"].as_str(), Some("vtok_gain") | Some("vtok_stats") | Some("vtok_map") | Some("vtok_graph"))); } }
+        if std::env::var("VTOK_MCP_ALL").map_or(true, |v| v != "1") { a.retain(|t| !matches!(t["name"].as_str(), Some("vtok_gain") | Some("vtok_stats") | Some("vtok_map") | Some("vtok_graph") | Some("vtok_browse"))); } }
     v
 }
 
@@ -266,6 +272,9 @@ fn call_inner(name: &str, args: &Value) -> std::result::Result<String, String> {
         "vtok_refs" => tool_refs(args),
         "vtok_map" => tool_map(args),
         "vtok_graph" => tool_graph(args),
+        "vtok_route" => Ok(crate::route::classify(arg_str(args, "request")?, args.get("files").and_then(|v| v.as_u64()).unwrap_or(0) as usize).line() + "
+"),
+        "vtok_browse" => crate::browse::page(arg_str(args, "url")?, &crate::browse::Opts { budget: args.get("max_tokens").and_then(|v| v.as_u64()).unwrap_or(3000) as usize, links: args.get("links").and_then(|v| v.as_bool()).unwrap_or(true), allow_private: false }),
         "vtok_find" => tool_find(args),
         "vtok_run" => tool_run(args),
         "vtok_gain" => crate::usage::gain_text(args.get("days").and_then(|v| v.as_u64()).unwrap_or(30), false),

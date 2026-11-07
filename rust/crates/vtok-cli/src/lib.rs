@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use vtok_api::*;
 mod agents;
 mod auto;
+mod browse;
 mod config;
 mod discover;
 mod filters;
@@ -12,8 +13,15 @@ mod gitfmt;
 mod graph;
 mod graph_out;
 mod hook;
+mod html_text;
+mod hook_agents;
+mod hook_install;
+mod hook_plugins;
+mod risk;
 mod mcp;
+mod proxy;
 mod refs;
+mod route;
 mod rewrite;
 mod shell;
 mod squeeze;
@@ -42,8 +50,11 @@ const USAGE: &str = "usage: vtok <command> ...
   discover [--days N] [--min-tokens N] [--dir D]  find shell commands in past Claude Code sessions that vtok run would have shrunk
   graph build|explain N|path A B|hubs|communities|report|html|hook [--dir D]   persistent call graph with communities (.vtok/graph.json)
   rewrite COMMAND...                             print the vtok run form of a long-output command (exit 1 when unchanged), for any agent hook
+  browse URL [--max-tokens N] [--no-links] [--allow-private]   web page as compact text (full text kept under an id)
+  route REQUEST [--files N] [--json]             pick a model tier and effort for a request (small / medium / large)
+  proxy [--port N] [--upstream URL]              local API proxy: model auto is routed to the model route picks
   shims install [DIR] | list                     wrapper scripts for cargo/npm/pytest/tsc/... on PATH: compact output for ANY agent, no hook
-  init [--agent NAME | --write FILE | --claude-hook SETTINGS | --terse]                            usage note for any agent (AGENTS.md etc.), as a fenced block
+  init [--hook AGENT [--global] | --agent NAME | --write FILE | --claude-hook SETTINGS | --terse]                            usage note for any agent (AGENTS.md etc.), as a fenced block
   gain [--days N] [--json]                       tokens saved by Vtok's tools (local usage log)
   outline FILE [--lang L]                        names and line ranges of a file (cheapest overview)
   symbols FILE [--lang L]                        id and line range of every addressable symbol
@@ -180,6 +191,9 @@ pub fn run(args: &[String]) -> i32 {
         "gain" => usage::gain(rest),
         "hook" => hook::run(rest),
         "rewrite" => rewrite::run(rest),
+        "browse" => browse::run(rest),
+        "route" => route::run(rest),
+        "proxy" => proxy::run(rest),
         "auto" => auto::run(rest),
         "shims" => auto::shims_cmd(rest),
         "squeeze" => squeeze::run(rest),

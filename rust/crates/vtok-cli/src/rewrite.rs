@@ -102,19 +102,22 @@ pub fn split_prefix(cmd: &str) -> (&str, &str) {
     (&cmd[..off.min(cmd.len())], cmd[off.min(cmd.len())..].trim_start())
 }
 
-fn wrap(seg: &str) -> Option<String> {
+fn wrap(seg: &str, low_risk_only: bool) -> Option<String> {
     let t = seg.trim();
-    if t.is_empty() || t.starts_with("vtok ") || has_shell_meta(t) || !is_chatty(t) { return None; }
+    if t.is_empty() || t.starts_with("vtok ") || has_shell_meta(t) || !is_chatty(t) || (low_risk_only && !crate::risk::low_risk(t)) { return None; }
     Some(seg.replacen(t, &format!("vtok run -- {t}"), 1))
 }
 
 /// The rewritten command line, or None to leave the original alone.
-pub fn rewrite(cmd: &str) -> Option<String> {
+pub fn rewrite(cmd: &str) -> Option<String> { rewrite_with(cmd, false) }
+
+/// `low_risk_only`: wrap only read-only / build-and-test segments (for hooks whose protocol implies "allow").
+pub fn rewrite_with(cmd: &str, low_risk_only: bool) -> Option<String> {
     let segs = segments(cmd)?;
     let mut changed = false;
     let mut out = String::new();
     for (s, sep) in &segs {
-        match wrap(s) { Some(w) => { changed = true; out.push_str(&w); } None => out.push_str(s) }
+        match wrap(s, low_risk_only) { Some(w) => { changed = true; out.push_str(&w); } None => out.push_str(s) }
         out.push_str(sep);
     }
     changed.then_some(out)

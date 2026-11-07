@@ -17,11 +17,13 @@ pub fn answer(input: &str) -> Option<String> {
     Some(json!({"hookSpecificOutput": {"hookEventName": "PreToolUse", "updatedInput": ti}}).to_string())
 }
 
-pub fn run(_args: &[String]) -> i32 {
+pub fn run(args: &[String]) -> i32 {
     use std::io::Read;
     let mut s = String::new();
     if std::io::stdin().read_to_string(&mut s).is_err() { return 0; }
-    if let Some(a) = answer(&s) { println!("{a}"); }
+    let agent = args.iter().position(|a| a == "--agent").and_then(|i| args.get(i + 1)).map(|s| s.as_str());
+    let out = match agent { None | Some("claude") => answer(&s), Some(a) => crate::hook_agents::answer(a, &s) };
+    if let Some(a) = out { println!("{a}"); }
     0
 }
 

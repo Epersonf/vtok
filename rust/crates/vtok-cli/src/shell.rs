@@ -338,7 +338,7 @@ fn summarize(lines: &[String], budget: usize) -> String {
 
 fn fnv(s: &[u8]) -> u64 { let mut h = 0xcbf29ce484222325u64; for b in s { h ^= *b as u64; h = h.wrapping_mul(0x100000001b3); } h }
 
-fn store(text: &str) -> Option<String> {
+pub(crate) fn store(text: &str) -> Option<String> {
     let dir = out_dir()?;
     std::fs::create_dir_all(&dir).ok()?;
     #[cfg(unix)]

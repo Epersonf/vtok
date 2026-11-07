@@ -4,24 +4,27 @@ Each run gets a fresh copy of a small project (the `requests` package) and one t
 input / cache / output tokens, turns) and whether the answer or edit is correct (checked by code, not by a model).
 Config `base`: Read, Grep, Glob, Edit, Bash. Config `vtok`: the same plus Vtok's MCP server (`vtok mcp`). Config `vtok+hint`: also the block `vtok init` prints (what a user would put in AGENTS.md).
 The task suites (what is asked, and how each answer is checked) are in `suites.py`.
-Both use --strict-mcp-config so no other MCP server leaks in. Usage: python bench/loop/run.py OUT.json [--model M] [--reps N]"""
+Both use --strict-mcp-config so no other MCP server leaks in. Usage: python bench/loop/run.py OUT.json [--model M] [--reps N] [--only A,B]
+Environment: VTOK_BIN (the vtok executable), LOOP_SITE (the site-packages that holds requests, pip and pyparsing), PYTHONUTF8=1 on Windows."""
 import argparse, json, os, pathlib, shutil, subprocess, tempfile, concurrent.futures as cf
 from suites import tasks
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
 SUITE = "requests"
-SRC = REPO / ".venv/lib/python3.12/site-packages/requests"
-VTOK = "/usr/local/bin/vtok"
+SITE = pathlib.Path(os.environ.get("LOOP_SITE") or REPO / ".venv/lib/python3.12/site-packages")  # where requests and pip are installed
+SRC = SITE / "requests"
+VTOK = os.environ.get("VTOK_BIN", "/usr/local/bin/vtok")
 BASE_TOOLS = "Read,Grep,Glob,Edit,Bash"
 VTOK_TOOLS = BASE_TOOLS + "," + ",".join(f"mcp__vtok__vtok_{t}" for t in ("read", "chunk", "edit", "outline", "refs", "find", "map", "output", "stats", "gain"))
 
 
 def build_big():
     """Prepared once: pyparsing (6k-line core.py) plus fx/ with a failing pytest file (60 passes, 3 failures) and a unittest file."""
-    d = pathlib.Path("/tmp/vtok-bigsrc")
+    d = pathlib.Path(tempfile.gettempdir()) / "vtok-bigsrc"
     if not (d / "fx" / "test_demo.py").exists():
         shutil.rmtree(d, ignore_errors=True)
-        shutil.copytree(REPO / ".venv/lib/python3.12/site-packages/pip/_vendor/pyparsing", d / "pyparsing", ignore=shutil.ignore_patterns("__pycache__"))
+        pp = SITE / "pip/_vendor/pyparsing"  # newer pip no longer vendors it: take the installed package
+        shutil.copytree(pp if pp.exists() else SITE / "pyparsing", d / "pyparsing", ignore=shutil.ignore_patterns("__pycache__"))
         (d / "fx").mkdir()
         (d / "fx" / "test_demo.py").write_text(
             "import pytest\n\n@pytest.mark.parametrize('n', range(60))\ndef test_ok(n):\n    assert n >= 0\n\n"
@@ -64,11 +67,11 @@ def one(task, cfg, rep, model, tmp):
     vt = cfg.startswith("vtok")
     cave = cfg == "caveman"
     only = cfg == "vtok-only"
-    mcp.write_text(json.dumps({"mcpServers": {"vtok": {"command": VTOK, "args": ["mcp"]}} if vt else {}}))
+    mcp.write_text(json.dumps({"mcpServers": {"vtok": {"command": VTOK, "args": ["mcp"], "env": {"VTOK_NO_USAGE": "1"}}} if vt else {}}))  # the server must not log these runs as the user's usage
     if cfg in ("vtok+hint", "vtok-only"): prompt = subprocess.run([VTOK, "init"], capture_output=True, text=True).stdout + "\n" + prompt
     cmd = [os.environ.get("CLAUDE_BIN") or os.environ.get("CLAUDE_CODE_EXECPATH") or "claude", "-p", prompt + ("" if SUITE == "explain" else " Be brief."), "--output-format", "stream-json", "--verbose", "--model", model, "--max-turns", "30", "--no-session-persistence", "--strict-mcp-config",
            "--mcp-config", str(mcp), "--allowedTools", VTOK_ONLY + ",ToolSearch" if only else (VTOK_TOOLS if vt else BASE_TOOLS), "--permission-mode", "acceptEdits"] + (["--disallowedTools", "Read,Grep,Glob,Edit,Write,Bash,NotebookEdit"] if only else []) + (["--append-system-prompt", CAVEMAN] if cave else [])
-    env = dict(os.environ, VTOK_NO_USAGE="1", PATH="/usr/local/bin:" + str(REPO / ".venv/bin") + ":" + os.environ["PATH"])
+    env = dict(os.environ, VTOK_NO_USAGE="1", PATH=os.pathsep.join([p for p in ("/usr/local/bin", str(REPO / ".venv/bin")) if os.path.isdir(p)] + [os.environ["PATH"]]))
     if cfg == "hook":
         st = wd_root / "settings.json"
         subprocess.run([VTOK, "init", "--claude-hook", str(st)], capture_output=True)
@@ -109,10 +112,9 @@ def main():
     SUITE = a.suite
     global CFGS
     if a.cfgs: CFGS = tuple(a.cfgs.split(","))
-    if SUITE == "explain": SRC = REPO / ".venv/lib/python3.12/site-packages/requests"
     if SUITE == "big": SRC = build_big()
-    if SUITE == "pip": SRC = REPO / ".venv/lib/python3.12/site-packages/pip"
-    ts = [t for t in tasks(SUITE, SRC) if not a.only or a.only in t[0]]
+    if SUITE == "pip": SRC = SITE / "pip"
+    ts = [t for t in tasks(SUITE, SRC) if not a.only or any(o in t[0] for o in a.only.split(","))]
     rows = []
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp, cf.ThreadPoolExecutor(a.jobs) as ex:
         futs = [ex.submit(one, t, cfg, rep, a.model, tmp) for t in ts for rep in range(a.reps) for cfg in CFGS]

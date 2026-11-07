@@ -1,0 +1,319 @@
+[
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.054012000000000004,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tool_out_chars": 427,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 81272,
+  "tokens_out": 201,
+  "fresh_in": 11252
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.053975800000000004,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tool_out_chars": 427,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 81266,
+  "tokens_out": 199,
+  "fresh_in": 11248
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0567016,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tool_out_chars": 427,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 82584,
+  "tokens_out": 201,
+  "fresh_in": 11908
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0647056,
+  "turns": 3,
+  "answer": "`_MAX_INT`",
+  "tool_out_chars": 2897,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 101051,
+  "tokens_out": 183,
+  "fresh_in": 13535
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.06006890000000001,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 219,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 122091,
+  "tokens_out": 356,
+  "fresh_in": 11362
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.056718,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tool_out_chars": 427,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 82592,
+  "tokens_out": 201,
+  "fresh_in": 11912
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0700311,
+  "turns": 4,
+  "answer": "`_MAX_INT`",
+  "tool_out_chars": 2124,
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 1
+  },
+  "tokens_in": 134269,
+  "tokens_out": 445,
+  "fresh_in": 13378
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0634811,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 370,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 124278,
+  "tokens_out": 377,
+  "fresh_in": 12127
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0602771,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 370,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 122221,
+  "tokens_out": 349,
+  "fresh_in": 11430
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0629219,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 219,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 124091,
+  "tokens_out": 360,
+  "fresh_in": 12032
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.2557246,
+  "turns": 10,
+  "answer": "done",
+  "tool_out_chars": 72488,
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_refs": 1,
+   "mcp__vtok__vtok_read": 2,
+   "mcp__vtok__vtok_edit": 3
+  },
+  "tokens_in": 362863,
+  "tokens_out": 1614,
+  "fresh_in": 52137
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0761484,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 1679,
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 136936,
+  "tokens_out": 814,
+  "fresh_in": 13932
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0675207,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 985,
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 163723,
+  "tokens_out": 516,
+  "fresh_in": 11796
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.07986259999999999,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 562,
+  "tools": {
+   "Grep": 2,
+   "Read": 2,
+   "Edit": 1
+  },
+  "tokens_in": 208635,
+  "tokens_out": 922,
+  "fresh_in": 12769
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0633113,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 469,
+  "tools": {
+   "Grep": 2,
+   "Edit": 1
+  },
+  "tokens_in": 122674,
+  "tokens_out": 550,
+  "fresh_in": 11681
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0843595,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 2361,
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 137768,
+  "tokens_out": 1330,
+  "fresh_in": 14693
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0814032,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 833,
+  "tools": {
+   "Grep": 1,
+   "Read": 2,
+   "Edit": 2
+  },
+  "tokens_in": 208943,
+  "tokens_out": 1002,
+  "fresh_in": 12951
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0919693,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 2617,
+  "tools": {
+   "ToolSearch": 1,
+   "Bash": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_edit": 3,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 243078,
+  "tokens_out": 1089,
+  "fresh_in": 14565
+ }
+]

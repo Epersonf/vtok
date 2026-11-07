@@ -105,3 +105,26 @@ test function plus any with a different assertion shape and says `+29 more failu
 line in Vtok's compact spacing (`X:str=" \t"` instead of `X: str = " \t"`) and dropped comments, because the Python plugin had no token-level patching (TS and Rust did). Python now
 patches at token level, strings as single tokens, and falls back to it for single-statement and class-attribute chunks. Result: 6/6 correct, original formatting and comments kept.
 Cost is still higher than native Edit in that harness (about 7 turns against 3: tool discovery, a chunk read, then the edit), so for one-line edits the native tool stays cheaper.
+
+## Windows re-run with the 6f51c4e build (plain-text fallback, `replace`, 370-token instructions), Sonnet, 2026-11-07
+
+`PYTHONUTF8=1 VTOK_BIN=C:/Users/epers/.vtok/bin/vtok.exe LOOP_SITE=<python>/Lib/site-packages python bench/loop/run.py OUT.json --suite requests --cfgs base,vtok,vtok-only --reps 2`,
+and the same with `--suite big --only "default arg,edit"`. Windows 11, `requests` 2.34.2 and the installed `pyparsing` (its `core.py` has 7.0k lines, the runs above used one with 6.1k),
+so cells do not compare one to one with the tables above. Two runs per cell, one model: read the totals, not single cells. Results: `results-win-requests.json`, `results-win-big.json`.
+
+| suite | config | correct | cost | input tokens | turns | Vtok tool calls |
+|---|---|---|---|---|---|---|
+| requests (8 tasks x 2) | base | 16/16 | $0.974 | 2.00M | 50 | 0 |
+| | vtok | 16/16 | $1.003 (+3.0%) | 1.91M | 46 | 0 |
+| | vtok-only | 16/16 | $1.061 (+8.9%) | 1.99M | 61 | 23 |
+| big (1 lookup and 2 edits in `core.py`, x 2) | base | 6/6 | $0.359 | 0.69M | 18 | 0 |
+| | vtok | 6/6 | $0.401 (+11.7%) | 0.83M | 22 | 0 |
+| | vtok-only | 6/6 | $0.643 (+79%) | 1.12M | 35 | 18 |
+
+What the standing cost is, measured separately with one-turn runs (`claude -p "Reply with the single word OK."`, the prompt size the API reports, same tools, only the MCP server differs):
+no server 40,384 tokens, the 2026-11-06 build 42,054 (+1,669), this build 41,114 (+729). Those tokens ride on every turn of every session that has the server registered, used or not.
+
+1. **Having the server registered now costs 3% on small tasks, down from 12%** ($0.823 against $0.733 before). The server is still never used when the agent has Grep, Read and Edit: 0 of 22 runs here (0 of 36 before).
+2. **Forced use costs 9% more on small tasks, down from 24%.** The plain-text fallback is why: where the compact form does not pay, the tools answer in plain text (the chunk of `DEFAULT_WHITE_CHARS` came back as the one plain line). It still adds turns (14 `ToolSearch` turns in 16 runs).
+3. **On the big file forced use is still dearer** (+79%, but one `edit constant` run took 10 turns and $0.256 and its twin 5 turns and $0.076: that spread is larger than the gap between the other configs). Replayed by hand without a model (`vtok_find`, `vtok_chunk ParserElement.DEFAULT_WHITE_CHARS`, `vtok_edit`), the one-line change is a `+0 lines` token patch and a one-line diff, so the edit path is sound; the cost is the agent's turns.
+4. **No saving anywhere.** The cheapest way to answer these tasks is Grep and Edit. This run says nothing about long command output (`vtok run` was not part of it) or about files the agent has to read whole.

@@ -1,0 +1,809 @@
+[
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0498623,
+  "turns": 1,
+  "answer": "requests/utils.py:select_proxy",
+  "tool_out_chars": 0,
+  "tools": {},
+  "tokens_in": 32959,
+  "tokens_out": 80,
+  "fresh_in": 11736
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0577304,
+  "turns": 3,
+  "answer": "`utils.py:select_proxy`",
+  "tool_out_chars": 94,
+  "tools": {
+   "Grep": 1,
+   "Glob": 1
+  },
+  "tokens_in": 121651,
+  "tokens_out": 226,
+  "fresh_in": 11107
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.059373999999999996,
+  "turns": 3,
+  "answer": "`utils.py:select_proxy`",
+  "tool_out_chars": 94,
+  "tools": {
+   "Grep": 1,
+   "Glob": 1
+  },
+  "tokens_in": 123545,
+  "tokens_out": 146,
+  "fresh_in": 11685
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0561781,
+  "turns": 3,
+  "answer": "`utils.py:select_proxy`",
+  "tool_out_chars": 29,
+  "tools": {
+   "Grep": 1,
+   "Glob": 1
+  },
+  "tokens_in": 121481,
+  "tokens_out": 122,
+  "fresh_in": 10980
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0551209,
+  "turns": 2,
+  "answer": "`utils.py:select_proxy`",
+  "tool_out_chars": 86,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 82297,
+  "tokens_out": 155,
+  "fresh_in": 11628
+ },
+ {
+  "task": "find proxy fn",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0496743,
+  "turns": 1,
+  "answer": "`src/requests/utils.py:select_proxy`",
+  "tool_out_chars": 0,
+  "tools": {},
+  "tokens_in": 32962,
+  "tokens_out": 60,
+  "fresh_in": 11739
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0602634,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tool_out_chars": 1498,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 122267,
+  "tokens_out": 229,
+  "fresh_in": 11733
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0631669,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tool_out_chars": 1708,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 124899,
+  "tokens_out": 229,
+  "fresh_in": 12410
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0591502,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tool_out_chars": 947,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 121992,
+  "tokens_out": 223,
+  "fresh_in": 11470
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0664485,
+  "turns": 4,
+  "answer": "sessions.py:SessionRedirectMixin.resolve_redirects",
+  "tool_out_chars": 1195,
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 133624,
+  "tokens_out": 319,
+  "fresh_in": 12799
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0631592,
+  "turns": 3,
+  "answer": "sessions.py:resolve_redirects",
+  "tool_out_chars": 1255,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 124171,
+  "tokens_out": 271,
+  "fresh_in": 12319
+ },
+ {
+  "task": "json method",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.05794909999999999,
+  "turns": 3,
+  "answer": "`Response.json`",
+  "tool_out_chars": 242,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 121708,
+  "tokens_out": 220,
+  "fresh_in": 11177
+ },
+ {
+  "task": "redirect limit",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0658488,
+  "turns": 4,
+  "answer": "sessions.py:resolve_redirects",
+  "tool_out_chars": 1166,
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 133521,
+  "tokens_out": 278,
+  "fresh_in": 12753
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0615163,
+  "turns": 3,
+  "answer": "`Response.json`",
+  "tool_out_chars": 872,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 100132,
+  "tokens_out": 250,
+  "fresh_in": 12569
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.049778300000000004,
+  "turns": 1,
+  "answer": "`Response.json`",
+  "tool_out_chars": 0,
+  "tools": {},
+  "tokens_in": 41079,
+  "tokens_out": 84,
+  "fresh_in": 11496
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.055169499999999996,
+  "turns": 2,
+  "answer": "`Response.json`",
+  "tool_out_chars": 56,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 82318,
+  "tokens_out": 146,
+  "fresh_in": 11663
+ },
+ {
+  "task": "json method",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.057398899999999996,
+  "turns": 3,
+  "answer": "`Response.json`",
+  "tool_out_chars": 242,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 121666,
+  "tokens_out": 181,
+  "fresh_in": 11137
+ },
+ {
+  "task": "json method",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.06767569999999999,
+  "turns": 4,
+  "answer": "`Response.json`",
+  "tool_out_chars": 1006,
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 133767,
+  "tokens_out": 436,
+  "fresh_in": 12810
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0571316,
+  "turns": 2,
+  "answer": "`auth.py:_basic_auth_str`",
+  "tool_out_chars": 1150,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 82782,
+  "tokens_out": 157,
+  "fresh_in": 12126
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0613954,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tool_out_chars": 828,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 100070,
+  "tokens_out": 228,
+  "fresh_in": 12596
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0612098,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tool_out_chars": 2320,
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 122637,
+  "tokens_out": 224,
+  "fresh_in": 11979
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.05252029999999999,
+  "turns": 2,
+  "answer": "auth.py:_basic_auth_str",
+  "tool_out_chars": 441,
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 81135,
+  "tokens_out": 100,
+  "fresh_in": 11132
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0682799,
+  "turns": 4,
+  "answer": "auth.py:_basic_auth_str",
+  "tool_out_chars": 854,
+  "tools": {
+   "Grep": 2,
+   "Read": 1
+  },
+  "tokens_in": 165848,
+  "tokens_out": 394,
+  "fresh_in": 12249
+ },
+ {
+  "task": "basic auth header",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0612548,
+  "turns": 3,
+  "answer": "auth.py:_basic_auth_str",
+  "tool_out_chars": 879,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1
+  },
+  "tokens_in": 100034,
+  "tokens_out": 226,
+  "fresh_in": 12566
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0619727,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tool_out_chars": 1768,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 122668,
+  "tokens_out": 307,
+  "fresh_in": 11961
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0651641,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tool_out_chars": 1768,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 124588,
+  "tokens_out": 355,
+  "fresh_in": 12607
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0663015,
+  "turns": 4,
+  "answer": "prepare_request, rebuild_auth",
+  "tool_out_chars": 507,
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1
+  },
+  "tokens_in": 133219,
+  "tokens_out": 439,
+  "fresh_in": 12464
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0643561,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tool_out_chars": 1768,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 124598,
+  "tokens_out": 278,
+  "fresh_in": 12597
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0631939,
+  "turns": 3,
+  "answer": "rebuild_auth, prepare_request",
+  "tool_out_chars": 1745,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 122646,
+  "tokens_out": 427,
+  "fresh_in": 11967
+ },
+ {
+  "task": "callers netrc",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0660615,
+  "turns": 4,
+  "answer": "prepare_request, rebuild_auth",
+  "tool_out_chars": 507,
+  "tools": {
+   "Grep": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1
+  },
+  "tokens_in": 133219,
+  "tokens_out": 415,
+  "fresh_in": 12464
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0647855,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tool_out_chars": 2006,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 124784,
+  "tokens_out": 291,
+  "fresh_in": 12669
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.061979900000000004,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tool_out_chars": 2006,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 122780,
+  "tokens_out": 291,
+  "fresh_in": 12001
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.06089459999999999,
+  "turns": 3,
+  "answer": "merge_environment_settings, prepare_request, merge_hooks",
+  "tool_out_chars": 406,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1
+  },
+  "tokens_in": 99718,
+  "tokens_out": 300,
+  "fresh_in": 12292
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.061988299999999996,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tool_out_chars": 2006,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 122786,
+  "tokens_out": 291,
+  "fresh_in": 12003
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0648009,
+  "turns": 3,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tool_out_chars": 2006,
+  "tools": {
+   "Grep": 2
+  },
+  "tokens_in": 124777,
+  "tokens_out": 293,
+  "fresh_in": 12668
+ },
+ {
+  "task": "edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.059954,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 368,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 122128,
+  "tokens_out": 334,
+  "fresh_in": 11388
+ },
+ {
+  "task": "callers merge_setting",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0629473,
+  "turns": 4,
+  "answer": "merge_hooks, prepare_request, merge_environment_settings",
+  "tool_out_chars": 540,
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_refs": 1
+  },
+  "tokens_in": 100123,
+  "tokens_out": 424,
+  "fresh_in": 12490
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0627071,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 164,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 123966,
+  "tokens_out": 362,
+  "fresh_in": 11975
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0627818,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 368,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 124110,
+  "tokens_out": 338,
+  "fresh_in": 12052
+ },
+ {
+  "task": "edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.059882300000000006,
+  "turns": 3,
+  "answer": "done",
+  "tool_out_chars": 164,
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 121970,
+  "tokens_out": 360,
+  "fresh_in": 11307
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0918424,
+  "turns": 8,
+  "answer": "done",
+  "tool_out_chars": 2133,
+  "tools": {
+   "Bash": 1,
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_refs": 1,
+   "mcp__vtok__vtok_chunk": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 2
+  },
+  "tokens_in": 274404,
+  "tokens_out": 859,
+  "fresh_in": 14320
+ },
+ {
+  "task": "edit param",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0703021,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 1177,
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 163951,
+  "tokens_out": 685,
+  "fresh_in": 12070
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.07355969999999999,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 1425,
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 166755,
+  "tokens_out": 691,
+  "fresh_in": 12818
+ },
+ {
+  "task": "edit constant",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.07736290000000001,
+  "turns": 6,
+  "answer": "done",
+  "tool_out_chars": 1793,
+  "tools": {
+   "ToolSearch": 1,
+   "Grep": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 2
+  },
+  "tokens_in": 171291,
+  "tokens_out": 643,
+  "fresh_in": 13802
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok-only",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0729449,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 1998,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_find": 1,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 136641,
+  "tokens_out": 520,
+  "fresh_in": 13872
+ },
+ {
+  "task": "edit param",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0727703,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 1441,
+  "tools": {
+   "Grep": 2,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 164308,
+  "tokens_out": 821,
+  "fresh_in": 12345
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0732112,
+  "turns": 4,
+  "answer": "done",
+  "tool_out_chars": 1177,
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 166585,
+  "tokens_out": 691,
+  "fresh_in": 12733
+ },
+ {
+  "task": "edit param",
+  "cfg": "vtok-only",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0786837,
+  "turns": 5,
+  "answer": "done",
+  "tool_out_chars": 1842,
+  "tools": {
+   "ToolSearch": 1,
+   "mcp__vtok__vtok_chunk": 2,
+   "mcp__vtok__vtok_edit": 1
+  },
+  "tokens_in": 170439,
+  "tokens_out": 768,
+  "fresh_in": 13842
+ }
+]

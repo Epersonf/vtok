@@ -50,6 +50,33 @@ def main(d):
     w(f"{d}/gof/a_test.go", 'package gof\nimport "testing"\n' + "".join(
         f'func TestF{i}(t *testing.T){{ if F({i}) != {1 if i in (3, 9) else i * 2} {{ t.Errorf("F({i}) wrong") }} }}\n'
         for i in range(30)))
+    # Mixed, realistic failures (varied messages, unlike the repeated ones above)
+    ts_mixed = ["interface User { id: number; name: string; email?: string }",
+                "class A { private p = 1; static make(n: number): A { return new A(); } }"]
+    for i in range(12):
+        ts_mixed += [f"export function f{i}(u: User): string {{ return u.nme{i}; }}",
+                     f"export const n{i}: number = {chr(34)}text{i}{chr(34)};",
+                     f"export const m{i} = missingName{i} + {i};"]
+    ts_mixed += ["export function g(a: number, b: string): void {}", "g(1);", "g('x', 2);", "g(1, 'a', 3);",
+                 "new A().p;", "A.make('1');", "const u: User = { id: 1 };", "import { nothing } from './nonexistent';",
+                 "const arr: string[] = [1, 2, 3];", "let v: boolean = null as any as number;"]
+    w(f"{d}/ts2/mixed.ts", chr(10).join(ts_mixed) + chr(10))
+    w(f"{d}/ts2/tsconfig.json", '{"compilerOptions":{"strict":true,"noEmit":true,"target":"es2020","module":"esnext",'
+      '"moduleResolution":"bundler"},"include":["*.ts"]}')
+    py = ["import pytest", "", "def helper(d, k):", "    return d[k]", "", "def divide(a, b):", "    return a / b", ""]
+    cases = ["assert helper({'a': 1}, 'b') == 1", "assert divide(1, 0) == 0", "assert [1, 2, 3] == [1, 2, 4]",
+             "assert 'abc'.upper() == 'abd'", "assert {'x': 1} == {'x': 2}", "raise ValueError('bad config: timeout=-1')",
+             "assert len('hello') == 6", "assert None is not None", "assert isinstance(3, str)",
+             "assert abs(-3) == -3"]
+    for i in range(30):
+        body = cases[i % len(cases)] if i % 3 == 0 else f"assert {i} + {i} == {2 * i}"
+        py += [f"def test_case_{i}():", f"    {body}", ""]
+    py += ["@pytest.mark.parametrize('x,y', [(1, 2), (2, 4), (3, 7)])", "def test_double(x, y):", "    assert x * 2 == y", ""]
+    w(f"{d}/py2/tests/test_mixed.py", chr(10).join(py))
+    # A large source file at a pinned revision, for the `cat` and `grep` scenarios (needs this repository's git history).
+    repo = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    src = subprocess.run(["git", "show", "57c4ad1:rust/crates/vtok-cli/src/shell.rs"], cwd=repo, capture_output=True, check=True).stdout
+    open(f"{d}/big.rs", "wb").write(src)
 
 
 if __name__ == "__main__":

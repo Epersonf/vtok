@@ -10,29 +10,44 @@ FIXTURES=/tmp/fx RTK_BIN=.../rtk VTOK_BIN=.../vtok CAVEMAN_BIN=.../caveman-engin
 Tokens are `(chars + 3) / 4`, the metric RTK's own benchmark uses. `keep N/M` counts key strings (failing test names,
 error codes) that survive in each tool's output. It is a crude retention check, not a quality score.
 
-## Results (one Windows machine, 16 scenarios, vtok `57c4ad1`, RTK 0.49.0)
+## Results (one Windows machine, 19 scenarios, vtok 2c4fc3b, RTK 0.49.0)
 
-Command output, raw 57,504 tokens: RTK 22,500 (-61%), vtok 6,329 (-89%), Caveman `compress` 57,448 (-1%).
+Command output, raw 36,076 tokens: RTK 25,243 (-31%), vtok 11,200 (-69%), Caveman `compress` 36,076 (0%). The git
+scenarios use fixed revisions and the `cat`/`grep` scenarios a pinned file (`fixtures.py` writes it from git history), so
+the numbers do not move with every commit. `keep` counts a scenario's key strings in the output (crude).
 
 | scenario | raw | RTK | vtok | note |
 |---|---:|---:|---:|---|
-| cargo build (errors) | 395 | 352 | 74 | both keep the error codes |
-| cargo test (3 fail) | 403 | 155 | 155 | tie |
-| cargo test (all pass) | 3052 | 11 | 124 | RTK better |
-| pytest (3 fail) | 328 | 104 | 169 | RTK better, both keep the names |
-| ruff | 341 | 138 | 108 | |
-| tsc | 653 | 672 | 594 | neither helps |
-| eslint | 2568 | 2568 | 478 | RTK passes it through |
-| vitest (2 fail) | 332 | 37 | 138 | RTK drops the failing test names (0/2); vtok keeps them |
-| git diff HEAD~3 | 35772 | 5945 | 558 | vtok shows only each file's start; RTK keeps hunks |
-| cat large source file | 9861 | 9861 | 2604 | vtok elides the middle |
+| git diff (3f1264c..e27cbfc) | 10,603 | 7,562 | 5,978 | see the Diffs section: parity on retention |
+| git log -30 | 1,893 | 977 | 567 | |
+| git log --stat -5 | 898 | 898 | 233 | |
+| ls -la | 170 | 56 | 47 | |
+| grep -n | 692 | 367 | 274 | RTK loses the `fn compact_cmd` line |
+| cat of a 727-line source file | 9,861 | 9,861 | 2,599 | vtok elides the middle (it lost `fn compact_cmd`); use `vtok_read` to read code |
+| cargo build (errors) | 395 | 352 | 71 | |
+| cargo test (3 fail) | 403 | 156 | 105 | |
+| cargo test (all pass) | 4,789 | 11 | 12 | RTK 1 token smaller (vtok keeps the warning count) |
+| pytest (3 fail, same message) | 328 | 104 | 55 | |
+| pytest (11 fail, mixed errors) | 1,140 | 419 | 301 | RTK drops one failing test |
+| mypy | 64 | 64 | 64 | below the 250-token pass-through threshold |
+| ruff | 341 | 138 | 105 | |
+| tsc (34 identical errors) | 653 | 672 | 57 | best case for grouping |
+| tsc (47 mixed errors) | 911 | 950 | 301 | realistic: mostly distinct messages |
+| eslint | 2,568 | 2,568 | 262 | RTK passes it through |
+| vitest (2 fail) | 332 | 37 | 134 | RTK is smaller but drops both failing test names (0/2); vtok keeps them |
+| go test (2 fail) | 35 | 51 | 35 | |
+
+Where RTK is ahead: a green `cargo test` by one token, and `vitest` in size (at the cost of the failing test names).
+Nothing else in this set. Every view was also audited for silently dropped error classes: with 70 distinct rules or
+codes fed to each of 16 lint/compiler views, 10 of them lost classes before (oxlint, biome, rubocop, sqlfluff, phpstan,
+make/gcc, dotnet, go build, eslint) and none do now (`bench/run/audit_retention.py`, `src/t_retention.rs`).
 
 Caveats, read before quoting any number:
 
-- vtok's totals include views that cut content (`git diff`, `cat`, `grep`). The full output is stored under an id and
-  `vtok output ID` returns any part, but the agent sees less on the first read. RTK keeps more there.
+- vtok's totals include views that cut content (`cat`, `grep`, large `git diff`). The full output is stored under an id
+  and `vtok output ID` returns any part, but the agent sees less on the first read.
 - Caveman's value is the terse response style (model side), which `bench.py` does not measure (see "Answer style"
-  below); its `compress` engine barely changes tool output.
+  below); its `compress` engine does not change tool output.
 - Small corpus, one machine, no repeat runs, no agent in the loop. It says nothing about task success.
 
 ## Graph accuracy (`graph_eval.py`)
@@ -130,3 +145,35 @@ Read it as parity: the earlier view kept 4% of the changed lines; now small and 
 20-35% fewer tokens than RTK, while on commits with more than 1,500 changed lines vtok prints slightly more tokens than
 RTK for slightly less retention. The budget is 2,500 + raw/2 tokens (at most 8,000), far above the 558 tokens the old
 view printed, which is the price of keeping the lines.
+
+## Language plugins (`gen_eval.py`, `lossless_check.py`)
+
+`python benchmarks/gen_eval.py css=SRC_ROOT sql=MIGRATIONS c=@files.txt ...` (or `VTOK_EVAL_<LANG>`, see the docstring)
+runs the verified encode on real files of the generic plugins (css html sql java cpp cs go c dart) and prints per language
+the files, the refusals, the mean saving of each view (full / skeleton / lean), the median encode time and sample outline
+lines. `lossless_check.py LANG FILELIST` is an independent check that does not use the plugin's own proof: it encodes and
+decodes each file with the CLI and compares original and decoded code with its own tokeniser (comments removed, string
+literals exact, words whole, spacing kept only where it separates tokens that would merge). Corpora here are real code from
+other projects on one machine; the numbers show relative change, not a guarantee for your code.
+
+Refusals (a refused file gets no compaction) before and after the verbatim-region work, and mean saving after, in %
+(vtok's own token estimate, alias table included):
+
+| language | files | refused before | refused after | saving full / skeleton / lean |
+|---|---:|---|---|---|
+| SQL | 12 | 12 (100%) | 0 | 25.2 / 75.3 / 26.4 |
+| C | 300 | 159 (53%) | 0 | 27.2 / 87.1 / 87.1 |
+| C++ | 19 | 5 (26%) | 0 | 42.3 / 81.0 / 81.0 |
+| HTML | 108 | 10 (9%) | 0 | 3.6 / 81.5 / 20.9 |
+| CSS | 5 | 0 | 0 | 35.0 / 82.2 / 35.6 |
+| Java | 300 | 0 | 0 | 49.1 / 83.0 / 83.0 |
+| Go | 300 | 0 | 0 | 30.6 / 86.9 / 86.9 |
+
+C# (Unity projects) and Dart (Flutter SDK) were also swept, with no refusals. The independent comparison found no
+difference on 944 files (SQL 12, CSS 5, C 300, C++ 19, HTML 108, Java 100, Go 300, C# 100). On 6 of 100 Flutter Dart
+files my comparer flags a difference that comes from its own lexing (it reads `@override@protected` as one word and does
+not parse `${...}` interpolation); the Dart plugin was not changed by this work, and I did not rule the cause out beyond
+that. The skeleton and lean views of CSS, HTML and SQL used to equal the full view; now CSS skeleton is the selector and
+@-rule tree with declaration counts, HTML skeleton the element tree with id, class and href/src/name/type attributes, and
+SQL skeleton one head per statement. Known: `vtok_edit` is rejected on a file that contains unparsed regions; reading and
+outline work. The lean view of the code languages is still the same as skeleton.

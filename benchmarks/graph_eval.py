@@ -13,6 +13,7 @@ Environment (all optional):
   GRAPHIFY      graphify binary (default `graphify`); set GRAPHIFY=skip to leave it out
   RUST_ANALYZER rust-analyzer binary (default `rust-analyzer`); EVAL_REUSE=1 reuses an existing index.scip
   EVAL_JSON     write the full results there as JSON
+  EVAL_UNMAPPED=fp  count edges with an end the index has no definition for as false positives (default: unjudged)
 Every tool runs on its own copy of the code inside EVAL_WORK, never inside the repository.
 """
 import json
@@ -104,6 +105,8 @@ def main():
         res = {t: graph_metrics.evaluate(n, e, truth, with_tests) for t, (n, e) in tools.items()}
         results[mode] = res
         print(graph_metrics.table(res, mode))
+        print(graph_metrics.calib_table(res, mode))
+        print("unjudged edges (a file the index does not cover): " + ", ".join(f"{t} {r['unjudged']}" for t, r in res.items()) + "\n")
     print("| tool | nodes | edges | graph.json | build | report (~tokens) |\n|---|---|---|---|---|---|")
     for t, (n, e) in tools.items():
         f = facts[t]

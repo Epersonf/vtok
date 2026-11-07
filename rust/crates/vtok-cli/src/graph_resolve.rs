@@ -2,8 +2,9 @@
 //! position and the file's scope (graph_scope*.rs), to at most one definition, giving calls, uses_type and references
 //! edges with a score. Bare names need scope evidence (same file 0.95, explicit import 0.9, glob import 0.85; a
 //! non-strict language may use a unique global name 0.8 or narrow homonyms by directory 0.55-0.6); members resolve by
-//! receiver (`self` 1.0, declared type 0.9, module alias 0.95, type-like name 0.85, trait dispatch 0.7, a unique
-//! uncommon method 0.6); paths by module or type qualifier. An ambiguous tie gives no edge. One definition in the whole
+//! receiver (`self` 1.0, declared type 0.9, module alias 0.95, a unique uncommon method 0.85, type-like name 0.8,
+//! trait dispatch 0.8 when the trait is in scope); paths by module or type qualifier. Scores follow the precision measured
+//! per bucket by benchmarks/graph_eval.py. An ambiguous tie gives no edge. One definition in the whole
 //! graph plus scope evidence is EXTRACTED (1.0).
 use super::bind::{bindings, Bindings};
 use super::edges::{enclosing, put_rel, EdgeMap, Parsed};

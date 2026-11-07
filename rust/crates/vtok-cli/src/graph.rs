@@ -20,6 +20,7 @@ use std::path::Path;
 #[path = "graph_rels.rs"] mod rels;
 #[path = "graph_resolve.rs"] mod resolve;
 #[path = "graph_scope.rs"] mod scope;
+#[path = "graph_scope_crates.rs"] mod scope_crates;
 #[path = "graph_scope_langs.rs"] mod scope_langs;
 #[path = "graph_scope_rs.rs"] mod scope_rs;
 #[path = "graph_store.rs"] mod store;

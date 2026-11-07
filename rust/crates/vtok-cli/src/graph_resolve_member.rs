@@ -56,18 +56,24 @@ impl<'a> Ctx<'a> {
                     return self.by_owner(&cands, r).map(|c| (c, uniq(95)));
                 }
                 let like: Vec<usize> = cands.iter().copied().filter(|&c| looks_like(r, self.nodes[c].owner())).collect();
-                if like.len() == 1 { return Some((like[0], 85)); }
+                if like.len() == 1 { return Some((like[0], 80)); }
             }
             None => {}
         }
         if !occ.call { return None; }
         // trait dispatch: every candidate is the trait's declaration or one of its impls
         let decl: Vec<usize> = cands.iter().copied().filter(|&c| self.trait_names.contains(self.nodes[c].owner())).collect();
-        if decl.len() == 1 {
+        // (a trait method is only callable where the trait is in scope; std names stay std: `x.filter()`)
+        if decl.len() == 1 && !common_method(&occ.name) {
             let t = self.nodes[decl[0]].owner();
-            if cands.iter().all(|&c| c == decl[0] || self.nodes[c].impl_trait() == Some(t)) { return Some((decl[0], 70)); }
+            if self.sc[f].strict && self.pick(f, t, &self.named(f, t, &["type"])).is_none() { return None; }
+            if cands.iter().all(|&c| c == decl[0] || self.nodes[c].impl_trait() == Some(t)) {
+                // one impl: the call is almost surely that impl (an extension trait); several: the declaration
+                let imps: Vec<usize> = cands.iter().copied().filter(|&c| c != decl[0]).collect();
+                return Some((if imps.len() == 1 { imps[0] } else { decl[0] }, 80));
+            }
         }
-        if cands.len() == 1 && !common_method(&occ.name) { return Some((cands[0], 60)); }
+        if cands.len() == 1 && !common_method(&occ.name) { return Some((cands[0], 85)); }
         None
     }
 
@@ -89,6 +95,11 @@ impl<'a> Ctx<'a> {
                 return self.in_module(f, &[m], &occ.name).filter(|(c, _)| !occ.head || self.nodes[*c].kind == "type");
             }
             if n == 0 && q.len() > 1 { return None; }
+            // `module::Type::f`: the type is the one that module defines
+            if let (Some(m), true) = (file, n + 1 == q.len() && n > 0) {
+                let (t, ts) = self.in_module(f, &[m], last).filter(|(t, _)| self.nodes[*t].kind == "type")?;
+                return self.by_owner(&assoc(), self.base(t)).map(|c| (c, ts));
+            }
         } else if let Some(files) = self.sc[f].mods.get(q[0].as_str()).filter(|_| q.len() == 1) {
             if let Some(hit) = self.in_module(f, files, &occ.name) { return Some(hit); }
         }

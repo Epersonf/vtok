@@ -72,7 +72,8 @@ pub(crate) fn bindings(lang: &str, text: &str) -> Bindings {
     for c in re(&TUP, r"\b(?:let|const|var)\s+(?:mut\s+)?[(\[{]([^)\]}=]*)[)\]}]").captures_iter(text) { idents(&c[1], &mut b.locals); }
     for c in re(&FOR, r"\bfor\s*\(?\s*(?:const|let|var|mut)?\s*\(?([\w$, ]+?)\)?\s+(?:in|of)\b").captures_iter(text) { idents(&c[1], &mut b.locals); }
     for c in re(&CLO, r"(?:^|[(,=\s])(?:move\s+)?\|([\w\s,:&()<>\[\]'*]{0,120})\|").captures_iter(text) { idents(&c[1].split(':').next().unwrap_or(""), &mut b.locals); }
-    for c in re(&PAT, r"\b(?:Some|Ok|Err)\(\s*(?:ref\s+)?(?:mut\s+)?\(?([\w, ]+)\)?\s*\)").captures_iter(text) { idents(&c[1], &mut b.locals); }
+    // tuple-struct / variant patterns: `Some(x)`, `Ok((a, b))`, `Kind::Full(data, _) =>`, `if let Wrap(v) =`
+    for c in re(&PAT, r"\b(?:Some|Ok|Err|[A-Z]\w*(?:::[A-Z]\w*)*)\(\s*(?:ref\s+)?(?:mut\s+)?\(?([\w, ]+)\)?\s*\)\s*(?:=>|=[^=>]|\||if\b|\)|,)").captures_iter(text) { idents(&c[1], &mut b.locals); }
     if matches!(lang, "python" | "ruby") || text.contains(" lambda ") {
         for c in re(&ASG, r"(?m)^\s*([A-Za-z_][\w, ]*?)\s*(?::[^=\n]+)?=[^=]|\bas\s+([A-Za-z_]\w*)|\blambda\s+([\w, ]+):").captures_iter(text) {
             for i in 1..=3 { if let Some(m) = c.get(i) { idents(m.as_str(), &mut b.locals); } }

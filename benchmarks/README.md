@@ -10,11 +10,12 @@ FIXTURES=/tmp/fx RTK_BIN=.../rtk VTOK_BIN=.../vtok CAVEMAN_BIN=.../caveman-engin
 Tokens are `(chars + 3) / 4`, the metric RTK's own benchmark uses. `keep N/M` counts key strings (failing test names,
 error codes) that survive in each tool's output. It is a crude retention check, not a quality score.
 
-## Results (one Windows machine, 19 scenarios, vtok 2c4fc3b, RTK 0.49.0)
+## Results (one Windows machine, 18 scenarios, vtok 59e3825, RTK 0.49.0)
 
-Command output, raw 36,076 tokens: RTK 25,243 (-31%), vtok 11,200 (-69%), Caveman `compress` 36,076 (0%). The git
-scenarios use fixed revisions and the `cat`/`grep` scenarios a pinned file (`fixtures.py` writes it from git history), so
-the numbers do not move with every commit. `keep` counts a scenario's key strings in the output (crude).
+Command output, raw 36,025 tokens: RTK 25,242 (-30%), vtok 11,122 (-69%); Caveman `compress` was 0% in the earlier run
+and was not re-run. The git scenarios use fixed revisions and the `cat`/`grep` scenarios a pinned file (`fixtures.py`
+writes it from git history), so the numbers do not move with every commit. `keep` counts a scenario's key strings in the
+output (crude).
 
 | scenario | raw | RTK | vtok | note |
 |---|---:|---:|---:|---|
@@ -26,7 +27,7 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 | cat of a 727-line source file | 9,861 | 9,861 | 2,599 | vtok elides the middle (it lost `fn compact_cmd`); use `vtok_read` to read code |
 | cargo build (errors) | 395 | 352 | 71 | |
 | cargo test (3 fail) | 403 | 156 | 105 | |
-| cargo test (all pass) | 4,789 | 11 | 12 | RTK 1 token smaller (vtok keeps the warning count) |
+| cargo test (all pass) | 4,739 | 11 | 9 | crate without compiler warnings; with 4 warnings (scratch copy, same harness) it is RTK 11, vtok 12: vtok keeps the warning count, RTK's line has none |
 | pytest (3 fail, same message) | 328 | 104 | 55 | |
 | pytest (11 fail, mixed errors) | 1,140 | 419 | 301 | RTK drops one failing test |
 | mypy | 64 | 64 | 64 | below the 250-token pass-through threshold |
@@ -34,13 +35,15 @@ the numbers do not move with every commit. `keep` counts a scenario's key string
 | tsc (34 identical errors) | 653 | 672 | 57 | best case for grouping |
 | tsc (47 mixed errors) | 911 | 950 | 301 | realistic: mostly distinct messages |
 | eslint | 2,568 | 2,568 | 262 | RTK passes it through |
-| vitest (2 fail) | 328 | 37 | 59 | RTK is smaller but keeps 0/2 failing test names (its parser fails on this vitest, 5.1.0, and it prints a pass-through notice); vtok keeps both names with expected vs received and the location (was 134) |
+| vitest (2 fail) | 332 | 37 | 59 | RTK is smaller but keeps 0/2 failing test names (its parser fails on this vitest, 5.1.0, and it prints a pass-through notice); vtok keeps both names with expected vs received and the location (134 before) |
 | go test (2 fail) | 35 | 51 | 35 | |
 
-Where RTK is ahead: a green `cargo test` by one token, and `vitest` in size (at the cost of the failing test names).
-Nothing else in this set. Every view was also audited for silently dropped error classes: with 70 distinct rules or
-codes fed to each of 16 lint/compiler views, 10 of them lost classes before (oxlint, biome, rubocop, sqlfluff, phpstan,
-make/gcc, dotnet, go build, eslint) and none do now (`bench/run/audit_retention.py`, `src/t_retention.rs`).
+Where RTK is ahead: `vitest` in size (37 against 59), at the cost of both failing test names, and a green `cargo test` by
+one token when the crate has compiler warnings (vtok prints their count, RTK's line has none). Nothing else in this set.
+Between the previous binary and this one only the vitest row changed (11,197 -> 11,122 in total, same machine and day).
+Every view was also audited for silently dropped error classes: with 70 distinct rules or codes fed to each of 16
+lint/compiler views, 10 of them lost classes before (oxlint, biome, rubocop, sqlfluff, phpstan, make/gcc, dotnet, go
+build, eslint) and none do now (`bench/run/audit_retention.py`, `src/t_retention.rs`).
 
 Caveats, read before quoting any number:
 

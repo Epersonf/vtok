@@ -1,5 +1,6 @@
 //! Splicing edited chunks back into the original file.
 use super::chunks::Chunk;
+use super::deletion::{attached_start, deletion_span};
 use super::patch::token_patch;
 use super::render::chunk_source;
 use crate::language::Language;
@@ -31,6 +32,12 @@ pub fn apply_edits(lang: &dyn Language, source: &str, chunks: &[Chunk], edits: &
         if w[1].0.end >= w[0].0.start { return Err(VtokError::new(format!("edits overlap: {} and {}", w[1].0.id, w[0].0.id))); }
     }
     for (c, new) in todo {
+        if new.trim().is_empty() {
+            let floor = chunks.iter().filter(|o| o.end < c.start).map(|o| o.end).max().unwrap_or(0);
+            let (s, e) = deletion_span(lang.name(), &lines, c.start - 1, c.end, floor);
+            lines.drain(s..e);
+            continue;
+        }
         let mut n = new;
         if !n.ends_with('\n') { n.push('\n'); }
         lines.splice(c.start - 1..c.end, [n]);
@@ -62,8 +69,9 @@ fn patch_items(lang: &dyn Language, orig: &str, vt: &str, table: &BTreeMap<Strin
     if oe > p {
         let (a, b) = (spans[p].0, spans[oe - 1].1);
         if new_mid.is_empty() {
-            let a = orig[..a].rfind('\n').map_or(0, |i| i + 1);
+            let a = attached_start(lang.name(), orig, if p > 0 { spans[p - 1].1 } else { 0 }, a);
             let b = if orig[b..].starts_with('\n') { b + 1 } else { b };
+            let b = if orig[..a].ends_with("\n\n") && orig[b..].starts_with('\n') { b + 1 } else { b };
             out.push_str(&orig[..a]); out.push_str(&orig[b..]);
         } else {
             let region = &orig[a..b];

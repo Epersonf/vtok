@@ -1,9 +1,10 @@
 //! Split big files into addressable chunks; edit one chunk at a time; splice back into the ORIGINAL file.
 //!
-//! `chunks` plans the chunks, `render` shows them (alias table, index, one chunk), `apply` splices edits back and
-//! `patch` keeps the original text of every token an edit left alone.
+//! `chunks` plans the chunks, `render` shows them (alias table, index, one chunk), `apply` splices edits back,
+//! `patch` keeps the original text of every token an edit left alone and `deletion` decides what a deleted item takes along.
 mod apply;
 mod chunks;
+mod deletion;
 mod patch;
 mod render;
 

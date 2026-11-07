@@ -129,7 +129,7 @@ Works with any agent that speaks MCP; nothing is Claude-specific. The MCP server
 (read-only) and sends usage guidance in its `instructions`. `vtok_run` (runs a command) is **off by default**: enable it with
 `vtok mcp --allow-run`, `VTOK_MCP_RUN=1` or `vtok config set mcp-run on`. It is user-level only: a repo's `.vtok.json` cannot enable it, so a
 cloned repository cannot grant itself command execution. Without it, agents run `vtok run -- ...` in their shell tool, so existing
-permission rules apply. For clients that ignore MCP instructions, `vtok init --write AGENTS.md` adds (or updates) a fenced usage block.
+permission rules apply. For clients that ignore MCP instructions, `vtok init --write AGENTS.md` adds (or updates) a fenced usage block. `vtok init --agent NAME` does it for the file each agent reads (claude, codex, gemini, copilot, cursor, windsurf, cline, kilocode, kimi, opencode). Hooks are installed only for Claude Code: other agents' hook protocols need an explicit "allow" to apply a rewritten command, which would skip your own approval; if your agent has a shell hook, call `vtok rewrite COMMAND` from it.
 
 **Instruction files.** `vtok squeeze CLAUDE.md` removes whitespace, rules, bold markers and filler phrases from the prose (code blocks, inline code, URLs, headings and tables are untouched); `--write` replaces the file and keeps `CLAUDE.md.orig`.
 `vtok squeeze --rewrite FILE` prints a rewrite request for your own agent, and `vtok squeeze --check ORIGINAL NEW` verifies that every code block, inline code, URL and heading survived. Measured on a dense 2.3k-token CLAUDE.md: 3% with the deterministic pass, 8% with an agent rewrite; prose-heavy files shrink more.

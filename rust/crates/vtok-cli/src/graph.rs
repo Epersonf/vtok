@@ -29,7 +29,7 @@ pub fn build(root: &Path) -> Graph {
     let mut parsed: Vec<F> = vec![];
     for f in &files {
         let Ok(src) = std::fs::read_to_string(f) else { continue };
-        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string();
+        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string().replace(std::path::MAIN_SEPARATOR, "/");
         let Ok(l) = language_for_path(&rel) else { continue };
         let Ok(syms) = symbols(l.name(), &src) else { continue };
         let lines: Vec<&str> = src.lines().collect();
@@ -81,7 +81,7 @@ pub fn build(root: &Path) -> Graph {
     md(root, &mut docs);
     for d in docs {
         let Ok(t) = std::fs::read_to_string(&d) else { continue };
-        let rel = d.strip_prefix(root).unwrap_or(&d).display().to_string();
+        let rel = d.strip_prefix(root).unwrap_or(&d).display().to_string().replace(std::path::MAIN_SEPARATOR, "/");
         let mut linked: Vec<usize> = vec![];
         for (i, seg) in t.split('`').enumerate() {
             if i % 2 == 0 { continue; }

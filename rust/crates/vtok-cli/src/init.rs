@@ -39,6 +39,10 @@ pub fn merge(existing: &str) -> String {
 }
 
 pub fn run(args: &[String]) -> i32 {
+    if let Some(i) = args.iter().position(|a| a == "--agent") {
+        let Some(name) = args.get(i + 1) else { eprintln!("usage: vtok init --agent NAME   (one of: {})", crate::agents::names()); return 2 };
+        return match crate::agents::install(name, std::path::Path::new(".")) { Ok(Some(p)) => { println!("{p}: vtok block written"); 0 } Ok(None) => { println!("{name}: already up to date"); 0 } Err(e) => { eprintln!("{e}"); 2 } };
+    }
     if args.iter().any(|a| a == "--terse") { print!("{TERSE}"); return 0; }
     if let Some(i) = args.iter().position(|a| a == "--claude-hook") {
         let Some(path) = args.get(i + 1) else { eprintln!("usage: vtok init --claude-hook SETTINGS.json   (e.g. ~/.claude/settings.json or .claude/settings.json)"); return 2 };

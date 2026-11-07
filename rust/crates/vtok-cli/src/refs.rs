@@ -56,7 +56,7 @@ pub fn find(name: &str, root: &Path, budget: usize) -> Report {
     for f in &files {
         let Ok(src) = std::fs::read_to_string(f) else { continue };
         if !src.contains(name) { continue; }
-        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string();
+        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string().replace(std::path::MAIN_SEPARATOR, "/");
         let Ok(l) = language_for_path(&rel) else { continue };
         let (Ok(syms), Ok(ids)) = (symbols(l.name(), &src), idents(l.name(), &src)) else { skipped += 1; continue };
         raw_tokens += ntok(&src);
@@ -112,7 +112,7 @@ pub fn map(root: &Path, budget: usize) -> Report {
     let mut raw_tokens = 0;
     for f in &files {
         let Ok(src) = std::fs::read_to_string(f) else { continue };
-        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string();
+        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string().replace(std::path::MAIN_SEPARATOR, "/");
         let Ok(l) = language_for_path(&rel) else { continue };
         let (Ok(syms), Ok(ids)) = (symbols(l.name(), &src), idents_dot(l.name(), &src)) else { continue };
         raw_tokens += ntok(&src);
@@ -277,7 +277,7 @@ pub fn find_symbols(query: &str, root: &Path, budget: usize) -> Report {
     let mut raw_tokens = 0;
     for f in &files {
         let Ok(src) = std::fs::read_to_string(f) else { continue };
-        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string();
+        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string().replace(std::path::MAIN_SEPARATOR, "/");
         let Ok(l) = language_for_path(&rel) else { continue };
         let Ok(syms) = symbols(l.name(), &src) else { continue };
         raw_tokens += ntok(&src);

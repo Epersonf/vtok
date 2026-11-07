@@ -11,6 +11,7 @@ mod filters;
 mod filters_tools;
 mod init;
 mod gitfmt;
+mod gitdiff;
 mod graph;
 mod graph_out;
 mod hook;
@@ -207,6 +208,7 @@ pub fn run(args: &[String]) -> i32 {
         "refs" => refs::run(rest),
         "map" => refs::run_map(rest),
         "find" => refs::run_find(rest),
+        "output" if rest.iter().any(|a| a == "--file") => gitdiff::output_file(rest),
         "output" => shell::output_cmd(rest),
         "outline" => {
             let pos = positional(rest);

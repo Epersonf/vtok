@@ -7,7 +7,7 @@ const END: &str = "<!-- vtok:end -->";
 pub const BLOCK: &str = "## Token-saving tools (Vtok)
 - Source files (Python, TypeScript/JavaScript, Rust, Java, Go, C, C++, C#, Dart, CSS, HTML, SQL): to locate code by topic call `vtok_find` with the words of your question (`show=1` returns the best match's code in the same call); `vtok_refs` shows where a name is defined and used. In a known file call `vtok_outline` for names and line ranges, then `vtok_chunk` with the symbol name, instead of reading the whole file.
 - Change code with `vtok_edit` (send the edited Vtok of the chunk or symbol; it needs the `rev` from the read). Comments inside a replaced item are lost, so use your normal edit tool for one-line tweaks.
-- Commands with long output (tests, builds, installs, listings): use `vtok_run` if it is available, otherwise run `vtok run -- <command>` in the shell. You get errors, a summary and an id; `vtok_output` (or `vtok output ID --grep TEXT`) returns any part of the full output.
+- Commands with long output (tests, builds, installs, listings): use `vtok_run` if it is available, otherwise run `vtok run -- <command>` in the shell. You get the errors and a summary. The full output is stored: if the view cut something or the command failed, its last line names an id, and `vtok_output` (or `vtok output [ID] --grep TEXT`) returns any part of it; without an id it reads the most recent run (for example the warnings behind a count like `4 warnings`).
 ";
 
 /// Optional output-style rules (what the agent writes, not what it reads). Off by default: in our measurements a terse-style

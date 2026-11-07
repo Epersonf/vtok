@@ -1,0 +1,122 @@
+[
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.047186000000000006,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45247,
+  "tokens_out": 216,
+  "fresh_in": 10387
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.04710600000000001,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45247,
+  "tokens_out": 208,
+  "fresh_in": 10387
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0471542,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45251,
+  "tokens_out": 212,
+  "fresh_in": 10389
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0471542,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45251,
+  "tokens_out": 212,
+  "fresh_in": 10389
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0570211,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`\n\n502 tests ran, and these 2 failed.",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47777,
+  "tokens_out": 184,
+  "fresh_in": 12926
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.05685530000000001,
+  "turns": 2,
+  "answer": "test_bad_one: AssertionError: 'ABC' != 'abd'\ntest_bad_two: AssertionError: 5 not found in [1, 2, 3]",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47810,
+  "tokens_out": 155,
+  "fresh_in": 12957
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.04920730000000001,
+  "turns": 2,
+  "answer": "test_bad_one: `'ABC' != 'abd'` (`assertEqual('abc'.upper(), 'abd')`, test_umany.py:1005)\ntest_bad_two: `5 not found in [1, 2, 3]` (`assertIn`, test_umany.py:100",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45823,
+  "tokens_out": 185,
+  "fresh_in": 10970
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0486611,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45817,
+  "tokens_out": 132,
+  "fresh_in": 10966
+ }
+]

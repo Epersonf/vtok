@@ -57,7 +57,52 @@ def tasks_explain():
     ]
 
 
+def build_big():
+    """Prepared once: pyparsing (6k-line core.py) plus fx/ with a failing pytest file (60 passes, 3 failures) and a unittest file."""
+    d = pathlib.Path("/tmp/vtok-bigsrc")
+    if not (d / "fx" / "test_demo.py").exists():
+        shutil.rmtree(d, ignore_errors=True)
+        shutil.copytree(REPO / ".venv/lib/python3.12/site-packages/pip/_vendor/pyparsing", d / "pyparsing", ignore=shutil.ignore_patterns("__pycache__"))
+        (d / "fx").mkdir()
+        (d / "fx" / "test_demo.py").write_text(
+            "import pytest\n\n@pytest.mark.parametrize('n', range(60))\ndef test_ok(n):\n    assert n >= 0\n\n"
+            "def test_total_is_wrong():\n    items = [1, 2, 3]\n    assert sum(items) == 7\n\n"
+            "def test_missing_key():\n    d = {'a': 1}\n    return d['zzz']\n\n"
+            "def test_division():\n    assert 10 / 0\n")
+        (d / "fx" / "test_u.py").write_text(
+            "import unittest\n\nclass T(unittest.TestCase):\n" + "".join(f"    def test_ok{i}(self):\n        self.assertEqual({i}, {i})\n" for i in range(40)) +
+            "    def test_bad_sum(self):\n        self.assertEqual(1 + 1, 3)\n    def test_bad_key(self):\n        {}['k']\n")
+    if not (d / "fx" / "test_many.py").exists():
+        body = "import pytest\n\ndef helper(x):\n    return inner(x)\n\ndef inner(x):\n    return {'k': 1}[x]\n\n@pytest.mark.parametrize('n', range(900))\ndef test_case(n):\n    assert n * 2 == n + n\n\n"
+        body += "".join(f"def test_broken_{i}():\n    helper('missing{i}')\n\n" for i in range(4))
+        body += "def test_math():\n    assert round(2.675, 2) == 2.68\n"
+        (d / "fx" / "test_many.py").write_text(body)
+        (d / "fx" / "test_umany.py").write_text("import unittest\n\nclass T(unittest.TestCase):\n" + "".join(f"    def test_ok{i}(self):\n        self.assertEqual({i}, {i})\n" for i in range(500)) + "    def test_bad_one(self):\n        self.assertEqual('abc'.upper(), 'abd')\n    def test_bad_two(self):\n        self.assertIn(5, [1, 2, 3])\n")
+    return d
+
+
+def tasks_big():
+    both = lambda *ws: (lambda wd, ans: all(w in ans for w in ws))
+    core = lambda wd: (wd / "pyparsing" / "core.py").read_text()
+    def edit_white(wd, ans):
+        return 'DEFAULT_WHITE_CHARS: str = " \\t"' in core(wd) and subprocess.run([sys.executable, "-c", "import pyparsing"], cwd=wd, capture_output=True).returncode == 0
+    def edit_default(wd, ans):
+        t = core(wd); i = t.index("def scan_string(")
+        return "max_matches: int = 1000," in t[i:i + 300] and subprocess.run([sys.executable, "-c", "import pyparsing"], cwd=wd, capture_output=True).returncode == 0
+    return [
+        ("big: default arg", "In pyparsing/core.py, what is the default value of the `max_matches` parameter of `ParserElement.scan_string`? Reply only the expression.", both("_MAX_INT")),
+        ("big: where defined", "In pyparsing/core.py, which line range (approximately) does the method `ParserElement.transform_string` occupy? Reply `start-end` line numbers.", lambda wd, ans: any(abs(int(a) - 1285) <= 2 for a in __import__("re").findall(r"\d+", ans)[:1])),
+        ("big: edit constant", "In pyparsing/core.py change the value of DEFAULT_WHITE_CHARS (the class attribute at the top of ParserElement) from \" \\n\\t\\r\" to \" \\t\". Reply `done` when finished.", edit_white),
+        ("big: edit default", "In pyparsing/core.py change the default of `max_matches` in `ParserElement.scan_string` from `_MAX_INT` to `1000`. Reply `done` when finished.", edit_default),
+        ("big: pytest failures", "Run `python -m pytest -v -p no:cacheprovider fx/test_demo.py` and list the failing test names with the failing assertion or error of each. Reply as `name: reason` lines.", both("test_total_is_wrong", "test_missing_key", "test_division")),
+        ("big: pytest 900 tests", "Run `python -m pytest -v -p no:cacheprovider fx/test_many.py` and list each failing test name with its error. Reply as `name: reason` lines.", both("test_broken_0", "test_broken_3", "test_math")),
+        ("big: unittest 500 tests", "Run `python -m unittest -v fx.test_umany` and list the failing tests with the error of each. Reply as `name: reason` lines.", both("test_bad_one", "test_bad_two")),
+        ("big: unittest failures", "Run `python -m unittest -v fx.test_u` and list the failing tests with the error of each. Reply as `name: reason` lines.", both("test_bad_sum", "test_bad_key")),
+    ]
+
+
 def tasks():
+    if SUITE == "big": return tasks_big()
     if SUITE == "pip": return tasks_pip()
     if SUITE == "explain": return tasks_explain()
     truth_netrc = callers(SRC, "get_netrc_auth")
@@ -98,6 +143,7 @@ def one(task, cfg, rep, model, tmp):
     wd_root.mkdir(parents=True)
     shutil.copytree(SRC, wd_root / SRC.name, ignore=shutil.ignore_patterns("__pycache__"))
     wd = wd_root / SRC.name
+    if SUITE == "big": wd = wd_root / "big"; shutil.copytree(SRC, wd, ignore=shutil.ignore_patterns("__pycache__"), dirs_exist_ok=True)
     mcp = wd_root / "mcp.json"
     vt = cfg.startswith("vtok")
     cave = cfg == "caveman"
@@ -106,12 +152,17 @@ def one(task, cfg, rep, model, tmp):
     if cfg in ("vtok+hint", "vtok-only"): prompt = subprocess.run([VTOK, "init"], capture_output=True, text=True).stdout + "\n" + prompt
     cmd = ["claude", "-p", prompt + ("" if SUITE == "explain" else " Be brief."), "--output-format", "stream-json", "--verbose", "--model", model, "--max-turns", "30", "--no-session-persistence", "--strict-mcp-config",
            "--mcp-config", str(mcp), "--allowedTools", VTOK_ONLY + ",ToolSearch" if only else (VTOK_TOOLS if vt else BASE_TOOLS), "--permission-mode", "acceptEdits"] + (["--disallowedTools", "Read,Grep,Glob,Edit,Write,Bash,NotebookEdit"] if only else []) + (["--append-system-prompt", CAVEMAN] if cave else [])
-    env = dict(os.environ, VTOK_NO_USAGE="1")
+    env = dict(os.environ, VTOK_NO_USAGE="1", PATH="/usr/local/bin:" + str(REPO / ".venv/bin") + ":" + os.environ["PATH"])
+    if cfg == "hook":
+        st = wd_root / "settings.json"
+        subprocess.run([VTOK, "init", "--claude-hook", str(st)], capture_output=True)
+        cmd += ["--settings", str(st)]
     try:
         r = subprocess.run(cmd, cwd=wd, capture_output=True, text=True, timeout=900, env=env)
         lines = [json.loads(l) for l in r.stdout.splitlines() if l.startswith("{")]
         j = [m for m in lines if m.get("type") == "result"][-1]
         used = {}
+        out_chars = sum(len(str(c.get("content", ""))) for m in lines if m.get("type") == "user" for c in (m.get("message", {}).get("content") or []) if isinstance(c, dict) and c.get("type") == "tool_result")
         for m in lines:
             if m.get("type") == "assistant":
                 for c in m.get("message", {}).get("content", []):
@@ -123,7 +174,7 @@ def one(task, cfg, rep, model, tmp):
     try: ok = bool(check(wd, ans))
     except Exception as e: ok = False
     tools = j.get("num_turns")
-    return {"task": name, "cfg": cfg, "rep": rep, "ok": ok, "cost": j.get("total_cost_usd"), "turns": tools, "answer": ans[:160], "tools": used,
+    return {"task": name, "cfg": cfg, "rep": rep, "ok": ok, "cost": j.get("total_cost_usd"), "turns": tools, "answer": ans[:160], "tool_out_chars": out_chars, "tools": used,
             "tokens_in": u.get("input_tokens", 0) + u.get("cache_creation_input_tokens", 0) + u.get("cache_read_input_tokens", 0), "tokens_out": u.get("output_tokens", 0),
             "fresh_in": u.get("input_tokens", 0) + u.get("cache_creation_input_tokens", 0)}
 
@@ -136,13 +187,14 @@ def main():
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--only", default="")
     ap.add_argument("--cfgs", default="")
-    ap.add_argument("--suite", default="requests", choices=["requests", "pip", "explain"])
+    ap.add_argument("--suite", default="requests", choices=["requests", "pip", "explain", "big"])
     a = ap.parse_args()
     global SUITE, SRC
     SUITE = a.suite
     global CFGS
     if a.cfgs: CFGS = tuple(a.cfgs.split(","))
     if SUITE == "explain": SRC = REPO / ".venv/lib/python3.12/site-packages/requests"
+    if SUITE == "big": SRC = build_big()
     if SUITE == "pip": SRC = REPO / ".venv/lib/python3.12/site-packages/pip"
     ts = [t for t in tasks() if not a.only or a.only in t[0]]
     rows = []

@@ -31,6 +31,10 @@ pub fn merge(existing: &str) -> String {
 }
 
 pub fn run(args: &[String]) -> i32 {
+    if let Some(i) = args.iter().position(|a| a == "--claude-hook") {
+        let Some(path) = args.get(i + 1) else { eprintln!("usage: vtok init --claude-hook SETTINGS.json   (e.g. ~/.claude/settings.json or .claude/settings.json)"); return 2 };
+        return match crate::hook::install(path) { Ok(true) => { println!("{path}: vtok hook added (long shell output is wrapped in `vtok run`)"); 0 } Ok(false) => { println!("{path}: already up to date"); 0 } Err(e) => { eprintln!("{e}"); 1 } };
+    }
     match args.iter().position(|a| a == "--write") {
         None => { print!("{}", fenced()); 0 }
         Some(i) => {

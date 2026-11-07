@@ -1,0 +1,744 @@
+[
+ {
+  "task": "big: default arg",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0424017,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44203,
+  "tokens_out": 154,
+  "fresh_in": 9346
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.04282749999999999,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44230,
+  "tokens_out": 185,
+  "fresh_in": 9375
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.04282749999999999,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44230,
+  "tokens_out": 185,
+  "fresh_in": 9375
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0428497,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44235,
+  "tokens_out": 186,
+  "fresh_in": 9378
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.04282749999999999,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44230,
+  "tokens_out": 185,
+  "fresh_in": 9375
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0424017,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44203,
+  "tokens_out": 154,
+  "fresh_in": 9346
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0489969,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67112,
+  "tokens_out": 274,
+  "fresh_in": 10143
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0490193,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67119,
+  "tokens_out": 275,
+  "fresh_in": 10146
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0490028,
+  "turns": 3,
+  "answer": "`1285-1329`",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67110,
+  "tokens_out": 275,
+  "fresh_in": 10142
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0498708,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67349,
+  "tokens_out": 313,
+  "fresh_in": 10261
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.04882739999999999,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67065,
+  "tokens_out": 270,
+  "fresh_in": 10111
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0492017,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67166,
+  "tokens_out": 276,
+  "fresh_in": 10189
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0467345,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66461,
+  "tokens_out": 330,
+  "fresh_in": 9436
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0467345,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66461,
+  "tokens_out": 330,
+  "fresh_in": 9436
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0467345,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66461,
+  "tokens_out": 330,
+  "fresh_in": 9436
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.048723800000000005,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66700,
+  "tokens_out": 454,
+  "fresh_in": 9622
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.049604300000000004,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66770,
+  "tokens_out": 516,
+  "fresh_in": 9687
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0901714,
+  "turns": 6,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Edit": 2,
+   "Read": 1
+  },
+  "tokens_in": 161235,
+  "tokens_out": 886,
+  "fresh_in": 16721
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0535239,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Read": 2,
+   "Edit": 1
+  },
+  "tokens_in": 89571,
+  "tokens_out": 577,
+  "fresh_in": 9952
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0926834,
+  "turns": 6,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Edit": 2,
+   "Read": 1
+  },
+  "tokens_in": 161945,
+  "tokens_out": 1056,
+  "fresh_in": 16911
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0471589,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed because `sum([1, 2, 3])` is 6, so `assert 6 == 7`.\ntest_missing_key: `KeyError: 'zzz'`, because `d['zzz']` ",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45204,
+  "tokens_out": 234,
+  "fresh_in": 10335
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0466471,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed because the sum is 6 (`assert 6 == 7`)\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionErro",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45208,
+  "tokens_out": 182,
+  "fresh_in": 10337
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0464589,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed (`assert 6 == 7`)\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionError: division by zero`",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45204,
+  "tokens_out": 164,
+  "fresh_in": 10335
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.09217669999999999,
+  "turns": 6,
+  "answer": "done",
+  "tools": {
+   "Grep": 2,
+   "Edit": 2,
+   "Read": 1
+  },
+  "tokens_in": 161796,
+  "tokens_out": 1031,
+  "fresh_in": 16849
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.046448899999999994,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed, `assert 6 == 7`\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionError: division by zero`",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45204,
+  "tokens_out": 163,
+  "fresh_in": 10335
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046547099999999994,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed because the sum was 6 (`assert 6 == 7`)\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionErr",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45208,
+  "tokens_out": 172,
+  "fresh_in": 10337
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0469671,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed because `sum([1, 2, 3])` is 6 (`assert 6 == 7`)\ntest_missing_key: `KeyError: 'zzz'`, from `d['zzz']` on `{'",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45208,
+  "tokens_out": 214,
+  "fresh_in": 10337
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.047490000000000004,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45273,
+  "tokens_out": 236,
+  "fresh_in": 10413
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0470622,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45253,
+  "tokens_out": 202,
+  "fresh_in": 10391
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.04717600000000001,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45247,
+  "tokens_out": 215,
+  "fresh_in": 10387
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0471542,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45251,
+  "tokens_out": 212,
+  "fresh_in": 10389
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0486611,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45817,
+  "tokens_out": 132,
+  "fresh_in": 10966
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.048827300000000004,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`\n\n(2 failures out of 502 tests.)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45823,
+  "tokens_out": 147,
+  "fresh_in": 10970
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0471542,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45251,
+  "tokens_out": 212,
+  "fresh_in": 10389
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0486611,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45817,
+  "tokens_out": 132,
+  "fresh_in": 10966
+ },
+ {
+  "task": "big: pytest 900 tests",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.04710600000000001,
+  "turns": 2,
+  "answer": "test_broken_0: KeyError: 'missing0'\ntest_broken_1: KeyError: 'missing1'\ntest_broken_2: KeyError: 'missing2'\ntest_broken_3: KeyError: 'missing3'\ntest_math: Asser",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45247,
+  "tokens_out": 208,
+  "fresh_in": 10387
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.048857300000000006,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`\n\n(Ran 502 tests, 2 failures.)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45823,
+  "tokens_out": 150,
+  "fresh_in": 10970
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0567311,
+  "turns": 2,
+  "answer": "test_bad_one: `AssertionError: 'ABC' != 'abd'`\ntest_bad_two: `AssertionError: 5 not found in [1, 2, 3]`\n\n(2 failures out of 502 tests; the other 500 passed.)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47777,
+  "tokens_out": 155,
+  "fresh_in": 12926
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046867,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45355,
+  "tokens_out": 137,
+  "fresh_in": 10505
+ },
+ {
+  "task": "big: unittest 500 tests",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0575273,
+  "turns": 2,
+  "answer": "- test_bad_one: `AssertionError: 'ABC' != 'abd'` (test_umany.py:1005)\n- test_bad_two: `AssertionError: 5 not found in [1, 2, 3]` (test_umany.py:1007)\n\n502 tests",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 47783,
+  "tokens_out": 233,
+  "fresh_in": 12930
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0468832,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45361,
+  "tokens_out": 137,
+  "fresh_in": 10509
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0468832,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45361,
+  "tokens_out": 137,
+  "fresh_in": 10509
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046867,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']`, test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45355,
+  "tokens_out": 137,
+  "fresh_in": 10505
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.046867,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45355,
+  "tokens_out": 137,
+  "fresh_in": 10505
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "hook",
+  "rep": 2,
+  "ok": true,
+  "cost": 0.0468832,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45361,
+  "tokens_out": 137,
+  "fresh_in": 10509
+ }
+]

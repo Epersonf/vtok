@@ -70,3 +70,17 @@ tasks. It is a different lever than Vtok's (what the model writes, not what it r
 
 Only "callers" tasks tie and one `json method` task wins (1 turn); edit tasks cost 2x the turns (read, then edit, plus the tool-discovery turn). Conclusion: on small
 tasks the built-in tools are cheaper in a turn-dominated agent; Vtok's per-call savings only matter on big files / long outputs, which this suite does not exercise.
+
+## Large files and long outputs (suite `big`), base vs `hook`, Sonnet, 3 runs per task
+
+`bench/loop/run.py --suite big --cfgs base,hook`: pyparsing `core.py` (6.1k lines) lookups and edits, and pytest / unittest runs of 63 to 900 tests with a few failures. `hook` = `vtok init --claude-hook`.
+
+| config | correct | cost | input tokens | turns |
+|---|---|---|---|---|
+| base | 24/24 | $1.184 | 1398k | 62 |
+| hook | 24/24 | $1.228 | 1471k | 63 |
+
+No cost difference (the gap is the `edit default` task, which has nothing to do with the hook). Two reasons, both measured: the agent already adds `| tail -60` to long
+commands (the hook skips piped commands), and Claude Code already stores very large tool output on disk and shows a preview. On a 63-test pytest run the compact view is
+~110 tokens against ~1.8k raw (`tool_out_chars` in the results), a saving of cents at most against a ~45k-token fixed context per run. Separately, in the same suite the
+agent never called Vtok's MCP tools even with the usage block in the prompt: its own Grep and ranged Read were enough on a 6k-line file.

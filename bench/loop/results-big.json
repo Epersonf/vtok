@@ -1,0 +1,376 @@
+[
+ {
+  "task": "big: default arg",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0496215,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47515,
+  "tokens_out": 190,
+  "fresh_in": 11020
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.04282749999999999,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44230,
+  "tokens_out": 185,
+  "fresh_in": 9375
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.04282749999999999,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 44230,
+  "tokens_out": 185,
+  "fresh_in": 9375
+ },
+ {
+  "task": "big: default arg",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.049173499999999995,
+  "turns": 2,
+  "answer": "`_MAX_INT`",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47483,
+  "tokens_out": 158,
+  "fresh_in": 10988
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0570177,
+  "turns": 2,
+  "answer": "`ParserElement.transform_string` starts at line 1285, and `search_string` starts at line 1331, so the method occupies about 1285-1330.",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 47647,
+  "tokens_out": 238,
+  "fresh_in": 12790
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0724997,
+  "turns": 2,
+  "answer": "1285-1330",
+  "tools": {
+   "Grep": 1
+  },
+  "tokens_in": 53259,
+  "tokens_out": 181,
+  "fresh_in": 16762
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.053469499999999996,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 71414,
+  "tokens_out": 282,
+  "fresh_in": 11159
+ },
+ {
+  "task": "big: where defined",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0488691,
+  "turns": 3,
+  "answer": "1285-1329",
+  "tools": {
+   "Grep": 1,
+   "Read": 1
+  },
+  "tokens_in": 67077,
+  "tokens_out": 276,
+  "fresh_in": 10106
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0467786,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66463,
+  "tokens_out": 334,
+  "fresh_in": 9437
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.053742500000000006,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 71391,
+  "tokens_out": 338,
+  "fresh_in": 11086
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046694,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 66451,
+  "tokens_out": 328,
+  "fresh_in": 9431
+ },
+ {
+  "task": "big: edit constant",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.053742500000000006,
+  "turns": 3,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 1
+  },
+  "tokens_in": 71391,
+  "tokens_out": 338,
+  "fresh_in": 11086
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0522375,
+  "turns": 4,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 89468,
+  "tokens_out": 488,
+  "fresh_in": 9853
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.051832,
+  "turns": 4,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Read": 1,
+   "Edit": 1
+  },
+  "tokens_in": 89382,
+  "tokens_out": 476,
+  "fresh_in": 9782
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.06364840000000001,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Edit": 2,
+   "Read": 1
+  },
+  "tokens_in": 120117,
+  "tokens_out": 660,
+  "fresh_in": 11553
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 0,
+  "ok": false,
+  "cost": 0.0508396,
+  "turns": 4,
+  "answer": "I couldn't run the tests, so I have no failing tests to list.\n\n- `python` isn't installed, so your command fails with \"command not found\".\n- `python3` exists, b",
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 88519,
+  "tokens_out": 502,
+  "fresh_in": 9483
+ },
+ {
+  "task": "big: edit default",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.06077539999999999,
+  "turns": 5,
+  "answer": "done",
+  "tools": {
+   "Grep": 1,
+   "Read": 2,
+   "Edit": 1
+  },
+  "tokens_in": 96126,
+  "tokens_out": 597,
+  "fresh_in": 11592
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.045083899999999996,
+  "turns": 3,
+  "answer": "I couldn't run the tests, so there are no failing test names to report.\n\n- `python` isn't installed here. `python3` is, but it has no `pytest` module.\n- I didn'",
+  "tools": {
+   "Bash": 2
+  },
+  "tokens_in": 66098,
+  "tokens_out": 261,
+  "fresh_in": 9199
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0505768,
+  "turns": 3,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)\n\n(`python` wasn't on the PATH, so I ran it with `pyt",
+  "tools": {
+   "Bash": 2
+  },
+  "tokens_in": 67449,
+  "tokens_out": 250,
+  "fresh_in": 10601
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0608148,
+  "turns": 4,
+  "answer": "- test_bad_key: KeyError: 'k' (`{}['k']`, test_u.py:87)\n- test_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 96222,
+  "tokens_out": 334,
+  "fresh_in": 12274
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": false,
+  "cost": 0.0569926,
+  "turns": 4,
+  "answer": "I couldn't run the tests, so there are no failing tests to list. `python` isn't on the PATH, and `python3` (3.12) doesn't have `pytest` installed. I haven't ins",
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 94989,
+  "tokens_out": 452,
+  "fresh_in": 11023
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0503768,
+  "turns": 3,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)\n\n(`python` isn't installed, so I used `python3`.)",
+  "tools": {
+   "Bash": 2
+  },
+  "tokens_in": 67449,
+  "tokens_out": 230,
+  "fresh_in": 10601
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "vtok+hint",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0607664,
+  "turns": 4,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 3
+  },
+  "tokens_in": 96216,
+  "tokens_out": 330,
+  "fresh_in": 12272
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "vtok+hint",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.072507,
+  "turns": 6,
+  "answer": "Tests ran (pytest wasn't installed, so I made a venv at `/tmp/pyv` to run them). 3 failed, 60 passed:\n\ntest_total_is_wrong: `assert sum([1, 2, 3]) == 7` failed ",
+  "tools": {
+   "Bash": 5
+  },
+  "tokens_in": 145116,
+  "tokens_out": 792,
+  "fresh_in": 12846
+ }
+]

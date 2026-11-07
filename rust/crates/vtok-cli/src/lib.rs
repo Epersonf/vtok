@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use vtok_api::*;
 mod config;
 mod init;
+mod hook;
 mod mcp;
 mod refs;
 mod shell;
@@ -156,6 +157,7 @@ pub fn run(args: &[String]) -> i32 {
         "config" => config::run(rest),
         "run" => shell::run(rest),
         "gain" => usage::gain(rest),
+        "hook" => hook::run(rest),
         "init" => init::run(rest),
         "refs" => refs::run(rest),
         "map" => refs::run_map(rest),

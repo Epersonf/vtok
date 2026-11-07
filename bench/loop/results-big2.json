@@ -1,0 +1,122 @@
+[
+ {
+  "task": "big: pytest failures",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046437099999999995,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed, since `6 == 7`\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionError: division by zero`",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45208,
+  "tokens_out": 161,
+  "fresh_in": 10337
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0466189,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed, because `sum([1, 2, 3])` is 6\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionError: divis",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45204,
+  "tokens_out": 180,
+  "fresh_in": 10335
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0466189,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed, since `sum([1, 2, 3])` is 6.\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionError: divisi",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45204,
+  "tokens_out": 180,
+  "fresh_in": 10335
+ },
+ {
+  "task": "big: pytest failures",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0466471,
+  "turns": 2,
+  "answer": "test_total_is_wrong: `assert sum(items) == 7` failed because the sum is 6 (`assert 6 == 7`)\ntest_missing_key: `KeyError: 'zzz'`\ntest_division: `ZeroDivisionErro",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45208,
+  "tokens_out": 182,
+  "fresh_in": 10337
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "hook",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.0468832,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45361,
+  "tokens_out": 137,
+  "fresh_in": 10509
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 1,
+  "ok": true,
+  "cost": 0.046867,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45355,
+  "tokens_out": 137,
+  "fresh_in": 10505
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "hook",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.0470632,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (`assertEqual(1 + 1, 3)` at test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45361,
+  "tokens_out": 155,
+  "fresh_in": 10509
+ },
+ {
+  "task": "big: unittest failures",
+  "cfg": "base",
+  "rep": 0,
+  "ok": true,
+  "cost": 0.046867,
+  "turns": 2,
+  "answer": "test_bad_key: KeyError: 'k' (`{}['k']` at test_u.py:87)\ntest_bad_sum: AssertionError: 2 != 3 (test_u.py:85)",
+  "tools": {
+   "Bash": 1
+  },
+  "tokens_in": 45355,
+  "tokens_out": 137,
+  "fresh_in": 10505
+ }
+]

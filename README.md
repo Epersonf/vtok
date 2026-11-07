@@ -131,6 +131,12 @@ Works with any agent that speaks MCP; nothing is Claude-specific. The MCP server
 cloned repository cannot grant itself command execution. Without it, agents run `vtok run -- ...` in their shell tool, so existing
 permission rules apply. For clients that ignore MCP instructions, `vtok init --write AGENTS.md` adds (or updates) a fenced usage block.
 
+**Automatic compaction of shell output (Claude Code).** `vtok init --claude-hook ~/.claude/settings.json` registers a PreToolUse hook
+(`vtok hook`) that rewrites known long-output commands (tests, builds, installs, `git log/diff`, recursive `grep`/`find`) to
+`vtok run -- <command>` before they run, so the agent gets the compact view without asking for it. Commands with pipes, redirects or `&&`,
+and anything unrecognised, pass through untouched; the hook never grants permission by itself. Agent-neutral setups can alias the same
+thing with `vtok run --`.
+
 `vtok output --grep` shows at most 40 matching lines and says how many more there are. Agents are told to skip Vtok when the plain alternative is cheaper (small files, short output).
 
 `vtok gain [--days N] [--json]` reports what the tools saved (an upper bound versus raw output; `output` reads count as extra cost;

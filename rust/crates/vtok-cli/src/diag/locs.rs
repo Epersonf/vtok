@@ -23,6 +23,8 @@ fn chunks(hits: &[&Hit]) -> Vec<String> {
 
 /// The place lines of a group, at most `cap` places; a hit with a name (template groups) keeps it next to its line.
 pub(super) fn lines(g: &Group, cap: usize) -> Vec<String> {
+    // a cut that saves one or two places costs more than it saves (its own "... +1 more places" line)
+    let cap = if g.hits.len() <= cap + 2 { g.hits.len() } else { cap };
     let shown: Vec<&Hit> = g.hits.iter().take(cap).collect();
     let mut out: Vec<String> = vec![];
     if shown.iter().any(|h| !h.arg.is_empty()) {

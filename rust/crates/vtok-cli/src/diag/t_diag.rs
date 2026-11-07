@@ -81,6 +81,8 @@ fn a_long_place_list_says_how_many_it_left_out() {
     let ds: Vec<D> = (1..=200).map(|i| d("a.ts", i, 1, "TS2322", "same")).collect();
     let o = render(&ds, NOUN, None);
     assert!(o.iter().any(|l| l == "... +50 more places"), "{o:?}");
+    let barely: Vec<D> = (1..=152).map(|i| d("a.ts", i, 1, "TS2322", "same")).collect();
+    assert!(!render(&barely, NOUN, None).iter().any(|l| l.contains("more places")), "one or two over the cap are shown, not summarised");
 }
 
 #[test]

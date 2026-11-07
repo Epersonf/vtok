@@ -15,8 +15,16 @@ mod php;
 mod php_static;
 mod py;
 mod py_pkg;
+mod py_pytest;
+mod py_pytest_fmt;
+mod py_pytest_items;
+#[cfg(test)] mod t_pytest;
+#[cfg(test)] mod t_pytest_modes;
 mod rb;
 mod util;
+
+/// pytest's FAILURES report by shape, for runs whose command line does not name pytest (`make test`, CI scripts).
+pub fn pytest_view(lines: &[String]) -> Option<String> { py::pytest(lines) }
 
 pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
     let c = util::parse(cmd)?;

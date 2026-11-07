@@ -57,16 +57,9 @@ pub fn ruff_format(lines: &[String]) -> Option<String> {
     finish(v)
 }
 
+/// The counts line plus one line per failing test, see `py_pytest`.
 pub fn pytest(lines: &[String]) -> Option<String> {
-    let last = re(r"^=+ .*\b(passed|failed|error|errors|skipped|no tests ran|deselected|warnings?)\b.* in [\d.]+s.*=+$");
-    let sum = lines.iter().rev().find(|l| last.is_match(l))?;
-    let start = |l: &str| re(r"^_{3,} .+ _{3,}$").is_match(l);
-    let stop = |l: &str| re(r"^={3,} ").is_match(l);
-    let drop = |l: &str| !(l.starts_with("E ") || l.starts_with("E\t") || re(r"^\S+\.py:\d+: ").is_match(l));
-    let mut out = blocks(lines, &start, &stop, 10, &drop);
-    out.extend(grep(lines, r"^(FAILED|ERROR) "));
-    out.push(sum.trim_matches(|c| c == '=' || c == ' ').to_string());
-    finish(out)
+    finish(super::py_pytest_fmt::render(&super::py_pytest::Report::parse(lines)?))
 }
 
 #[cfg(test)]
@@ -102,14 +95,4 @@ mod tests {
         assert!(o.contains("Would reformat: src/b.py") && o.contains("2 files would be reformatted"));
     }
 
-    #[test]
-    fn pytest_failure_summary() {
-        let mut s = String::from("============================= test session starts =============================\nplatform linux -- Python 3.11\ncollected 30 items\n\ntests/test_a.py ........................ [ 80%]\ntests/test_b.py ..F... [100%]\n\n=================================== FAILURES ===================================\n_________________________________ test_total ___________________________________\n\n    def test_total():\n        cart = Cart()\n>       assert cart.total() == 5\nE       assert 4 == 5\nE        +  where 4 = total()\n\ntests/test_b.py:12: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_b.py::test_total - assert 4 == 5\n");
-        s += "========================= 1 failed, 29 passed in 0.31s =========================\n";
-        let l = lines(&s);
-        let o = small(pytest(&l), &l);
-        assert!(o.contains("test_total") && o.contains("E       assert 4 == 5") && o.contains("tests/test_b.py:12: AssertionError"));
-        assert!(o.contains("FAILED tests/test_b.py::test_total") && o.contains("1 failed, 29 passed in 0.31s"));
-        assert!(!o.contains("platform linux") && !o.contains("cart = Cart()"));
-    }
 }

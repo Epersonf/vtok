@@ -3,20 +3,9 @@ use super::failure::failure_view;
 fn l(t: &str) -> Vec<String> { t.lines().map(String::from).collect() }
 
 #[test]
-fn pytest_failure_keeps_name_place_and_assertion() {
+fn pytest_report_without_a_pytest_command_line_gets_the_pytest_view() {
     let py = l("=== FAILURES ===\n____ test_a ____\n    def test_a():\n>       assert 1 == 2\nE       assert 1 == 2\ntest_x.py:3: AssertionError\n=== short test summary info ===\nFAILED test_x.py::test_a - assert 1 == 2\n=== 1 failed, 5 passed in 0.1s ===");
-    let v = failure_view(&py).unwrap();
-    assert!(v.contains("FAIL test_a") && v.contains("E       assert 1 == 2") && v.contains("at test_x.py:3") && v.contains("1 failed, 5 passed"), "{v}");
-    assert!(!v.contains("def test_a"));
-}
-
-#[test]
-fn parametrized_failures_with_one_assertion_shape_are_folded() {
-    let mut many = String::from("=== FAILURES ===\n");
-    for i in 0..20 { many += &format!("____ test_p[{i}] ____\n>   assert f({i}) == 1\nE   assert {} == 1\nt.py:5: AssertionError\n", i + 7); }
-    many += "=== short test summary info ===\n=== 20 failed, 5 passed in 0.1s ===";
-    let v = failure_view(&l(&many)).unwrap();
-    assert!(v.matches("FAIL test_p").count() == 1 && v.contains("+19 more failures of test_p") && v.contains("20 failed"), "{v}");
+    assert_eq!(failure_view(&py).unwrap(), "pytest: 1 failed, 5 passed in 0.1s\ntest_x.py:3 test_a: assert 1 == 2\n");
 }
 
 #[test]

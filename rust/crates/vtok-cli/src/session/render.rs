@@ -45,7 +45,8 @@ pub fn text(r: &Report, o: &Opts) -> String {
 
 fn prompts(r: &Report, o: &Opts) -> String {
     let lines = by_prompt::of(r);
-    if lines.is_empty() { "No prompts to group by: that needs the chat's transcript.\n".into() } else { by_prompt::table(lines, r.from as f64, o) }
+    if !lines.is_empty() { return by_prompt::table(lines, r.from as f64, o); }
+    if r.transcript.is_none() { "By prompt needs the chat's transcript, and none was found.\n".into() } else { "The transcript has no prompt or turn in this window to group by.\n".into() }
 }
 
 fn chat_section(r: &Report, o: &Opts) -> String {

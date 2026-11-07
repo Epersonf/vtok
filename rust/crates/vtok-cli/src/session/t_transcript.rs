@@ -37,11 +37,14 @@ fn subagent_lines_and_lines_that_are_not_turns_are_left_out() {
 fn prompts_are_what_a_human_typed_and_compactions_are_marked() {
     let typed = r#"{"type":"user","timestamp":"2026-11-07T03:00:10.000Z","origin":{"kind":"human"},"message":{"role":"user","content":"fix the login"}}"#;
     let blocks = r#"{"type":"user","timestamp":"2026-11-07T03:00:20.000Z","origin":{"kind":"human"},"message":{"role":"user","content":[{"type":"text","text":"and the logout"}]}}"#;
+    let print_mode = r#"{"type":"user","timestamp":"2026-11-07T03:00:25.000Z","turnOrigin":"sdk","message":{"role":"user","content":"claude -p prompt"}}"#;
+    let peer = r#"{"type":"user","timestamp":"2026-11-07T03:00:26.000Z","turnOrigin":"peer","message":{"role":"user","content":"from another session"}}"#;
+    let meta = r#"{"type":"user","isMeta":true,"timestamp":"2026-11-07T03:00:27.000Z","origin":{"kind":"human"},"message":{"role":"user","content":"injected"}}"#;
     let tool = r#"{"type":"user","timestamp":"2026-11-07T03:00:30.000Z","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"x","content":"ok"}]}}"#;
     let summary = r#"{"type":"user","isCompactSummary":true,"timestamp":"2026-11-07T03:00:40.000Z","message":{"role":"user","content":"summary"}}"#;
-    let tr = parse(&[typed, blocks, tool, summary].join("\n"));
-    assert_eq!(tr.prompts.len(), 2, "a tool result is not a prompt");
-    assert_eq!((tr.prompts[0].text.as_str(), tr.prompts[1].text.as_str()), ("fix the login", "and the logout"));
+    let tr = parse(&[typed, blocks, print_mode, peer, meta, tool, summary].join("\n"));
+    let texts: Vec<&str> = tr.prompts.iter().map(|p| p.text.as_str()).collect();
+    assert_eq!(texts, ["fix the login", "and the logout", "claude -p prompt"], "not a tool result, injected context or another session's message");
     assert_eq!(tr.compactions, vec![iso_secs("2026-11-07T03:00:40.000Z").unwrap()]);
 }
 

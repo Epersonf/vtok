@@ -40,6 +40,9 @@ pub struct Report {
     pub transcript: Option<(PathBuf, Transcript)>,
 }
 
+/// The window as the transcript's fractional times see it: marks and calls are whole seconds, so the last second is included.
+pub fn window(from: u64, to: u64) -> (f64, f64) { (from as f64, to as f64 + 0.999) }
+
 pub fn build(t: &Target, now: u64) -> Report {
     // the MCP server's instructions are in every turn of a chat that has it, whether or not this window used a tool
     let mut mcp = false;
@@ -53,10 +56,11 @@ pub fn build(t: &Target, now: u64) -> Report {
     let turns = transcript.as_ref().map_or(&[][..], |(_, tr)| tr.turns.as_slice());
     // a named stretch has its own ends; the whole chat runs from its first turn or call to its last (to now while open)
     let first = turns.first().map(|x| x.t as u64).into_iter().chain(recs.first().map(|r| r.t)).min();
-    let last = turns.last().map(|x| x.t as u64).into_iter().chain(recs.last().map(|r| r.t)).max();
+    let last = turns.last().map(|x| x.t.ceil() as u64).into_iter().chain(recs.last().map(|r| r.t)).max();
     let from = t.filter.from.or(first).unwrap_or(now);
     let to = t.filter.to.or(if t.open { Some(now) } else { last }).unwrap_or(now);
     let rows = tally(recs.iter());
-    let chat = transcript.as_ref().map(|(_, tr)| measure(tr, &recs.iter().collect::<Vec<_>>(), from as f64, to as f64, mcp));
+    let (wf, wt) = window(from, to);
+    let chat = transcript.as_ref().map(|(_, tr)| measure(tr, &recs.iter().collect::<Vec<_>>(), wf, wt, mcp));
     Report { title: t.title.clone(), chat_id: t.chat_id.clone(), open: t.open, from, to, recs, rows, chat, transcript }
 }

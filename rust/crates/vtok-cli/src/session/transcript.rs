@@ -71,13 +71,20 @@ fn typed_text(content: &Value) -> Option<String> {
     }
 }
 
+/// A user line a person (or the caller of `claude -p`, which has no `origin`) typed: not injected context, not another
+/// session's message.
+fn typed_by_person(v: &Value) -> bool {
+    v["isMeta"] != true && (v["origin"]["kind"] == "human" || matches!(v["turnOrigin"].as_str(), Some("human" | "sdk")))
+}
+
 pub fn parse(text: &str) -> Transcript {
     let mut by_id: HashMap<String, Turn> = HashMap::new();
     let mut tr = Transcript::default();
     for line in text.lines() {
         let assistant = line.contains("\"type\":\"assistant\"") && line.contains("\"usage\"");
         let compaction = line.contains("\"isCompactSummary\":true");
-        let prompt = line.contains("\"type\":\"user\"") && line.contains("\"kind\":\"human\"");
+        let prompt = line.contains("\"type\":\"user\"")
+            && (line.contains("\"kind\":\"human\"") || line.contains("\"turnOrigin\":\"sdk\"") || line.contains("\"turnOrigin\":\"human\""));
         if !(assistant || compaction || prompt) { continue; }
         let Ok(v) = serde_json::from_str::<Value>(line) else { continue };
         let Some(t) = v["timestamp"].as_str().and_then(iso_secs) else { continue };
@@ -94,7 +101,7 @@ pub fn parse(text: &str) -> Transcript {
             let e = by_id.entry(id.to_string()).or_insert(Turn { t, usage: now });
             e.t = e.t.min(t);
             e.usage = Usage { input: e.usage.input.max(now.input), cache_read: e.usage.cache_read.max(now.cache_read), cache_write: e.usage.cache_write.max(now.cache_write), output: e.usage.output.max(now.output) };
-        } else if let Some(txt) = typed_text(&v["message"]["content"]) {
+        } else if let (true, Some(txt)) = (typed_by_person(&v), typed_text(&v["message"]["content"])) {
             let one_line = txt.split_whitespace().collect::<Vec<_>>().join(" ");
             tr.prompts.push(Prompt { t, text: one_line.chars().take(PROMPT_CHARS).collect() });
         }

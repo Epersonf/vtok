@@ -66,6 +66,19 @@ fn a_named_stretch_is_reported_against_the_turns_of_its_transcript() {
 }
 
 #[test]
+fn the_last_turn_counts_even_when_it_ends_inside_the_last_second() {
+    let (state, claude) = (scratch("frac"), scratch("frac-claude"));
+    std::fs::write(state.join("usage.jsonl"), format!(r#"{{"v":2,"t":{},"kind":"run","raw":3000,"shown":1000,"detail":"x","s":"chat-frac","cwd":"/p","via":"cli"}}"#, BASE + 11) + "\n").unwrap();
+    let turn = |id: &str, stamp: &str| format!(r#"{{"type":"assistant","timestamp":"2023-11-14T22:13:{stamp}Z","message":{{"id":"{id}","model":"claude-x","usage":{{"input_tokens":0,"cache_read_input_tokens":1000,"cache_creation_input_tokens":0,"output_tokens":10}}}}}}"#);
+    let dir = claude.join("projects").join("-p");
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(dir.join("chat-frac.jsonl"), [turn("a", "29.200"), turn("b", "31.639")].join("\n") + "\n").unwrap();
+    let v: Value = serde_json::from_str(&text(&vtok(&state, &claude, Some("chat-frac"), None, &["session", "report", "--whole", "--json"]))).unwrap();
+    assert_eq!(v["cost"]["turns"].as_u64(), Some(2), "the second turn ends at .639 of the second the log rounds down to: {v}");
+    let _ = (std::fs::remove_dir_all(&state), std::fs::remove_dir_all(&claude));
+}
+
+#[test]
 fn another_chat_does_not_see_a_stretch_it_did_not_start() {
     let (state, claude) = (scratch("other"), scratch("other-claude"));
     fixture(&state, &claude);

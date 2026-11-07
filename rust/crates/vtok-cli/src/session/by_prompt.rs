@@ -3,7 +3,7 @@
 //! pays off in the prompts that follow it), so the figures of one prompt are not a verdict on that prompt alone.
 use super::chat::{measure_in, Chat};
 use super::cost::usd;
-use super::report::{Opts, Report};
+use super::report::{window, Opts, Report};
 use super::transcript::Transcript;
 use crate::usage::fmt::num;
 use crate::usage::kinds::{class, saved, Class};
@@ -39,7 +39,7 @@ pub fn lines(tr: &Transcript, recs: &[&Rec], from: f64, to: f64, mcp: bool) -> V
 /// The prompts of a report's window; empty without a transcript.
 pub fn of(r: &Report) -> Vec<Line> {
     match (&r.transcript, &r.chat) {
-        (Some((_, tr)), Some(c)) => lines(tr, &r.recs.iter().collect::<Vec<_>>(), r.from as f64, r.to as f64, c.mcp),
+        (Some((_, tr)), Some(c)) => { let (from, to) = window(r.from, r.to); lines(tr, &r.recs.iter().collect::<Vec<_>>(), from, to, c.mcp) }
         _ => Vec::new(),
     }
 }

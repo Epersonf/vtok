@@ -10,7 +10,7 @@ const SKIP_DIRS: &[&str] = &["target", "node_modules", "venv", "dist", "build", 
 const MAX_FILES: usize = 5000;
 const MAX_BYTES: u64 = 1_000_000;
 
-fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
+pub(crate) fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
     let Ok(rd) = std::fs::read_dir(dir) else { return };
     let mut entries: Vec<_> = rd.flatten().collect();
     entries.sort_by_key(|e| e.file_name());
@@ -28,7 +28,7 @@ fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
     }
 }
 
-fn base(id: &str) -> &str {
+pub(crate) fn base(id: &str) -> &str {
     let id = id.split('#').next().unwrap_or(id);
     id.rsplit('.').next().unwrap_or(id)
 }

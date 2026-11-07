@@ -1,23 +1,24 @@
 //! mypy, ruff (check / format) and pytest: diagnostics with locations, counts per code, summary lines.
 use super::util::*;
+use crate::diag::cap_classes;
 
 pub fn mypy(lines: &[String]) -> Option<String> {
     let err = re(r"^(.+?:\d+(?::\d+)?): (error|note): (.*?)(?:\s+\[([\w-]+)\])?$");
-    let (mut out, mut codes) = (vec![], vec![]);
+    let (mut out, mut codes): (Vec<(String, String)>, Vec<String>) = (vec![], vec![]);
     for l in lines {
         if let Some(c) = err.captures(l) {
             if &c[2] == "error" {
                 let code = c.get(4).map_or(String::new(), |m| format!(" [{}]", m.as_str()));
                 if let Some(m) = c.get(4) { codes.push(m.as_str().to_string()); }
-                out.push(format!("{}: {}{}", &c[1], short(&c[3], 200), code));
-            } else if out.last().map_or(false, |p: &String| !p.contains(" note: ")) && out.iter().rev().take(2).filter(|p| p.contains(" note: ")).count() < 2 {
-                out.push(format!("  note: {}", short(&c[3], 120)));
+                out.push((c.get(4).map_or("", |m| m.as_str()).to_string(), format!("{}: {}{}", &c[1], short(&c[3], 200), code)));
+            } else if out.last().map_or(false, |p| !p.1.contains(" note: ")) && out.iter().rev().take(2).filter(|p| p.1.contains(" note: ")).count() < 2 {
+                out.push((String::new(), format!("  note: {}", short(&c[3], 120))));
             }
         }
     }
     let tail = grep(lines, r"^(Found \d+ errors?|Success: no issues)");
     if out.is_empty() && tail.is_empty() { return None; }
-    let mut v = cap(out, 60);
+    let mut v = cap_classes(out, 60);
     if codes.len() > 5 { v.push(format!("by code: {}", tally(&codes))); }
     v.extend(tail);
     finish(v)
@@ -27,22 +28,22 @@ pub fn ruff_check(lines: &[String]) -> Option<String> {
     let concise = re(r"^(\S+?:\d+:\d+): ([A-Z]+\d+) (.*)$");
     let full_head = re(r"^([A-Z]{1,5}\d{2,4}) (?:\[\*\] )?(.*)$");
     let arrow = re(r"^\s*--> (\S+)$");
-    let (mut out, mut codes) = (vec![], vec![]);
+    let (mut out, mut codes): (Vec<(String, String)>, Vec<String>) = (vec![], vec![]);
     let mut pending: Option<(String, String)> = None;
     for l in lines {
         if let Some(c) = concise.captures(l) {
             codes.push(c[2].to_string());
-            out.push(format!("{} {} {}", &c[1], &c[2], short(&c[3], 160)));
+            out.push((c[2].to_string(), format!("{} {} {}", &c[1], &c[2], short(&c[3], 160))));
         } else if let Some(c) = full_head.captures(l) {
             pending = Some((c[1].to_string(), short(&c[2], 160)));
         } else if let (Some(c), Some((code, msg))) = (arrow.captures(l), pending.take()) {
             codes.push(code.clone());
-            out.push(format!("{} {} {}", &c[1], code, msg));
+            out.push((code.clone(), format!("{} {} {}", &c[1], code, msg)));
         }
     }
     let tail = grep(lines, r"^(Found \d+ errors?|All checks passed|\[\*\] \d+ fixable|No fixes available|\d+ fixable)");
     if out.is_empty() && tail.is_empty() { return None; }
-    let mut v = cap(out, 60);
+    let mut v = cap_classes(out, 60);
     if codes.len() > 5 { v.push(format!("by rule: {}", tally(&codes))); }
     v.extend(tail);
     finish(v)

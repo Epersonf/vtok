@@ -27,6 +27,7 @@ mod route;
 mod rewrite;
 mod shell;
 mod squeeze;
+#[cfg(test)] mod t_retention;
 mod tomlfilters;
 mod usage;
 mod cmdviews;

@@ -24,6 +24,7 @@ mod store;
 mod summary;
 mod table;
 #[cfg(test)] mod t_compact;
+#[cfg(test)] mod t_declared;
 #[cfg(test)] mod t_core;
 #[cfg(test)] mod t_failure;
 #[cfg(test)] mod t_store;

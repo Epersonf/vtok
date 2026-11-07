@@ -18,6 +18,8 @@ const CLEAN_MIN_TOKENS: usize = 24;
 const CLEAN_GENERIC_TOKENS: usize = 60;
 /// Id shown by previews (`vtok filter`, `discover`), which store nothing.
 const PREVIEW_ID: &str = "00000000";
+/// A built-in declarative filter that left this many lines or fewer has given its verdict; longer, it only truncated.
+const VERDICT_LINES: usize = 3;
 
 /// How much of the output the text carries.
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -64,8 +66,15 @@ pub fn build(cmd: &str, raw: &str, code: i32, budget: usize, persist: bool) -> C
     let orig = orig_lines.join("\n");
     // Declarative filters rewrite the text first. Table squeezing is for text no per-tool view parses: those views
     // read the column padding (eslint's `message  rule`), so they see the unsqueezed lines.
-    let filtered = crate::userfilters::apply(cmd, &orig_lines).or_else(|| crate::tomlfilters::apply(cmd, &orig_lines));
+    let (filtered, built_in) = match crate::userfilters::apply(cmd, &orig_lines).map(|l| (l, true)).or_else(|| crate::tomlfilters::apply(cmd, &orig_lines)) {
+        Some((l, user)) => (Some(l), !user),
+        None => (None, false),
+    };
     let base = filtered.clone().unwrap_or_else(|| orig_lines.clone());
+    // A per-tool view reads the tool's own output: a built-in filter's cut (`max_lines`) would hide what the view groups.
+    // The filter's text is kept only when it is a short verdict (`make: ok`); a filter the user wrote always applies.
+    let verdict = built_in && base.len() <= VERDICT_LINES;
+    let views_in = if built_in && !verdict { orig_lines.clone() } else { base.clone() };
     let lines = filtered.or_else(|| squeeze_table(&orig_lines)).unwrap_or(orig_lines);
     let text = with_newline(lines.join("\n"));
     let id = if persist { store::store(&(orig.clone() + "\n")) } else { Some(PREVIEW_ID.to_string()) };
@@ -77,7 +86,8 @@ pub fn build(cmd: &str, raw: &str, code: i32, budget: usize, persist: bool) -> C
     let small = if clean_run && runner { CLEAN_MIN_TOKENS } else { RAW_BELOW_TOKENS };
     if raw_tok <= small { return verbatim(text, id); }
     let tiny = clean_run && runner && raw_tok <= CLEAN_GENERIC_TOKENS;
-    let Some((body, kind)) = pick(cmd, &base, &lines, budget, clean_run && runner, tiny) else { return verbatim(text, id) };
+    let picked = if verdict { Some(summary_or_partial(with_newline(base.join("\n")))) } else { pick(cmd, &views_in, &base, &lines, budget, clean_run && runner, tiny) };
+    let Some((body, kind)) = picked else { return verbatim(text, id) };
     let Some(id) = id else { return verbatim(text, None) };
     let shown = Compacted { text: body, kind, id: Some(id.clone()) };
     let shown_tok = ntok(&shown.render(code));
@@ -92,8 +102,8 @@ pub fn build(cmd: &str, raw: &str, code: i32, budget: usize, persist: bool) -> C
 fn summary_or_partial(v: String) -> (String, Kind) { let k = if admits_omission(&v) { Kind::Partial } else { Kind::Summary }; (v, k) }
 
 /// The body for this output and how complete it is; None for "show the output as is".
-fn pick(cmd: &str, base: &[String], lines: &[String], budget: usize, quiet: bool, tiny: bool) -> Option<(String, Kind)> {
-    if let Some(v) = crate::cmdviews::view(cmd, base) { return Some(summary_or_partial(v)); }
+fn pick(cmd: &str, views_in: &[String], base: &[String], lines: &[String], budget: usize, quiet: bool, tiny: bool) -> Option<(String, Kind)> {
+    if let Some(v) = crate::cmdviews::view(cmd, views_in) { return Some(summary_or_partial(v)); }
     if tiny { return None; }
     if let Some(v) = crate::gitfmt::diff_view(base, budget).or_else(|| crate::gitfmt::log_view(base, budget)) { return Some((v, Kind::Partial)); }
     if let Some(v) = crate::filters::view(base) { return Some(summary_or_partial(v)); }

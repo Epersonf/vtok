@@ -2,6 +2,7 @@
 //! happens. Identical (code, message, elaboration) diagnostics form one group with a compact list of lines; groups of one
 //! that differ only in a quoted name share a template. Nothing distinct is dropped: past the group cap the remaining
 //! kinds are still named with their counts, and an overlong place list says how many places it left out.
+mod cap;
 mod group;
 mod locs;
 mod path;
@@ -9,6 +10,7 @@ mod quote;
 #[cfg(test)] mod t_diag;
 
 use group::{group, Group};
+pub use cap::cap_classes;
 pub use path::set_base;
 
 /// One diagnostic. `extra` are the indented elaboration lines tsc prints under a message.

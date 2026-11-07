@@ -43,3 +43,16 @@ checked by string match. No claim is made about other agents or about large outp
 Per-call token savings do not pay while turns are the cost. To win in this setting Vtok has to reduce turns, not just tokens: answer "where is X and show me" in one
 call (find + code), edit without a separate read, and keep the tool schemas small enough that deferred loading is not needed. Large outputs (tests, builds, big
 files) are the case where the per-token savings are largest and the number of turns does not change; that is the next thing to measure.
+
+## caveman (output compression) vs plain, 4 "explain" tasks x 3 runs, Sonnet
+
+`--suite explain --cfgs base,caveman`: the `caveman` config appends the body of caveman's `skills/caveman/SKILL.md` as an extra system prompt (no global install, nothing else
+changed). Questions ask for explanations, no "be brief" suffix; correctness = required keywords in the answer.
+
+| config | correct | cost | input tokens | output tokens | turns |
+|---|---|---|---|---|---|
+| base | 12/12 | $0.681 | 685k | 10,598 | 34 |
+| caveman | 12/12 | $0.727 | 707k | 8,475 | 30 |
+
+Output tokens fell **20%**, total cost rose **7%**: the instruction text (about 1.3k tokens) is carried on every turn while answers are a small share of the bill in these
+tasks. It is a different lever than Vtok's (what the model writes, not what it reads), the two could be combined, and neither paid for itself here.

@@ -443,6 +443,8 @@ fn failure_view(lines: &[String]) -> Option<String> {
 
 /// Column-aligned tables: the padding is pure cost. Collapse inner runs of 3+ spaces and drop `---- ----` rulers.
 fn squeeze_table(lines: &[String]) -> Option<Vec<String>> {
+    // a patch's `+    code` lines look padded, but their spacing is content (gitdiff.rs has the view for patches)
+    if lines.iter().any(|l| crate::gitdiff::is_file_start(l)) { return None; }
     let rows = lines.iter().filter(|l| !l.trim().is_empty()).count();
     let padded = |l: &str| l.trim_start().contains("   ");
     if rows < 5 || lines.iter().filter(|l| padded(l)).count() * 10 < rows * 6 { return None; }

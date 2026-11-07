@@ -89,6 +89,23 @@ fn rust_edit_next_to_an_escape_in_a_string_stays_a_token_patch() {
     assert_eq!(out, src.replace("= 1;", "= 2;"));
 }
 
+/// `imports` is what the outline calls a run of import lines, and it reads and edits like any other symbol.
+#[test]
+fn the_imports_the_outline_lists_are_addressable() {
+    let src = "use std::fmt;\nuse std::io;\n\nfn a() -> u32 {\n    1\n}\n\nuse std::path::Path;\n\nfn b(_p: &Path) {}\n";
+    let o = outline("rust", src).unwrap();
+    assert_eq!(o, "imports L1-2\na L4-6\nimports#2 L8\nb L10\n");
+    let vt = chunk_of("rust", src, "imports", 100).unwrap();
+    assert!(vt.contains("use std::fmt;") && vt.contains("use std::io;") && !vt.contains("Path"), "{vt}");
+    assert!(chunk_of("rust", src, "imports#2", 100).unwrap().contains("std::path::Path"));
+    let mut e = BTreeMap::new();
+    e.insert("imports".to_string(), vt.replace("std::io", "std::fs"));
+    assert_eq!(apply_chunks("rust", src, &e, 100, false).unwrap(), src.replace("std::io", "std::fs"));
+    let py = "import os\nimport sys\n\n\ndef f():\n    return os.name\n";
+    assert_eq!(outline("python", py).unwrap(), "imports L1-2\nf L5-6\n");
+    assert!(chunk_of("python", py, "imports", 100).unwrap().contains("import sys"));
+}
+
 /// A symbol name (or Class.method) works wherever a chunk id does.
 #[test]
 fn symbols_address_items() {

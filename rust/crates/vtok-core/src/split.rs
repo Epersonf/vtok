@@ -8,5 +8,5 @@ mod patch;
 mod render;
 
 pub use apply::apply_edits;
-pub use chunks::{plan_chunks, plan_symbols, resolve_chunks, Chunk};
+pub use chunks::{import_runs, is_import_id, plan_chunks, plan_symbols, resolve_chunks, Chunk};
 pub use render::{chunk_source, chunk_vtok, file_table, plan_project, render_index};

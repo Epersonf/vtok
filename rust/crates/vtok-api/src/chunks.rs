@@ -30,22 +30,24 @@ pub fn symbols(lang: &str, source: &str) -> Result<Vec<(String, usize, usize)>> 
     Ok(split::plan_symbols(l, &src)?.into_iter().map(|c| (c.id, c.start, c.end)).collect())
 }
 
-/// Names-only outline: one `name Lstart-end` line per symbol (imports merged into one line). The cheapest way for a
-/// model to see what a file contains before asking for one symbol with `chunk_of`.
+/// Names-only outline: one `name Lstart-end` line per symbol (a run of imports is one `imports` line, and `chunk_of` takes
+/// that name too). The cheapest way for a model to see what a file contains before asking for one symbol with `chunk_of`.
 pub fn outline(lang: &str, source: &str) -> Result<String> {
-    let mut out = String::new();
-    let mut imp: Option<(usize, usize)> = None;
+    let l = language(lang)?;
+    let syms = split::plan_symbols(l, &normalize_newlines(source))?;
+    let mut runs = split::import_runs(&syms).into_iter();
     let span = |a: usize, b: usize| if a == b { format!("L{a}") } else { format!("L{a}-{b}") };
-    for (id, a, b) in symbols(lang, source)? {
-        let is_import = id == "use" || id.starts_with("use#") || id.starts_with("import");
-        if is_import {
-            imp = Some(imp.map_or((a, b), |(x, _)| (x, b)));
-            continue;
+    let mut out = String::new();
+    let mut inside = false;
+    for c in &syms {
+        let import = split::is_import_id(&c.id);
+        if import {
+            if !inside { if let Some(r) = runs.next() { out.push_str(&format!("{} {}\n", r.id, span(r.start, r.end))); } }
+        } else {
+            out.push_str(&format!("{} {}\n", c.id, span(c.start, c.end)));
         }
-        if let Some((x, y)) = imp.take() { out.push_str(&format!("imports {}\n", span(x, y))); }
-        out.push_str(&format!("{id} {}\n", span(a, b)));
+        inside = import;
     }
-    if let Some((x, y)) = imp { out.push_str(&format!("imports {}\n", span(x, y))); }
     Ok(out)
 }
 

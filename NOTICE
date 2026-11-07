@@ -4,3 +4,9 @@ rust/crates/vtok-cli/filters/builtin.toml contains command filter definitions an
 unmodified from RTK (https://github.com/rtk-ai/rtk, src/filters/*.toml), which is licensed under the Apache License,
 Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0). Copyright the RTK contributors. The filter engine that
 runs them is vtok's own implementation of the same file format.
+
+benchmarks/style_snapshot.json records the fidelity-check patterns (regular expressions) that Caveman
+(https://github.com/JuliusBrussee/caveman, evals/prompts/fidelity.json) uses to test that facts survive in an answer.
+Caveman is licensed under the Apache License, Version 2.0. Copyright 2026 Julius Brussee. benchmarks/style_eval.py
+is vtok's own implementation of the same measurement method; it reads Caveman's prompt lists from a local checkout at
+run time and does not copy them.

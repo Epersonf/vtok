@@ -5,6 +5,7 @@ mod agents;
 mod auto;
 mod browse;
 mod config;
+mod diag;
 mod discover;
 mod filter_cmd;
 mod filters;

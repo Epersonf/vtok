@@ -13,6 +13,8 @@ mod js_test;
 mod js_tsc;
 mod php;
 mod php_static;
+mod ts_tsc;
+#[cfg(test)] mod t_tsc;
 mod py;
 mod py_pkg;
 mod py_pytest;
@@ -37,7 +39,7 @@ pub fn view(cmd: &str, lines: &[String]) -> Option<String> {
         "jest" => js_test::jest(l),
         "playwright" => json_test::playwright(l).or_else(|| js_playwright::playwright(l)),
         "prettier" => js_tsc::prettier(l),
-        "tsc" | "vue-tsc" => js_tsc::tsc(l),
+        "tsc" | "vue-tsc" => ts_tsc::tsc(l),
         "eslint" => json_lint::eslint(l).or_else(|| js_lint::eslint(l)),
         "oxlint" => js_lint::oxlint(l),
         "biome" => js_lint::biome(l),

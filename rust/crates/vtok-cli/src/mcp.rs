@@ -8,9 +8,11 @@ use std::io::{BufRead, Write};
 mod args;
 mod command;
 mod describe;
+mod notation;
 mod plain;
 mod project;
 mod source;
+#[cfg(test)] mod t_notation;
 #[cfg(test)] mod t_plain;
 
 use args::arg_str;

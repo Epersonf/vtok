@@ -1,13 +1,22 @@
-//! What the server announces: the instructions text (with each language's grammar prompt) and the tool list.
+//! What the server announces: the instructions text and the tool list.
 use serde_json::{json, Value};
-use vtok_api::languages;
 
+/// What the server tells every session that has it registered, on every turn: short on purpose. The notation rules of a
+/// language are not here; they come with the first code shown in it (see `notation`).
 pub(super) fn instructions() -> String {
-    let mut s = String::from("Vtok shows source code in a compact notation that costs fewer tokens (comments and docstrings are dropped, names are aliased, whitespace is minimal). Use vtok_read instead of reading Python / TypeScript / JavaScript / Rust files when you do not need the comments; it prints an alias table (alias=original) followed by the code. Cheapest way to work on a big file: vtok_outline lists the name and line range of every symbol (a few hundred tokens); to locate something in a project use vtok_find with the words of your question (show=1 returns the compact code of the best match in the same call) or vtok_refs for where a name is defined and used; then vtok_chunk with id = one of those names (`name`, or `Class.method` when ambiguous) returns just that item, with the aliases it uses. If you already know the name, call vtok_chunk directly. vtok_read with view=skeleton adds signatures but costs about 3x more than the outline. Big files read in full come back as an index plus a chunk map (ids like c3), which vtok_chunk also accepts. To change code, send the edited Vtok of a chunk or symbol to vtok_edit with the rev from the read (the server decodes it, splices it into the original file and rejects the edit if the file changed). Only the tokens you change are rewritten; comments next to a changed token are kept, comments inside a replaced item are lost. For a one-line tweak, or for a file with no Vtok notation (Markdown, TOML, JSON...), send vtok_edit replace=[{old, new}] instead: exact text, checked against the rev. New names are written in full; names in the alias table stay aliased.\n\nThese tools decide for themselves whether the compact form pays: vtok_read and vtok_chunk return the plain text, with its rev, when Vtok would save less than the min-gain setting (10% by default), and a file with no Vtok notation comes back as plain text too. So use them for every file; there is nothing to decide beforehand. Use a narrow pattern for vtok_output (matches are capped).\n\nLong command output: use vtok_run if it is available (it is only listed when the user enabled it); otherwise run the command through your shell tool as `vtok run -- <command>`. Either way you get a compact view (errors, summary, head/tail, repeated lines collapsed). The full output is stored: when the view cut something or the command failed, its last line names an id; vtok_output(grep/lines/tail) returns any part of it, and without an id it reads the most recent run (e.g. the warnings behind a count such as `4 warnings`).\n");
-    for l in languages() {
-        s.push_str(&format!("\n[{}]\n{}", l.name(), l.grammar_prompt()));
-    }
-    s
+    concat!(
+        "Vtok returns source code in a compact notation (comments dropped, names aliased, whitespace minimal), and the plain text when that is cheaper, ",
+        "so use its tools for any Python / TypeScript / JavaScript / Rust / Java / Go / C / C++ / C# / Dart / CSS / HTML / SQL file instead of reading it whole. ",
+        "vtok_outline lists the name and line range of every symbol (the cheapest overview); vtok_find locates code from the words of a question ",
+        "(show=1 adds the best match's code); vtok_refs shows where a name is defined and used; vtok_chunk returns one symbol (`name`, or `Class.method`); ",
+        "vtok_read reads a file (a big one comes back as an index plus chunk ids like c3). The first code you receive in a language is preceded by that notation's rules.\n\n",
+        "To change code, send vtok_edit the edited notation of a chunk or symbol with the rev from the read (the server splices it into the original file and refuses if the file changed since). ",
+        "For a small tweak, or a file with no notation (Markdown, TOML, JSON...), send replace=[{old, new}]: exact text, checked against the rev. ",
+        "The read tools return plain text, with its rev, when the compact form would save less than the min-gain setting, so there is nothing to decide beforehand.\n\n",
+        "Long command output: run `vtok run -- <command>` in the shell (or vtok_run, if it is listed). You get a compact view; ",
+        "when something was cut or the command failed, the last line names an id and vtok_output(grep/lines/tail) returns any part of the full output.\n",
+    )
+    .to_string()
 }
 
 pub(super) fn tools() -> Value {

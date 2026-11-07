@@ -1,5 +1,6 @@
 //! Tools that read or change one source file: read, chunk, outline, edit, stats.
 use super::args::{arg_str, fnv, max_lines, read_source};
+use super::notation;
 use super::plain;
 use serde_json::Value;
 use std::collections::BTreeMap;
@@ -32,7 +33,7 @@ pub(super) fn tool_read(a: &Value) -> std::result::Result<String, String> {
         }
     }
     crate::usage::record("read", raw_tokens, total, path);
-    Ok(compact)
+    Ok(format!("{}{compact}", notation::first_use(lang.name())))
 }
 
 pub(super) fn tool_chunk(a: &Value) -> std::result::Result<String, String> {
@@ -50,7 +51,7 @@ pub(super) fn tool_chunk(a: &Value) -> std::result::Result<String, String> {
         }
     }
     crate::usage::record("chunk", ntok(&src), ntok(&out), &format!("{path} {id}"));
-    Ok(out)
+    Ok(format!("{}{out}", notation::first_use(lang.name())))
 }
 
 pub(super) fn tool_outline(a: &Value) -> std::result::Result<String, String> {
